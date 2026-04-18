@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ABROX AI · Chat</title>
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,7 +20,7 @@
     #stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
     .star { position: absolute; background: #fff; border-radius: 50%; }
 
-    /* 底部导航 */
+    /* Bottom navigation */
     .bottom-nav {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -43,7 +42,7 @@
     .nav-item.active { color: #3b82f6; }
     .nav-item i { font-size: 22px; }
 
-    /* 页面容器 */
+    /* Page container */
     .page-container {
       position: relative; z-index: 10;
       height: calc(100% - 100px);
@@ -54,7 +53,7 @@
     .page { display: none; }
     .page.active { display: block; }
 
-    /* 头部 (Telegram风格) */
+    /* Header */
     .app-header {
       display: flex; align-items: center; gap: 12px;
       padding: 12px 16px;
@@ -73,44 +72,40 @@
     .header-titles h1 { font-size: 18px; font-weight: 700; color: #fff; margin: 0; line-height: 1.2; }
     .header-titles .subtitle { font-size: 12px; color: #8b9bb5; margin-top: 2px; }
 
-    /* 聊天卡片 */
+    /* Chat card - no logo, white semi-transparent, members left, online right */
     .chat-card {
-      background: rgba(255,255,255,0.04);
+      background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
-      padding: 14px 16px;
+      padding: 16px;
       margin: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
       cursor: pointer;
       transition: all 0.2s;
       box-shadow: 0 6px 14px rgba(0,0,0,0.2);
     }
-    .chat-card:hover { background: rgba(255,255,255,0.08); }
-    .card-avatar {
-      width: 54px; height: 54px; border-radius: 16px;
-      background: linear-gradient(145deg, #1e4f7a, #0f365e);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
-      overflow: hidden;
+    .chat-card:hover { background: rgba(255, 255, 255, 0.12); }
+    .card-title {
+      font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px;
     }
-    .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .card-info { flex: 1; }
-    .card-info h3 { font-size: 17px; font-weight: 700; margin: 0 0 4px; color: #fff; }
-    .card-meta {
-      display: flex; align-items: center; gap: 6px;
-      color: #a0bbd8; font-size: 13px;
-      margin-bottom: 4px;
+    .card-meta-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .members-count {
+      color: #a0bbd8; font-size: 14px; font-weight: 500;
+    }
+    .online-count {
+      display: flex; align-items: center; gap: 4px;
+      color: #a0bbd8; font-size: 14px;
     }
     .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; }
     .card-description {
-      color: #8b9bb5; font-size: 13px;
+      color: #cbd5e1; font-size: 14px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    /* 深色聊天室 Overlay */
+    /* Chat room overlay */
     .chat-room-overlay {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: #0a0f17;
@@ -139,7 +134,7 @@
       display: flex; align-items: center; gap: 6px;
     }
 
-    /* 回复预览条 */
+    /* Reply preview bar */
     .reply-preview-bar {
       background: #1a2536; border-left: 4px solid #3b82f6;
       padding: 8px 16px; margin: 8px 12px; border-radius: 12px;
@@ -150,7 +145,7 @@
     .reply-preview-text { font-size: 13px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .reply-preview-close { background: none; border: none; color: #8b9bb5; cursor: pointer; }
 
-    /* 消息区域 */
+    /* Messages area */
     .chat-messages {
       flex: 1; overflow-y: auto; padding: 12px 16px;
       display: flex; flex-direction: column; gap: 12px;
@@ -172,7 +167,7 @@
     .outgoing .msg-bubble { background: #2563eb; border-color: #3b82f6; color: #fff; }
     .msg-time { font-size: 10px; opacity: 0.6; margin-top: 4px; text-align: right; }
 
-    /* 新消息蓝色药丸 */
+    /* Unread pill */
     .unread-pill {
       position: absolute; bottom: 140px; left: 50%; transform: translateX(-50%);
       background: #3b82f6; color: #fff; padding: 8px 16px; border-radius: 40px;
@@ -181,7 +176,7 @@
       border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* 输入框 (不拉伸) */
+    /* Composer */
     .chat-composer {
       padding: 10px 12px;
       border-top: 1px solid #1e2a3a;
@@ -227,45 +222,37 @@
 
   <div id="stars"></div>
 
-  <!-- 头部 -->
+  <!-- Header: only members count -->
   <div class="app-header">
     <div class="header-logo">
       <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
     </div>
     <div class="header-titles">
       <h1>Abrox AI</h1>
-      <div class="subtitle">online · 6,324 members</div>
+      <div class="subtitle">6,324 members</div>
     </div>
   </div>
 
-  <!-- 页面容器 -->
+  <!-- Page container -->
   <div class="page-container" id="pageContainer">
     <div id="chatListPage" class="page active">
       <div style="padding: 8px 16px;">
         <h2 style="font-size: 20px; font-weight: 700;">Chats</h2>
       </div>
       
-      <!-- 修复后的聊天卡片 -->
+      <!-- Chat card: no logo, members left, online right, white semi-transparent -->
       <div class="chat-card" onclick="openChatRoom()">
-        <div class="card-avatar">
-          <img src="assets/logo.png" alt="Abrox" onerror="this.innerHTML='💬';">
+        <div class="card-title">Abrox General Chat</div>
+        <div class="card-meta-row">
+          <span class="members-count">6,324 members</span>
+          <span class="online-count"><span class="online-dot"></span> 247 online</span>
         </div>
-        <div class="card-info">
-          <h3>Abrox General Chat</h3>
-          <div class="card-meta">
-            <span class="online-dot"></span>
-            <span>247 online</span>
-            <span>•</span>
-            <span>6,324 members</span>
-          </div>
-          <div class="card-description">Join the discussion with traders worldwide.</div>
-        </div>
-        <div style="color:#8b9bb5;">➤</div>
+        <div class="card-description">Join the discussion with traders worldwide.</div>
       </div>
     </div>
   </div>
 
-  <!-- 深色聊天室 -->
+  <!-- Chat room overlay -->
   <div class="chat-room-overlay" id="chatRoomOverlay">
     <div class="room-header">
       <button class="back-btn" onclick="closeChatRoom()">
@@ -285,7 +272,7 @@
       </button>
     </div>
 
-    <!-- 回复预览条 -->
+    <!-- Reply preview bar -->
     <div id="replyPreviewBar" class="reply-preview-bar hidden">
       <div class="reply-preview-content">
         <div class="reply-preview-label">Replying to <span id="replyTargetName"></span></div>
@@ -294,7 +281,7 @@
       <button class="reply-preview-close" onclick="cancelReply()">✕</button>
     </div>
 
-    <!-- 消息列表 -->
+    <!-- Messages -->
     <div class="chat-messages" id="chatMessagesContainer">
       <div class="message-row incoming">
         <div class="msg-avatar">🤖</div>
@@ -305,12 +292,12 @@
       </div>
     </div>
 
-    <!-- 蓝色药丸 -->
+    <!-- Unread pill -->
     <div class="unread-pill" id="unreadPill" onclick="scrollToBottom()">
       <span>↓</span> <span id="unreadCount">1 new message</span>
     </div>
 
-    <!-- 输入栏 -->
+    <!-- Composer -->
     <div class="chat-composer">
       <button class="composer-btn" id="emojiBtn">
         <i data-lucide="smile"></i>
@@ -328,7 +315,7 @@
         <i data-lucide="send"></i>
       </button>
     </div>
-    <!-- 录音指示器 -->
+    <!-- Recording indicator -->
     <div id="recordingIndicator" class="recording-indicator hidden">
       <div style="display:flex; gap:3px;">
         <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
@@ -338,7 +325,7 @@
     </div>
   </div>
 
-  <!-- 底部导航 -->
+  <!-- Bottom navigation -->
   <div class="bottom-nav">
     <div class="nav-item" data-page="signals" onclick="switchPage('signals')">
       <i>📡</i><span>Signals</span>
@@ -361,7 +348,7 @@
 <script>
   lucide.createIcons();
 
-  // 星空
+  // Stars
   const starsContainer=document.getElementById("stars");
   for(let i=0;i<40;i++){
     const s=document.createElement("div");
@@ -373,7 +360,7 @@
     starsContainer.appendChild(s);
   }
 
-  // 聊天逻辑
+  // Chat logic
   const messagesContainer = document.getElementById('chatMessagesContainer');
   const unreadPill = document.getElementById('unreadPill');
   const unreadCountSpan = document.getElementById('unreadCount');
@@ -439,7 +426,7 @@
   document.getElementById('sendBtn').addEventListener('click', sendMessage);
   document.getElementById('chatInput').addEventListener('keypress', e=> { if(e.key==='Enter') sendMessage(); });
 
-  // 语音模拟
+  // Voice recording simulation
   let mediaRecorder, isRecording=false;
   document.getElementById('voiceBtn').addEventListener('click', async ()=>{
     if(isRecording) return;
@@ -478,8 +465,5 @@
   window.scrollToBottom = scrollToBottom;
   window.switchPage = switchPage;
 </script>
-<!-- 接入 AI 引擎 (取消注释以激活) -->
-<!-- <script src="media-manifest.js"></script> -->
-<!-- <script src="ai-persona-engine.js"></script> -->
 </body>
 </html>
