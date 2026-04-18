@@ -11,11 +11,26 @@
       margin: 0;
       background: #000;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      border-radius: 32px;
+      overflow: hidden;
+      position: relative;
+      background: #000;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
     }
     .space-bg {
       position: relative;
       background: radial-gradient(circle at top, #0d4f8b 0%, #062a4d 35%, #020b16 75%);
       overflow: hidden;
+      width: 100%;
+      height: 100%;
     }
     #stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
     .star { position: absolute; background: #fff; border-radius: 50%; }
@@ -47,7 +62,7 @@
       position: relative; z-index: 10;
       height: calc(100% - 100px);
       overflow-y: auto;
-      padding-bottom: 90px;
+      padding-bottom: 20px;
       box-sizing: border-box;
     }
     .page { display: none; }
@@ -161,7 +176,7 @@
     .reply-preview-content { flex:1; }
     .reply-preview-label { font-size: 12px; color: #3b82f6; font-weight: 600; }
     .reply-preview-text { font-size: 13px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .reply-preview-close { background: none; border: none; color: #8b9bb5; cursor: pointer; }
+    .reply-preview-close { background: none; border: none; color: #8b9bb5; cursor: pointer; font-size: 18px; }
 
     /* Messages area */
     .chat-messages {
@@ -181,6 +196,7 @@
       background: #1a2536; padding: 10px 14px; border-radius: 18px;
       color: #e2e8f0; font-size: 14px; line-height: 1.4;
       border: 1px solid #2a3a4e; word-break: break-word;
+      cursor: pointer;
     }
     .outgoing .msg-bubble { background: #2563eb; border-color: #3b82f6; color: #fff; }
     .msg-time { font-size: 10px; opacity: 0.6; margin-top: 4px; text-align: right; }
@@ -194,7 +210,7 @@
       border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* Composer (PocketOption style) */
+    /* Composer */
     .chat-composer {
       padding: 10px 12px;
       border-top: 1px solid #1e2a3a;
@@ -236,270 +252,364 @@
     @keyframes wave { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(2); } }
   </style>
 </head>
-<body class="flex justify-center items-center min-h-screen">
-<div class="w-[390px] h-[844px] rounded-3xl overflow-hidden relative space-bg text-white">
+<body>
+<div class="phone-frame">
+  <div class="space-bg text-white">
+    <div id="stars"></div>
 
-  <div id="stars"></div>
-
-  <!-- Header -->
-  <div class="app-header">
-    <div class="header-logo">
-      <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
+    <!-- Header -->
+    <div class="app-header">
+      <div class="header-logo">
+        <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
+      </div>
+      <div class="header-titles">
+        <h1>Abrox AI</h1>
+        <div class="subtitle">6,324 members</div>
+      </div>
     </div>
-    <div class="header-titles">
-      <h1>Abrox AI</h1>
-      <div class="subtitle">6,324 members</div>
-    </div>
-  </div>
 
-  <!-- Page container -->
-  <div class="page-container" id="pageContainer">
-    <div id="chatListPage" class="page active">
-      <div class="chats-title">Chats</div>
+    <!-- Page container -->
+    <div class="page-container" id="pageContainer">
+      <div id="chatListPage" class="page active">
+        <div class="chats-title">Chats</div>
+        <div class="chat-card" onclick="openChatRoom()">
+          <div class="card-header">
+            <span class="card-title">Abrox General Chat</span>
+            <span class="card-arrow">›</span>
+          </div>
+          <div class="card-meta-row">
+            <span class="members-count">6,324 members</span>
+            <span class="online-count"><span class="online-dot"></span> 247 online</span>
+          </div>
+          <div class="card-description">Join the discussion with traders worldwide.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat room overlay -->
+    <div class="chat-room-overlay" id="chatRoomOverlay">
+      <div class="room-header">
+        <button class="back-btn" onclick="closeChatRoom()">
+          <i data-lucide="arrow-left"></i>
+        </button>
+        <div class="room-info">
+          <h2>Abrox General Chat</h2>
+          <div class="room-sub">
+            <span class="room-members">6,324 members</span>
+            <span class="room-online"><span class="online-dot"></span> <span id="chatOnlineCount">247 online</span></span>
+          </div>
+        </div>
+        <button class="composer-btn" style="margin-left:auto;">
+          <i data-lucide="more-vertical"></i>
+        </button>
+      </div>
+
+      <!-- Reply preview bar -->
+      <div id="replyPreviewBar" class="reply-preview-bar hidden">
+        <div class="reply-preview-content">
+          <div class="reply-preview-label">Replying to <span id="replyTargetName"></span></div>
+          <div class="reply-preview-text" id="replyTargetText"></div>
+        </div>
+        <button class="reply-preview-close" onclick="cancelReply()">✕</button>
+      </div>
+
+      <!-- Messages -->
+      <div class="chat-messages" id="chatMessagesContainer">
+        <div class="message-row incoming">
+          <div class="msg-avatar">🤖</div>
+          <div class="msg-bubble" data-msg-text="Welcome to Abrox General Chat! AI personas are active.">
+            Welcome to Abrox General Chat! AI personas are active.
+            <div class="msg-time">10:30 AM</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unread pill -->
+      <div class="unread-pill" id="unreadPill" onclick="scrollToBottom()">
+        <span>↓</span> <span id="unreadCount">1 new message</span>
+      </div>
+
+      <!-- Composer -->
+      <div class="chat-composer">
+        <button class="composer-btn" id="emojiBtn">
+          <i data-lucide="smile"></i>
+        </button>
+        <div class="composer-input-wrapper">
+          <input type="text" class="composer-input" placeholder="Message..." id="chatInput">
+        </div>
+        <button class="composer-btn" id="mediaBtn">
+          <i data-lucide="image"></i>
+        </button>
+        <button class="composer-btn mic-btn" id="voiceBtn">
+          <i data-lucide="mic"></i>
+        </button>
+        <button class="send-btn hidden" id="sendBtn">
+          <i data-lucide="send"></i>
+        </button>
+      </div>
       
-      <!-- Chat card -->
-      <div class="chat-card" onclick="openChatRoom()">
-        <div class="card-header">
-          <span class="card-title">Abrox General Chat</span>
-          <span class="card-arrow">›</span>
+      <!-- Recording indicator -->
+      <div id="recordingIndicator" class="recording-indicator hidden">
+        <div style="display:flex; gap:3px;">
+          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
         </div>
-        <div class="card-meta-row">
-          <span class="members-count">6,324 members</span>
-          <span class="online-count"><span class="online-dot"></span> 247 online</span>
-        </div>
-        <div class="card-description">Join the discussion with traders worldwide.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Chat room overlay -->
-  <div class="chat-room-overlay" id="chatRoomOverlay">
-    <div class="room-header">
-      <button class="back-btn" onclick="closeChatRoom()">
-        <i data-lucide="arrow-left"></i>
-      </button>
-      <div class="room-info">
-        <h2>Abrox General Chat</h2>
-        <div class="room-sub">
-          <span class="room-members">6,324 members</span>
-          <span class="room-online"><span class="online-dot"></span> <span id="chatOnlineCount">247 online</span></span>
-        </div>
-      </div>
-      <button class="composer-btn" style="margin-left:auto;">
-        <i data-lucide="more-vertical"></i>
-      </button>
-    </div>
-
-    <!-- Reply preview bar -->
-    <div id="replyPreviewBar" class="reply-preview-bar hidden">
-      <div class="reply-preview-content">
-        <div class="reply-preview-label">Replying to <span id="replyTargetName"></span></div>
-        <div class="reply-preview-text" id="replyTargetText"></div>
-      </div>
-      <button class="reply-preview-close" onclick="cancelReply()">✕</button>
-    </div>
-
-    <!-- Messages -->
-    <div class="chat-messages" id="chatMessagesContainer">
-      <div class="message-row incoming">
-        <div class="msg-avatar">🤖</div>
-        <div class="msg-bubble">
-          Welcome to Abrox General Chat! AI personas are active.
-          <div class="msg-time">10:30 AM</div>
-        </div>
+        <span style="color:#ef4444;">Recording...</span>
+        <button id="stopRecordingBtn" style="margin-left:auto; background:none; border:none; color:#fff; font-size:18px;">■</button>
       </div>
     </div>
 
-    <!-- Unread pill -->
-    <div class="unread-pill" id="unreadPill" onclick="scrollToBottom()">
-      <span>↓</span> <span id="unreadCount">1 new message</span>
-    </div>
-
-    <!-- Composer (PocketOption style) -->
-    <div class="chat-composer">
-      <button class="composer-btn" id="emojiBtn">
-        <i data-lucide="smile"></i>
-      </button>
-      <div class="composer-input-wrapper">
-        <input type="text" class="composer-input" placeholder="Message..." id="chatInput">
+    <!-- Bottom navigation -->
+    <div class="bottom-nav">
+      <div class="nav-item" data-page="signals" onclick="switchPage('signals', event)">
+        <i>📡</i><span>Signals</span>
       </div>
-      <button class="composer-btn" id="mediaBtn">
-        <i data-lucide="image"></i>
-      </button>
-      <button class="composer-btn mic-btn" id="voiceBtn">
-        <i data-lucide="mic"></i>
-      </button>
-      <button class="send-btn hidden" id="sendBtn">
-        <i data-lucide="send"></i>
-      </button>
-    </div>
-    <!-- Recording indicator -->
-    <div id="recordingIndicator" class="recording-indicator hidden">
-      <div style="display:flex; gap:3px;">
-        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="nav-item" data-page="training" onclick="switchPage('training', event)">
+        <i>📚</i><span>Training</span>
       </div>
-      <span style="color:#ef4444;">Recording...</span>
-      <button id="stopRecordingBtn" style="margin-left:auto; background:none; border:none; color:#fff;">■</button>
-    </div>
-  </div>
-
-  <!-- Bottom navigation -->
-  <div class="bottom-nav">
-    <div class="nav-item" data-page="signals" onclick="switchPage('signals')">
-      <i>📡</i><span>Signals</span>
-    </div>
-    <div class="nav-item" data-page="training" onclick="switchPage('training')">
-      <i>📚</i><span>Training</span>
-    </div>
-    <div class="nav-item active" data-page="chat" onclick="switchPage('chat')">
-      <i>💬</i><span>Chat</span>
-    </div>
-    <div class="nav-item" data-page="referrals" onclick="switchPage('referrals')">
-      <i>👥</i><span>Referrals</span>
-    </div>
-    <div class="nav-item" data-page="progress" onclick="switchPage('progress')">
-      <i>📈</i><span>Progress</span>
+      <div class="nav-item active" data-page="chat" onclick="switchPage('chat', event)">
+        <i>💬</i><span>Chat</span>
+      </div>
+      <div class="nav-item" data-page="referrals" onclick="switchPage('referrals', event)">
+        <i>👥</i><span>Referrals</span>
+      </div>
+      <div class="nav-item" data-page="progress" onclick="switchPage('progress', event)">
+        <i>📈</i><span>Progress</span>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-  lucide.createIcons();
+  (function(){
+    lucide.createIcons();
 
-  // Stars
-  const starsContainer=document.getElementById("stars");
-  for(let i=0;i<40;i++){
-    const s=document.createElement("div");
-    s.className="star";
-    s.style.top=(15+Math.random()*85)+"%";
-    s.style.left=Math.random()*100+"%";
-    s.style.width=s.style.height=(Math.random()*2+1)+"px";
-    s.style.opacity=Math.random()*0.7+0.3;
-    starsContainer.appendChild(s);
-  }
-
-  // Chat logic
-  const messagesContainer = document.getElementById('chatMessagesContainer');
-  const unreadPill = document.getElementById('unreadPill');
-  const unreadCountSpan = document.getElementById('unreadCount');
-  const chatInput = document.getElementById('chatInput');
-  const voiceBtn = document.getElementById('voiceBtn');
-  const sendBtn = document.getElementById('sendBtn');
-  let unreadMessages = 0;
-  let isUserAtBottom = true;
-
-  // Toggle between mic and send button
-  function updateComposerMode() {
-    const hasText = chatInput.value.trim().length > 0;
-    if (hasText) {
-      voiceBtn.classList.add('hidden');
-      sendBtn.classList.remove('hidden');
-    } else {
-      voiceBtn.classList.remove('hidden');
-      sendBtn.classList.add('hidden');
+    // Stars background
+    const starsContainer = document.getElementById("stars");
+    for(let i=0;i<40;i++){
+      const s=document.createElement("div");
+      s.className="star";
+      s.style.top=(15+Math.random()*85)+"%";
+      s.style.left=Math.random()*100+"%";
+      s.style.width=s.style.height=(Math.random()*2+1)+"px";
+      s.style.opacity=Math.random()*0.7+0.3;
+      starsContainer.appendChild(s);
     }
-  }
-  chatInput.addEventListener('input', updateComposerMode);
-  updateComposerMode();
 
-  messagesContainer.addEventListener('scroll', () => {
-    const near = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 80;
-    if (near) { unreadMessages=0; unreadPill.style.display='none'; isUserAtBottom=true; }
-    else { isUserAtBottom=false; }
-  });
+    // DOM elements
+    const messagesContainer = document.getElementById('chatMessagesContainer');
+    const unreadPill = document.getElementById('unreadPill');
+    const unreadCountSpan = document.getElementById('unreadCount');
+    const chatInput = document.getElementById('chatInput');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const replyPreviewBar = document.getElementById('replyPreviewBar');
+    const replyTargetName = document.getElementById('replyTargetName');
+    const replyTargetText = document.getElementById('replyTargetText');
+    const chatOnlineSpan = document.getElementById('chatOnlineCount');
 
-  function scrollToBottom() {
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    unreadMessages=0; unreadPill.style.display='none'; isUserAtBottom=true;
-  }
+    let unreadMessages = 0;
+    let isUserAtBottom = true;
+    let onlineInterval = null;
 
-  function openChatRoom() {
-    document.getElementById('chatRoomOverlay').classList.add('open');
-    setInterval(()=>{
-      document.getElementById('chatOnlineCount').innerText = (180+Math.floor(Math.random()*100)) + ' online';
-    },8000);
-    scrollToBottom();
-  }
-  function closeChatRoom() {
-    document.getElementById('chatRoomOverlay').classList.remove('open');
-  }
+    // Toggle composer (mic / send)
+    function updateComposerMode() {
+      const hasText = chatInput.value.trim().length > 0;
+      if (hasText) {
+        voiceBtn.classList.add('hidden');
+        sendBtn.classList.remove('hidden');
+      } else {
+        voiceBtn.classList.remove('hidden');
+        sendBtn.classList.add('hidden');
+      }
+    }
+    chatInput.addEventListener('input', updateComposerMode);
+    updateComposerMode();
 
-  function addMessage(side, text, avatar='👤') {
-    const row = document.createElement('div');
-    row.className = `message-row ${side}`;
-    const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    row.innerHTML = `<div class="msg-avatar">${avatar}</div><div class="msg-bubble">${text}<div class="msg-time">${time}</div></div>`;
-    row.addEventListener('click', (e) => {
-      if(e.target.closest('.msg-bubble')) setReplyTarget(side==='outgoing'?'You':'User', text);
+    // Scroll tracking
+    messagesContainer.addEventListener('scroll', () => {
+      const nearBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 80;
+      if (nearBottom) {
+        unreadMessages = 0;
+        unreadPill.style.display = 'none';
+        isUserAtBottom = true;
+      } else {
+        isUserAtBottom = false;
+      }
     });
-    messagesContainer.appendChild(row);
-    if(!isUserAtBottom) {
-      unreadMessages++;
-      unreadCountSpan.innerText = unreadMessages===1?'1 new message':`${unreadMessages} new messages`;
-      unreadPill.style.display='flex';
-    } else scrollToBottom();
-  }
 
-  function setReplyTarget(name, text) {
-    document.getElementById('replyTargetName').innerText = name;
-    document.getElementById('replyTargetText').innerText = text.length>40? text.substring(0,40)+'…':text;
-    document.getElementById('replyPreviewBar').classList.remove('hidden');
-  }
-  function cancelReply() {
-    document.getElementById('replyPreviewBar').classList.add('hidden');
-  }
+    window.scrollToBottom = function() {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      unreadMessages = 0;
+      unreadPill.style.display = 'none';
+      isUserAtBottom = true;
+    };
 
-  function sendMessage() {
-    const text = chatInput.value.trim();
-    if(!text) return;
-    addMessage('outgoing', text, '👤');
-    chatInput.value = '';
-    updateComposerMode();
-    setTimeout(()=> addMessage('incoming', 'Thanks for your message!', '🤖'), 1200);
-  }
+    // Open/close chat room
+    window.openChatRoom = function() {
+      const overlay = document.getElementById('chatRoomOverlay');
+      overlay.classList.add('open');
+      // Clear any existing interval to avoid duplicates
+      if (onlineInterval) clearInterval(onlineInterval);
+      onlineInterval = setInterval(() => {
+        if (chatOnlineSpan) {
+          chatOnlineSpan.innerText = (180 + Math.floor(Math.random() * 100)) + ' online';
+        }
+      }, 8000);
+      setTimeout(() => scrollToBottom(), 50);
+    };
 
-  sendBtn.addEventListener('click', sendMessage);
-  chatInput.addEventListener('keypress', e=> { if(e.key==='Enter') sendMessage(); });
+    window.closeChatRoom = function() {
+      document.getElementById('chatRoomOverlay').classList.remove('open');
+      if (onlineInterval) {
+        clearInterval(onlineInterval);
+        onlineInterval = null;
+      }
+      // Reset unread when leaving
+      unreadMessages = 0;
+      unreadPill.style.display = 'none';
+    };
 
-  // Voice recording simulation
-  let mediaRecorder, isRecording=false;
-  voiceBtn.addEventListener('click', async ()=>{
-    if(isRecording) return;
-    try{
-      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-      mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.start(); isRecording=true;
-      document.getElementById('recordingIndicator').classList.remove('hidden');
-      mediaRecorder.onstop = ()=>{
-        document.getElementById('recordingIndicator').classList.add('hidden');
-        isRecording=false; stream.getTracks().forEach(t=>t.stop());
-        addMessage('outgoing', '🎤 Voice message', '👤');
-      };
-    }catch(e){ alert('Microphone access denied'); }
-  });
-  document.getElementById('stopRecordingBtn').addEventListener('click', ()=>{
-    if(mediaRecorder && isRecording) mediaRecorder.stop();
-  });
-  document.getElementById('mediaBtn').addEventListener('click', ()=>{
-    addMessage('outgoing', '📎 Media attachment', '👤');
-  });
-  document.getElementById('emojiBtn').addEventListener('click', ()=>{
-    chatInput.value += '😊';
-    updateComposerMode();
-  });
+    // Reply logic
+    window.setReplyTarget = function(name, text) {
+      replyTargetName.innerText = name;
+      replyTargetText.innerText = text.length > 40 ? text.substring(0,40) + '…' : text;
+      replyPreviewBar.classList.remove('hidden');
+    };
 
-  function switchPage(pageId) {
-    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    console.log('Switch to', pageId);
-  }
+    window.cancelReply = function() {
+      replyPreviewBar.classList.add('hidden');
+    };
 
-  window.openChatRoom = openChatRoom;
-  window.closeChatRoom = closeChatRoom;
-  window.sendMessage = sendMessage;
-  window.cancelReply = cancelReply;
-  window.scrollToBottom = scrollToBottom;
-  window.switchPage = switchPage;
+    // Add message to chat
+    function addMessage(side, text, avatar='👤') {
+      const row = document.createElement('div');
+      row.className = `message-row ${side}`;
+      const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      // Store clean text in data attribute for reply feature
+      row.innerHTML = `
+        <div class="msg-avatar">${avatar}</div>
+        <div class="msg-bubble" data-msg-text="${text.replace(/"/g, '&quot;')}">${text}<div class="msg-time">${time}</div></div>
+      `;
+      
+      const bubble = row.querySelector('.msg-bubble');
+      bubble.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const msgText = bubble.dataset.msgText || text;
+        const senderName = side === 'outgoing' ? 'You' : (avatar === '🤖' ? 'Abrox AI' : 'User');
+        setReplyTarget(senderName, msgText);
+      });
+
+      messagesContainer.appendChild(row);
+      
+      if (!isUserAtBottom) {
+        unreadMessages++;
+        unreadCountSpan.innerText = unreadMessages === 1 ? '1 new message' : `${unreadMessages} new messages`;
+        unreadPill.style.display = 'flex';
+      } else {
+        scrollToBottom();
+      }
+    }
+
+    // Send message
+    window.sendMessage = function() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      addMessage('outgoing', text, '👤');
+      chatInput.value = '';
+      updateComposerMode();
+      cancelReply(); // clear reply when sending new message
+      
+      // Simulate AI response
+      setTimeout(() => {
+        addMessage('incoming', 'Thanks for your message! 👍', '🤖');
+      }, 1200);
+    };
+
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Voice recording simulation
+    let mediaRecorder = null;
+    let isRecording = false;
+    let audioStream = null;
+    
+    voiceBtn.addEventListener('click', async () => {
+      if (isRecording) return;
+      try {
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(audioStream);
+        mediaRecorder.start();
+        isRecording = true;
+        document.getElementById('recordingIndicator').classList.remove('hidden');
+        
+        mediaRecorder.onstop = () => {
+          document.getElementById('recordingIndicator').classList.add('hidden');
+          isRecording = false;
+          if (audioStream) {
+            audioStream.getTracks().forEach(t => t.stop());
+            audioStream = null;
+          }
+          addMessage('outgoing', '🎤 Voice message', '👤');
+        };
+      } catch (e) {
+        alert('Microphone access denied or not available.');
+      }
+    });
+
+    document.getElementById('stopRecordingBtn').addEventListener('click', () => {
+      if (mediaRecorder && isRecording) {
+        mediaRecorder.stop();
+      }
+    });
+
+    document.getElementById('mediaBtn').addEventListener('click', () => {
+      addMessage('outgoing', '📎 Media attachment', '👤');
+    });
+
+    document.getElementById('emojiBtn').addEventListener('click', () => {
+      chatInput.value += '😊';
+      updateComposerMode();
+    });
+
+    // Bottom navigation switch (fixed event handling)
+    window.switchPage = function(pageId, ev) {
+      // Remove active class from all nav items
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      // Add active class to clicked item (ev.currentTarget is the nav-item)
+      if (ev && ev.currentTarget) {
+        ev.currentTarget.classList.add('active');
+      } else {
+        // Fallback: find by data-page attribute
+        const activeItem = Array.from(document.querySelectorAll('.nav-item')).find(
+          item => item.dataset.page === pageId
+        );
+        if (activeItem) activeItem.classList.add('active');
+      }
+      console.log('Switch to', pageId);
+      // In a real app, you'd swap pages here
+    };
+
+    // Make sure existing reply on initial messages works
+    document.querySelectorAll('.msg-bubble').forEach(bubble => {
+      bubble.addEventListener('click', (e) => {
+        const row = bubble.closest('.message-row');
+        const isOut = row.classList.contains('outgoing');
+        const avatar = row.querySelector('.msg-avatar')?.innerText || '👤';
+        const sender = isOut ? 'You' : (avatar === '🤖' ? 'Abrox AI' : 'User');
+        const text = bubble.dataset.msgText || bubble.childNodes[0]?.nodeValue?.trim() || '';
+        setReplyTarget(sender, text);
+      });
+    });
+
+    // Expose functions needed by inline handlers
+    window.addMessage = addMessage;
+    window.updateComposerMode = updateComposerMode;
+  })();
 </script>
 </body>
 </html>
