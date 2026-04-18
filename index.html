@@ -28,12 +28,13 @@
     #stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
     .star { position: absolute; background: #fff; border-radius: 50%; }
 
-    /* ----- SIGNALS HEADER (improved scaling) ----- */
+    /* ----- SIGNALS HEADER (kept intact, hidden on signals to match card layout) ----- */
     .signals-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 20px 1rem 10px;
+      justify-content: space-between;
+      min-height: 100px;
+      padding: 0 1rem;
       position: relative;
       z-index: 10;
     }
@@ -41,31 +42,31 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: visible;
+      flex: 1;
     }
     .logo-container img {
-      max-height: 80px;
-      max-width: 70vw;
+      max-height: 100%;
+      max-width: 50vw;
       height: auto;
       width: auto;
       display: block;
       animation: logoGlowPulse 2s infinite ease-in-out;
       transition: transform 0.3s ease;
     }
-    .logo-container:hover img { transform: scale(1.03); }
+    .logo-container:hover img { transform: scale(1.05); }
     @keyframes logoGlowPulse {
       0% { filter: drop-shadow(0 0 5px #ff5fd2) drop-shadow(0 0 10px #8b5cf6); }
       50% { filter: drop-shadow(0 0 15px #ff5fd2) drop-shadow(0 0 25px #8b5cf6); }
       100% { filter: drop-shadow(0 0 5px #ff5fd2) drop-shadow(0 0 10px #8b5cf6); }
     }
     .lang-switch {
-      position: absolute;
-      right: 1rem;
-      top: 20px;
       background: #06b6d4;
       padding: 0.25rem 0.75rem;
       border-radius: 0.5rem;
       font-size: 0.875rem;
       font-weight: 500;
+      transition: opacity 0.2s;
     }
     .lang-switch.hidden { display: none; }
 
@@ -124,189 +125,265 @@
     .nav-item.active { color: #3b82f6; }
     .nav-item i { font-size: 22px; }
 
-    /* ----- SIGNALS CONTENT (improved layout) ----- */
-    .signal-content {
-      padding: 0 24px;
+    /* ----- SIGNALS CARD LAYOUT (matches reference image) ----- */
+    .signals-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px 24px;
     }
-    .signal-title-main {
-      font-size: 28px;
-      font-weight: 800;
-      text-align: center;
-      margin: 16px 0 8px;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #fff, #cbd5e1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .signals-card {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      min-height: 620px;
+      background: linear-gradient(180deg, #0b4e87 0%, #083968 35%, #04111f 100%);
+      border: 4px solid rgba(255,255,255,0.9);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+      padding: 22px 20px 24px;
+      overflow: hidden;
     }
-    .signal-subtitle {
-      font-size: 18px;
+    .signals-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 34px;
+    }
+    .signals-logo img {
+      width: 132px;
+      max-width: 44vw;
+      height: auto;
+      display: block;
+      animation: logoGlowPulse 2s infinite ease-in-out;
+    }
+    .lang-switch-inline {
+      flex-shrink: 0;
+      margin-top: 8px;
+      background: #2bb8d3;
+      color: #fff;
+      padding: 0.35rem 0.7rem;
+      border-radius: 0.55rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      text-align: center;
-      color: #a0bbd8;
-      margin-bottom: 24px;
+      line-height: 1;
     }
-    .instruction-text {
-      font-size: 14px;
-      color: #cbd5e1;
-      text-align: center;
-      margin-bottom: 32px;
-      line-height: 1.5;
-      opacity: 0.9;
+    .signals-title {
+      margin-top: 10px;
+      font-size: 1.8rem;
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .signals-subtitle {
+      margin-top: 18px;
+      font-size: 1.15rem;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .signals-desc {
+      margin-top: 14px;
+      max-width: 250px;
+      font-size: 0.95rem;
+      line-height: 1.35;
+      font-weight: 600;
+      opacity: 0.95;
+    }
+    .signal-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .signal-row .dropdown-wrap {
+      flex: 1;
+      position: relative;
+    }
+    .signal-row .dropdown-btn {
+      width: 100%;
+      font-size: 0.98rem;
+      padding: 14px 16px;
+      border-radius: 10px;
+    }
+    #startBtn {
+      margin-top: 18px;
+      width: 58%;
+      min-width: 170px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 14px 18px;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #f08ad4 0%, #b66cff 100%);
+      box-shadow: 0 10px 20px rgba(192, 102, 255, 0.25);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+    .signal-row .dropdown-list {
+      font-size: 0.96rem;
     }
 
-    .icon-row {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      margin-bottom: 32px;
-    }
+    /* ----- SHARED SIGNALS CONTROLS ----- */
     .icon-box {
-      width: 70px;
-      height: 70px;
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 36px;
-      font-weight: 700;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 8px 16px rgba(0,0,0,0.3);
+      width: 14vw; height: 14vw; max-width: 64px; max-height: 64px;
+      border-radius: 14px; display: flex; align-items: center; justify-content: center;
+      font-size: 6vw; font-weight: 700;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 4px 10px rgba(0,0,0,0.4);
     }
     .icon-box.usd { background: linear-gradient(180deg,#134b7a,#0f365e); color: #7dd3fc; }
     .icon-box.btc { background: linear-gradient(180deg,#0b233e,#091d33); color: #fff; }
 
-    .selector-label {
-      font-size: 14px;
-      font-weight: 600;
-      color: #a0bbd8;
-      margin-bottom: 8px;
-      margin-left: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
     .dropdown-btn {
-      background: linear-gradient(180deg,#1bb6c9,#0ea5b7);
-      color: #fff;
-      font-weight: 600;
-      padding: 16px 20px;
-      border-radius: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), 0 8px 16px rgba(0,0,0,0.2);
-      cursor: pointer;
-      font-size: 16px;
-      border: none;
-      width: 100%;
-      margin-bottom: 24px;
+      background: linear-gradient(180deg,#1bb6c9,#0ea5b7); color: #fff; font-weight: 600;
+      padding: 3vw 4vw; border-radius: 12px; display: flex; justify-content: space-between;
+      align-items: center; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+      cursor: pointer; font-size: 4vw; border: none; width: 100%;
     }
     .dropdown-list {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      width: 100%;
-      background: #fff;
-      border-radius: 16px;
-      overflow-y: auto;
-      max-height: 40vh;
-      z-index: 50;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.45);
-      font-size: 16px;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
+      position: absolute; top: calc(100% + 0.5vw); left: 0; width: 100%;
+      background: #fff; border-radius: 12px; overflow-y: auto; max-height: 40vh;
+      z-index: 50; box-shadow: 0 12px 35px rgba(0,0,0,0.45); font-size: 4vw;
+      -webkit-overflow-scrolling: touch; scroll-behavior: smooth; overscroll-behavior: contain;
+      scroll-snap-type: y mandatory;
     }
     .dropdown-list div {
-      padding: 14px 20px;
-      color: #000;
-      font-weight: 500;
+      padding: 3vw 4vw; color: #000; font-weight: 500; cursor: pointer;
+      scroll-snap-align: center; transition: transform 0.2s, font-size 0.2s, color 0.2s;
+    }
+    .dropdown-list div.active { transform: scale(1.1); font-size: 4.5vw; color: #1bb6c9; }
+    #warn {
+      color: #f87171;
+    }
+
+    /* ----- CHAT LIST (flat, no cards) ----- */
+    .chats-title {
+      padding: 16px 16px 8px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .chat-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       cursor: pointer;
       transition: background 0.15s;
     }
-    .dropdown-list div:hover { background: #f0f4fa; }
-    .dropdown-list div.active {
-      background: #1bb6c9;
-      color: #fff;
-      font-weight: 600;
-    }
-
-    #startBtn {
-      margin-top: 8px;
-      width: 100%;
-      padding: 18px;
-      border-radius: 999px;
-      font-weight: 700;
-      background: linear-gradient(90deg,#ec4899,#8b5cf6);
-      color: #fff;
-      cursor: pointer;
-      font-size: 18px;
-      border: none;
-      box-shadow: 0 8px 20px rgba(236,72,153,0.3);
-      transition: transform 0.1s;
-    }
-    #startBtn:active { transform: scale(0.98); }
-
-    #warn {
-      color: #f87171;
-      font-size: 13px;
-      text-align: center;
-      margin-top: 12px;
-    }
-
-    /* ----- CHAT LIST (flat) ----- */
-    .chats-title { padding: 16px 16px 8px; font-size: 24px; font-weight: 700; color: #fff; }
-    .chat-list { display: flex; flex-direction: column; }
-    .chat-item {
-      display: flex; align-items: center; padding: 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      cursor: pointer; transition: background 0.15s;
-    }
     .chat-item:active { background: rgba(255,255,255,0.05); }
     .chat-avatar {
-      width: 48px; height: 48px; border-radius: 50%; background: #1e4f7a;
-      display: flex; align-items: center; justify-content: center; margin-right: 16px;
-      flex-shrink: 0; color: #fff;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #1e4f7a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      flex-shrink: 0;
+      color: #fff;
     }
-    .chat-info { flex: 1; min-width: 0; }
-    .chat-name { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 4px; }
-    .chat-preview { font-size: 13px; color: #8b9bb5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .chat-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    .chat-time { font-size: 12px; color: #8b9bb5; }
-    .online-badge-small { background: #4caf50; width: 10px; height: 10px; border-radius: 50%; }
+    .chat-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .chat-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .chat-preview {
+      font-size: 13px;
+      color: #8b9bb5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chat-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .chat-time {
+      font-size: 12px;
+      color: #8b9bb5;
+    }
+    .online-badge-small {
+      background: #4caf50;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
 
     /* ----- CHAT ROOM SHELL (fullscreen overlay) ----- */
     .chat-room-shell {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: #0a0f17; z-index: 100; display: flex; flex-direction: column;
-      transform: translateX(100%); transition: transform 0.25s ease;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #0a0f17;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
     }
     .chat-room-shell.is-open { transform: translateX(0); }
 
     .room-header {
-      padding: 14px 16px; border-bottom: 1px solid #1e2a3a;
-      display: flex; align-items: center; gap: 12px; background: #0e1522; flex-shrink: 0;
+      padding: 14px 16px;
+      border-bottom: 1px solid #1e2a3a;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #0e1522;
+      flex-shrink: 0;
     }
     .room-header .back-btn {
-      width: 40px; height: 40px; border-radius: 50%; background: #1a2536;
-      border: none; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #1a2536; border: none; color: #fff;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     .room-info { flex: 1; }
     .room-info h2 { font-size: 18px; font-weight: 700; color: #fff; }
-    .room-info .room-sub { font-size: 13px; color: #8b9bb5; margin-top: 4px; display: flex; align-items: center; gap: 16px; }
+    .room-info .room-sub {
+      font-size: 13px; color: #8b9bb5; margin-top: 4px;
+      display: flex; align-items: center; gap: 16px;
+    }
     .room-members, .room-online { display: flex; align-items: center; gap: 4px; }
     .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 8px #4caf50; }
 
+    /* System banner rule */
     .system-banner {
-      background: #1e2a3a; color: #cbd5e1; padding: 10px 16px; font-size: 13px;
-      font-weight: 500; border-bottom: 1px solid #2a3a4e; display: flex;
-      align-items: center; gap: 10px; flex-shrink: 0;
+      background: #1e2a3a;
+      color: #cbd5e1;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      border-bottom: 1px solid #2a3a4e;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
     }
     .system-banner i { color: #3b82f6; }
 
+    /* Reply preview */
     .reply-preview-bar {
-      background: #1a2536; border-left: 4px solid #3b82f6; padding: 10px 16px;
-      margin: 8px 12px; border-radius: 12px; display: flex; align-items: center;
-      justify-content: space-between; flex-shrink: 0;
+      background: #1a2536;
+      border-left: 4px solid #3b82f6;
+      padding: 10px 16px;
+      margin: 8px 12px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
     }
     .reply-preview-content { flex:1; }
     .reply-preview-label { font-size: 12px; color: #3b82f6; font-weight: 600; }
@@ -314,62 +391,145 @@
     .reply-preview-close { background: none; border: none; color: #8b9bb5; cursor: pointer; font-size: 18px; }
 
     .chat-feed {
-      flex: 1 1 0; min-height: 0; overflow-y: auto; padding: 12px 16px;
-      display: flex; flex-direction: column; gap: 12px;
+      flex: 1 1 0;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
     .chat-date-sticker {
-      width: max-content; margin: 6px auto 2px; padding: 6px 12px; border-radius: 999px;
-      background: #1a2536; color: #a0bbd8; font-size: 11px; font-weight: 700;
+      width: max-content;
+      margin: 6px auto 2px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #1a2536;
+      color: #a0bbd8;
+      font-size: 11px;
+      font-weight: 700;
     }
-    .chat-msg-row { display: flex; align-items: flex-end; gap: 8px; max-width: 100%; }
+    .chat-msg-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      max-width: 100%;
+    }
     .chat-msg-row.incoming { justify-content: flex-start; }
     .chat-msg-row.outgoing { justify-content: flex-end; margin-left: auto; }
     .chat-avatar-bubble {
-      width: 40px; height: 40px; border-radius: 50%; background: #1e4f7a;
-      border: 1px solid #2a3a4e; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); overflow: hidden;
-      color: #fff; font-weight: 600; font-size: 16px;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #1e4f7a; border: 1px solid #2a3a4e;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      overflow: hidden; color: #fff; font-weight: 600; font-size: 16px;
     }
     .chat-bubble {
-      --bg: #1a2536; position: relative; max-width: 75%; padding: 10px 14px;
-      font-size: 14px; line-height: 1.45; word-break: break-word; border-radius: 18px;
-      background: var(--bg); color: #e2e8f0; border: 1px solid #2a3a4e;
+      --bg: #1a2536;
+      position: relative;
+      max-width: 75%;
+      padding: 10px 14px;
+      font-size: 14px;
+      line-height: 1.45;
+      word-break: break-word;
+      border-radius: 18px;
+      background: var(--bg);
+      color: #e2e8f0;
+      border: 1px solid #2a3a4e;
     }
-    .chat-bubble.outgoing { background: #2563eb; border-color: #3b82f6; color: #fff; }
-    .chat-bubble-time { font-size: 10px; opacity: 0.6; margin-top: 4px; text-align: right; }
-    .chat-ticks { font-size: 12px; font-weight: 700; letter-spacing: -2px; margin-left: 4px; }
+    .chat-bubble.outgoing {
+      background: #2563eb;
+      border-color: #3b82f6;
+      color: #fff;
+    }
+    .chat-bubble-time {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-top: 4px;
+      text-align: right;
+    }
+    .chat-ticks {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -2px;
+      margin-left: 4px;
+    }
     .chat-ticks.sent { color: #cbd5e1; }
-    .typing-bubble { display: flex; align-items: center; gap: 4px; padding: 10px 14px; }
+    .chat-ticks.delivered { color: #94a3b8; }
+    .chat-ticks.seen { color: #3b82f6; }
+
+    .typing-bubble {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 14px;
+    }
     .typing-bubble span {
       width: 6px; height: 6px; background: #9aa3b2; border-radius: 50%;
       animation: typingBounce 1.3s infinite;
     }
     .typing-bubble span:nth-child(2) { animation-delay: .2s; }
     .typing-bubble span:nth-child(3) { animation-delay: .4s; }
-    @keyframes typingBounce { 0%,80%,100% { transform: scale(0.6); opacity: .5; } 40% { transform: scale(1); opacity: 1; } }
+    @keyframes typingBounce {
+      0%,80%,100% { transform: scale(0.6); opacity: .5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
 
-    .chat-image, .chat-video { max-width: 100%; max-height: 200px; border-radius: 12px; margin-top: 8px; object-fit: cover; cursor: pointer; }
-    .chat-audio { display: flex; align-items: center; gap: 8px; margin-top: 8px; background: #0e1522; padding: 8px 12px; border-radius: 20px; }
+    .chat-image, .chat-video {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 12px;
+      margin-top: 8px;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .chat-audio {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      background: #0e1522;
+      padding: 8px 12px;
+      border-radius: 20px;
+    }
 
     .unread-pill {
-      position: absolute; bottom: 140px; left: 50%; transform: translateX(-50%);
-      background: #3b82f6; color: #fff; padding: 8px 16px; border-radius: 40px;
-      font-size: 13px; font-weight: 600; box-shadow: 0 6px 14px rgba(59,130,246,0.3);
-      cursor: pointer; z-index: 55; display: none; align-items: center; gap: 8px;
+      position: absolute;
+      bottom: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #3b82f6;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 6px 14px rgba(59,130,246,0.3);
+      cursor: pointer;
+      z-index: 55;
+      display: none;
+      align-items: center;
+      gap: 8px;
     }
 
     .chat-composer {
-      padding: 10px 12px; border-top: 1px solid #1e2a3a; display: flex;
-      align-items: center; gap: 6px; background: #0e1522; flex-shrink: 0;
+      padding: 10px 12px;
+      border-top: 1px solid #1e2a3a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #0e1522;
+      flex-shrink: 0;
     }
     .composer-btn {
-      width: 40px; height: 40px; border-radius: 50%; background: #1a2536;
-      border: none; color: #8b9bb5; display: flex; align-items: center; justify-content: center; cursor: pointer;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #1a2536; border: none; color: #8b9bb5;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     .composer-input-wrapper { flex: 1; }
     .composer-input {
-      width: 100%; background: #1a2536; border: 1px solid #2a3a4e; border-radius: 30px;
-      padding: 12px 16px; color: #fff; outline: none;
+      width: 100%; background: #1a2536; border: 1px solid #2a3a4e;
+      border-radius: 30px; padding: 12px 16px; color: #fff; outline: none;
     }
     .send-btn {
       width: 44px; height: 44px; border-radius: 50%; background: #2563eb;
@@ -382,7 +542,10 @@
       display: flex; align-items: center; gap: 12px; margin: 8px 16px;
       background: #1e1e2e; padding: 8px 16px; border-radius: 40px; flex-shrink: 0;
     }
-    .wave-bar { width: 3px; height: 12px; background: #3b82f6; border-radius: 2px; animation: wave 1.2s infinite; }
+    .wave-bar {
+      width: 3px; height: 12px; background: #3b82f6; border-radius: 2px;
+      animation: wave 1.2s infinite;
+    }
     @keyframes wave { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(2); } }
 
     .placeholder-content {
@@ -391,6 +554,7 @@
       text-align: center; padding: 20px;
     }
 
+    /* Lightbox */
     .lightbox-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9);
       z-index: 500; display: flex; align-items: center; justify-content: center;
@@ -405,12 +569,15 @@
       display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
 
-    @media (max-width: 380px) {
-      .signal-title-main { font-size: 24px; }
-      .signal-subtitle { font-size: 16px; }
-      .icon-box { width: 60px; height: 60px; font-size: 30px; }
-      .dropdown-btn { padding: 14px 16px; font-size: 15px; }
-      #startBtn { padding: 16px; font-size: 16px; }
+    /* Responsive */
+    @media (max-width: 420px) {
+      #startBtn { width: 62%; }
+      .dropdown-btn { padding: 3vw 4vw; font-size: 4.5vw; }
+      .signals-card { min-height: 590px; padding: 20px 16px 22px; }
+      .signals-logo img { width: 118px; }
+      .signals-title { font-size: 1.65rem; }
+      .signals-subtitle { font-size: 1.05rem; }
+      .signals-desc { max-width: 230px; font-size: 0.9rem; }
     }
   </style>
 </head>
@@ -418,8 +585,9 @@
 <div id="app">
   <div id="stars"></div>
 
-  <!-- SIGNALS HEADER (centered logo) -->
-  <div id="signalsHeader" class="signals-header">
+  <!-- SIGNALS HEADER (hidden on signals page to match reference card layout) -->
+  <div id="signalsHeader" class="signals-header" style="display:none;">
+    <div></div>
     <div class="logo-container">
       <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
     </div>
@@ -439,51 +607,48 @@
 
   <!-- Page container -->
   <div class="page-container" id="pageContainer">
-    <!-- SIGNALS PAGE (refined layout) -->
+    <!-- SIGNALS PAGE (fixed layout) -->
     <div id="signalsPage" class="page active">
-      <div class="signal-content">
-        <h1 class="signal-title-main">TRADING BOT</h1>
-        <h2 class="signal-subtitle">SETTINGS</h2>
-        <p class="instruction-text">(First select Currency Pair and Timeframe<br>and then click on Start Signals.)</p>
+      <div class="signals-wrap">
+        <div class="signals-card">
+          <div class="signals-card-top">
+            <div class="signals-logo">
+              <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
+            </div>
+            <div class="lang-switch-inline">🇺🇸 en</div>
+          </div>
 
-        <div class="icon-row">
-          <div class="icon-box usd"><span>$</span></div>
-          <div class="icon-box btc"><span>₿</span></div>
+          <h1 class="signals-title">TRADING BOT</h1>
+          <h2 class="signals-subtitle">SETTINGS</h2>
+          <p class="signals-desc">(First select Currency Pair and Timeframe and then click on Start Signals.)</p>
+
+          <div class="signal-row">
+            <div class="dropdown-wrap">
+              <div class="dropdown-btn" onclick="toggleDropdown('currencyList')">Choose Currency <span class="text-sm">▾</span></div>
+              <div id="currencyList" class="dropdown-list hidden">
+                <div onclick="selectCurrency('USD/JPY')">USD/JPY</div>
+                <div onclick="selectCurrency('USD/CHF')">USD/CHF</div>
+                <div onclick="selectCurrency('USD/CAD')">USD/CAD</div>
+                <div onclick="selectCurrency('GBP/USD')">GBP/USD</div>
+                <div onclick="selectCurrency('EUR/USD')">EUR/USD</div>
+                <div onclick="selectCurrency('AUD/USD')">AUD/USD</div>
+              </div>
+            </div>
+            <div class="dropdown-wrap">
+              <div class="dropdown-btn" onclick="toggleDropdown('timeList')">Timeframe <span class="text-sm">▾</span></div>
+              <div id="timeList" class="dropdown-list hidden">
+                <div onclick="selectTime('1 Minute')">1 Minute</div>
+                <div onclick="selectTime('5 Minutes')">5 Minutes</div>
+                <div onclick="selectTime('15 Minutes')">15 Minutes</div>
+                <div onclick="selectTime('30 Minutes')">30 Minutes</div>
+                <div onclick="selectTime('1 Hour')">1 Hour</div>
+              </div>
+            </div>
+          </div>
+
+          <button id="startBtn" onclick="startSignals()">Start Signals</button>
+          <p id="warn" class="text-red-400 text-xs text-center hidden mt-2">Please select currency and timeframe</p>
         </div>
-
-        <div class="relative" style="margin-bottom: 16px;">
-          <div class="selector-label">SELECT A CURRENCY PAIR</div>
-          <div class="dropdown-btn" onclick="toggleDropdown('currencyList')">
-            <span id="selectedCurrencyDisplay">Choose Currency</span>
-            <span>▾</span>
-          </div>
-          <div id="currencyList" class="dropdown-list hidden">
-            <div onclick="selectCurrency('USD/JPY')">USD/JPY</div>
-            <div onclick="selectCurrency('USD/CHF')">USD/CHF</div>
-            <div onclick="selectCurrency('USD/CAD')">USD/CAD</div>
-            <div onclick="selectCurrency('GBP/USD')">GBP/USD</div>
-            <div onclick="selectCurrency('EUR/USD')">EUR/USD</div>
-            <div onclick="selectCurrency('AUD/USD')">AUD/USD</div>
-          </div>
-        </div>
-
-        <div class="relative" style="margin-bottom: 24px;">
-          <div class="selector-label">SELECT A TIMEFRAME</div>
-          <div class="dropdown-btn" onclick="toggleDropdown('timeList')">
-            <span id="selectedTimeframeDisplay">Timeframe</span>
-            <span>▾</span>
-          </div>
-          <div id="timeList" class="dropdown-list hidden">
-            <div onclick="selectTime('1 Minute')">1 Minute</div>
-            <div onclick="selectTime('5 Minutes')">5 Minutes</div>
-            <div onclick="selectTime('15 Minutes')">15 Minutes</div>
-            <div onclick="selectTime('30 Minutes')">30 Minutes</div>
-            <div onclick="selectTime('1 Hour')">1 Hour</div>
-          </div>
-        </div>
-
-        <button id="startBtn" onclick="startSignals()">Start Signals</button>
-        <p id="warn" class="hidden">Please select currency and timeframe</p>
       </div>
     </div>
 
@@ -501,14 +666,30 @@
       <div class="chats-title">Chats</div>
       <div class="chat-list">
         <div class="chat-item" onclick="openChatRoom('general')">
-          <div class="chat-avatar"><i data-lucide="message-circle" style="width:24px;height:24px;"></i></div>
-          <div class="chat-info"><div class="chat-name">Abrox General Chat</div><div class="chat-preview">Tap to join the conversation</div></div>
-          <div class="chat-meta"><span class="chat-time">now</span><span class="online-badge-small"></span></div>
+          <div class="chat-avatar">
+            <i data-lucide="message-circle" style="width:24px;height:24px;"></i>
+          </div>
+          <div class="chat-info">
+            <div class="chat-name">Abrox General Chat</div>
+            <div class="chat-preview">Tap to join the conversation</div>
+          </div>
+          <div class="chat-meta">
+            <span class="chat-time">now</span>
+            <span class="online-badge-small"></span>
+          </div>
         </div>
         <div class="chat-item" onclick="openChatRoom('signals')">
-          <div class="chat-avatar"><i data-lucide="radio" style="width:24px;height:24px;"></i></div>
-          <div class="chat-info"><div class="chat-name">Signal Alerts</div><div class="chat-preview">Real-time trade signals</div></div>
-          <div class="chat-meta"><span class="chat-time">12:30</span><span class="online-badge-small"></span></div>
+          <div class="chat-avatar">
+            <i data-lucide="radio" style="width:24px;height:24px;"></i>
+          </div>
+          <div class="chat-info">
+            <div class="chat-name">Signal Alerts</div>
+            <div class="chat-preview">Real-time trade signals</div>
+          </div>
+          <div class="chat-meta">
+            <span class="chat-time">12:30</span>
+            <span class="online-badge-small"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -532,7 +713,7 @@
     </div>
   </div>
 
-  <!-- CHAT ROOM SHELL (fullscreen) -->
+  <!-- CHAT ROOM SHELL (fullscreen overlay) -->
   <div class="chat-room-shell" id="chatRoomShell">
     <div class="room-header">
       <button class="back-btn" onclick="closeChatRoom()"><i data-lucide="arrow-left"></i></button>
@@ -546,6 +727,7 @@
       <button class="composer-btn" style="margin-left:auto;"><i data-lucide="more-vertical"></i></button>
     </div>
 
+    <!-- SYSTEM BANNER RULE -->
     <div class="system-banner">
       <i data-lucide="alert-circle" style="width:18px;height:18px;"></i>
       <span>Be respectful. No spam, no hate speech. Violations will result in a ban.</span>
@@ -595,18 +777,28 @@
 
   <!-- Bottom navigation -->
   <div class="bottom-nav">
-    <div class="nav-item active" data-page="signals" onclick="switchPage('signals', event)"><i>📡</i><span>Signals</span></div>
-    <div class="nav-item" data-page="training" onclick="switchPage('training', event)"><i>📚</i><span>Training</span></div>
-    <div class="nav-item" data-page="chat" onclick="switchPage('chat', event)"><i>💬</i><span>Chat</span></div>
-    <div class="nav-item" data-page="referrals" onclick="switchPage('referrals', event)"><i>👥</i><span>Referrals</span></div>
-    <div class="nav-item" data-page="progress" onclick="switchPage('progress', event)"><i>📈</i><span>Progress</span></div>
+    <div class="nav-item active" data-page="signals" onclick="switchPage('signals', event)">
+      <i>📡</i><span>Signals</span>
+    </div>
+    <div class="nav-item" data-page="training" onclick="switchPage('training', event)">
+      <i>📚</i><span>Training</span>
+    </div>
+    <div class="nav-item" data-page="chat" onclick="switchPage('chat', event)">
+      <i>💬</i><span>Chat</span>
+    </div>
+    <div class="nav-item" data-page="referrals" onclick="switchPage('referrals', event)">
+      <i>👥</i><span>Referrals</span>
+    </div>
+    <div class="nav-item" data-page="progress" onclick="switchPage('progress', event)">
+      <i>📈</i><span>Progress</span>
+    </div>
   </div>
 </div>
 
 <script>
   (function(){
     lucide.createIcons();
-    // Stars
+    // Stars background
     const starsContainer = document.getElementById("stars");
     for(let i=0;i<40;i++){
       const s = document.createElement("div"); s.className="star";
@@ -616,10 +808,11 @@
       starsContainer.appendChild(s);
     }
 
-    // Page switching
+    // Page switching & header visibility
     const signalsHeader = document.getElementById('signalsHeader');
     const chatGlobalHeader = document.getElementById('chatGlobalHeader');
     const langSwitch = document.getElementById('langSwitch');
+    const globalSubtitle = document.getElementById('globalSubtitle');
     
     window.switchPage = function(pageId, ev) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -629,43 +822,36 @@
       });
       
       if (pageId === 'signals') {
-        signalsHeader.style.display = 'flex';
+        signalsHeader.style.display = 'none';
         chatGlobalHeader.style.display = 'none';
-        langSwitch.classList.remove('hidden');
+        if (langSwitch) langSwitch.classList.add('hidden');
       } else {
         signalsHeader.style.display = 'none';
         chatGlobalHeader.style.display = 'flex';
-        langSwitch.classList.add('hidden');
+        if (langSwitch) langSwitch.classList.add('hidden');
+        if (pageId === 'chat' && globalSubtitle) globalSubtitle.innerText = '6,324 members';
       }
       if (pageId !== 'chat') closeChatRoom();
       setTimeout(() => lucide.createIcons(), 20);
     };
 
-    // Signals logic (updated display)
+    // Signals logic (unchanged)
     let currency = null, timeframe = null;
-    const selectedCurrencyDisplay = document.getElementById('selectedCurrencyDisplay');
-    const selectedTimeframeDisplay = document.getElementById('selectedTimeframeDisplay');
-    
-    window.toggleDropdown = (id) => {
-      document.getElementById(id).classList.toggle("hidden");
-    };
+    window.toggleDropdown = (id) => document.getElementById(id).classList.toggle("hidden");
     window.selectCurrency = (val) => {
       currency = val;
-      selectedCurrencyDisplay.innerText = val;
+      document.querySelectorAll('.dropdown-btn')[0].innerHTML = val + ' <span class="text-sm">▾</span>';
       document.getElementById('currencyList').classList.add("hidden");
       highlightOption('currencyList', val);
     };
     window.selectTime = (val) => {
       timeframe = val;
-      selectedTimeframeDisplay.innerText = val;
+      document.querySelectorAll('.dropdown-btn')[1].innerHTML = val + ' <span class="text-sm">▾</span>';
       document.getElementById('timeList').classList.add("hidden");
       highlightOption('timeList', val);
     };
     window.startSignals = () => {
-      if (!currency || !timeframe) {
-        document.getElementById("warn").classList.remove("hidden");
-        return;
-      }
+      if (!currency || !timeframe) return document.getElementById("warn").classList.remove("hidden");
       document.getElementById("warn").classList.add("hidden");
       alert(`Signals started for ${currency} · ${timeframe}`);
     };
@@ -673,7 +859,7 @@
       const items = document.querySelectorAll(`#${listId} div`);
       items.forEach(i => i.classList.remove('active'));
       const selected = Array.from(items).find(i => i.textContent === value);
-      if (selected) selected.classList.add('active');
+      if (selected) { selected.classList.add('active'); selected.scrollIntoView({behavior:'smooth', block:'center'}); }
     }
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.dropdown-btn')) {
@@ -682,7 +868,7 @@
       }
     });
 
-    // ========== CHAT (unchanged) ==========
+    // ========== ENHANCED CHAT ==========
     const chatRoomShell = document.getElementById('chatRoomShell');
     const msgContainer = document.getElementById('chatMessagesContainer');
     const unreadPill = document.getElementById('unreadPill');
@@ -705,6 +891,7 @@
     const lightboxClose = document.getElementById('lightboxCloseBtn');
 
     let unread = 0, isAtBottom = true, onlineInterval = null;
+    let replyingTo = null;
     let pendingMedia = null;
     let mediaRecorder = null, isRecording = false, audioStream = null;
 
@@ -716,10 +903,14 @@
       setTimeout(() => addSystemJoin('Alex joined the chat'), 800);
       setTimeout(() => addSystemJoin('Maria joined the chat'), 1500);
     }
+    
     function addSystemJoin(text) {
-      const row = document.createElement('div'); row.className = 'chat-msg-row incoming';
-      row.innerHTML = `<div class="chat-avatar-bubble" style="background:#3b82f6;">📢</div><div class="chat-bubble incoming" style="background:#1e3a5f;">${text}<div class="chat-bubble-time">${getTime()}</div></div>`;
-      msgContainer.appendChild(row); scrollIfNeeded();
+      const row = document.createElement('div');
+      row.className = 'chat-msg-row incoming';
+      row.innerHTML = `<div class="chat-avatar-bubble" style="background:#3b82f6;">📢</div>
+        <div class="chat-bubble incoming" style="background:#1e3a5f;">${text}<div class="chat-bubble-time">${getTime()}</div></div>`;
+      msgContainer.appendChild(row);
+      scrollIfNeeded();
     }
 
     function updateComposer() {
@@ -744,8 +935,10 @@
     window.scrollToBottom = () => { msgContainer.scrollTop = msgContainer.scrollHeight; unread=0; unreadPill.style.display='none'; isAtBottom=true; };
 
     function addMessage(side, text, avatar='👤', senderName='You', media=null) {
-      const row = document.createElement('div'); row.className = `chat-msg-row ${side}`;
-      const time = getTime(); let content = text;
+      const row = document.createElement('div');
+      row.className = `chat-msg-row ${side}`;
+      const time = getTime();
+      let content = text;
       if (media) {
         if (media.type === 'image') content = `<img src="${media.url}" class="chat-image">` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
         else if (media.type === 'video') content = `<video src="${media.url}" class="chat-video" controls></video>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
@@ -754,16 +947,25 @@
       if (side === 'outgoing') {
         row.innerHTML = `<div class="chat-bubble outgoing">${content}<div class="chat-bubble-time">${time}<span class="chat-ticks sent">✓</span></div></div>`;
       } else {
-        row.innerHTML = `<div class="chat-avatar-bubble">${avatar}</div><div class="chat-bubble incoming"><span class="chat-sender-name" style="font-weight:700;margin-bottom:4px;display:block;">${senderName}</span>${content}<div class="chat-bubble-time">${time}</div></div>`;
+        row.innerHTML = `<div class="chat-avatar-bubble">${avatar}</div>
+          <div class="chat-bubble incoming"><span class="chat-sender-name" style="font-weight:700;margin-bottom:4px;display:block;">${senderName}</span>${content}<div class="chat-bubble-time">${time}</div></div>`;
       }
       const bubble = row.querySelector('.chat-bubble');
       if (side === 'incoming') {
-        bubble.addEventListener('click', (e) => { if (!e.target.closest('.chat-image') && !e.target.closest('.chat-video')) setReplyTarget(senderName, text); });
+        bubble.addEventListener('click', (e) => {
+          if (e.target.closest('.chat-image') || e.target.closest('.chat-video')) return;
+          setReplyTarget(senderName, text);
+        });
       }
       row.querySelectorAll('.chat-image, .chat-video').forEach(el => {
-        el.addEventListener('click', (e) => { e.stopPropagation(); showLightbox(el.src, el.tagName.toLowerCase()); });
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showLightbox(el.src, el.tagName.toLowerCase());
+        });
       });
-      msgContainer.appendChild(row); scrollIfNeeded(); lucide.createIcons();
+      msgContainer.appendChild(row);
+      scrollIfNeeded();
+      lucide.createIcons();
     }
 
     function showLightbox(src, type) {
@@ -774,10 +976,12 @@
     lightboxOverlay.addEventListener('click', (e) => { if(e.target === lightboxOverlay) lightboxOverlay.classList.remove('active'); });
 
     function setReplyTarget(name, text) {
-      replyName.innerText = name; replyText.innerText = text.length>40? text.substring(0,40)+'…':text;
+      replyingTo = { name, text };
+      replyName.innerText = name;
+      replyText.innerText = text.length>40? text.substring(0,40)+'…':text;
       replyBar.classList.remove('hidden');
     }
-    window.cancelReply = () => replyBar.classList.add('hidden');
+    window.cancelReply = () => { replyBar.classList.add('hidden'); replyingTo = null; };
 
     window.openChatRoom = (room) => {
       chatRoomShell.classList.add('is-open');
@@ -798,7 +1002,10 @@
       addMessage('outgoing', text || (media?.type==='audio'?'🎤 Voice message':''), '👤', 'You', media);
       pendingMedia = null; chatInput.value = ''; updateComposer(); cancelReply();
       showTypingIndicator();
-      setTimeout(() => { hideTypingIndicator(); addMessage('incoming', 'Thanks for your message! 👍', '🤖', 'Abrox AI'); }, 1500);
+      setTimeout(() => {
+        hideTypingIndicator();
+        addMessage('incoming', 'Thanks for your message! 👍', '🤖', 'Abrox AI');
+      }, 1500);
     }
 
     function showTypingIndicator() {
@@ -811,17 +1018,20 @@
     sendBtn.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', e => { if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
 
+    // Voice recording
     voiceBtn.addEventListener('click', async () => {
       if (isRecording) return;
       try {
         audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(audioStream); let chunks = [];
+        mediaRecorder = new MediaRecorder(audioStream);
+        let chunks = [];
         mediaRecorder.ondataavailable = e => chunks.push(e.data);
         mediaRecorder.onstop = () => {
           const blob = new Blob(chunks, {type: 'audio/webm'});
           pendingMedia = { type: 'audio', url: URL.createObjectURL(blob) };
-          recordingIndicator.classList.add('hidden'); isRecording = false;
-          audioStream.getTracks().forEach(t=>t.stop()); updateComposer();
+          recordingIndicator.classList.add('hidden');
+          isRecording = false; audioStream.getTracks().forEach(t=>t.stop());
+          updateComposer();
         };
         mediaRecorder.start(); isRecording = true;
         recordingIndicator.classList.remove('hidden');
@@ -835,12 +1045,16 @@
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = ev => { pendingMedia = { type: file.type.startsWith('image/')?'image':'video', url: ev.target.result }; updateComposer(); };
+        reader.onload = ev => {
+          pendingMedia = { type: file.type.startsWith('image/')?'image':'video', url: ev.target.result };
+          updateComposer();
+        };
         reader.readAsDataURL(file);
       }
     };
     emojiBtn.onclick = () => { chatInput.value += '😊'; updateComposer(); };
 
+    // Start with signals page
     initChat();
     window.switchPage('signals');
   })();
