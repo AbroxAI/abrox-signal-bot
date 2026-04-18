@@ -6,10 +6,7 @@
   <title>ABROX AI · Chat</title>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Tailwind (optional, for utilities) -->
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* ----- 全局重置 & 字体 ----- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       margin: 0;
@@ -24,7 +21,7 @@
     #stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
     .star { position: absolute; background: #fff; border-radius: 50%; }
 
-    /* ----- 底部导航 (顺序: 信号/训练/聊天/推荐/进度) ----- */
+    /* 底部导航 */
     .bottom-nav {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -46,7 +43,7 @@
     .nav-item.active { color: #3b82f6; }
     .nav-item i { font-size: 22px; }
 
-    /* ----- 页面容器 (滚动) ----- */
+    /* 页面容器 */
     .page-container {
       position: relative; z-index: 10;
       height: calc(100% - 100px);
@@ -57,7 +54,7 @@
     .page { display: none; }
     .page.active { display: block; }
 
-    /* ----- 头部 (Telegram风格) ----- */
+    /* 头部 (Telegram风格) */
     .app-header {
       display: flex; align-items: center; gap: 12px;
       padding: 12px 16px;
@@ -75,7 +72,7 @@
     .header-titles h1 { font-size: 18px; font-weight: 700; color: #fff; margin: 0; line-height: 1.2; }
     .header-titles .subtitle { font-size: 12px; color: #8b9bb5; margin-top: 2px; }
 
-    /* ----- 聊天列表卡片 (改进) ----- */
+    /* 聊天卡片 (改进) */
     .chat-card {
       background: rgba(255,255,255,0.04);
       backdrop-filter: blur(12px);
@@ -91,23 +88,28 @@
       box-shadow: 0 6px 14px rgba(0,0,0,0.2);
     }
     .chat-card:hover { background: rgba(255,255,255,0.08); }
-    .chat-avatar {
+    .card-avatar {
       width: 54px; height: 54px; border-radius: 16px;
       background: linear-gradient(145deg, #1e4f7a, #0f365e);
       display: flex; align-items: center; justify-content: center;
-      font-size: 28px;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+      overflow: hidden;
     }
-    .chat-info { flex: 1; }
-    .chat-info h3 { font-size: 17px; font-weight: 700; margin: 0 0 4px; color: #fff; }
-    .chat-meta {
+    .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .card-info { flex: 1; }
+    .card-info h3 { font-size: 17px; font-weight: 700; margin: 0 0 4px; color: #fff; }
+    .card-meta {
       display: flex; align-items: center; gap: 6px;
       color: #a0bbd8; font-size: 13px;
+      margin-bottom: 4px;
     }
-    .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; margin-right: 2px; }
-    .member-count { font-weight: 500; }
+    .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; }
+    .card-description {
+      color: #8b9bb5; font-size: 13px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
 
-    /* ----- 深色聊天室 Overlay (Premium Dark) ----- */
+    /* 深色聊天室 Overlay */
     .chat-room-overlay {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: #0a0f17;
@@ -118,7 +120,6 @@
     }
     .chat-room-overlay.open { transform: translateX(0); }
 
-    /* 聊天室头部 */
     .room-header {
       padding: 14px 16px;
       border-bottom: 1px solid #1e2a3a;
@@ -129,7 +130,7 @@
       width: 40px; height: 40px; border-radius: 50%;
       background: #1a2536; border: none; color: #fff;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 20px;
+      cursor: pointer;
     }
     .room-info h2 { font-size: 18px; font-weight: 700; margin: 0; color: #fff; }
     .room-info .room-sub {
@@ -154,9 +155,7 @@
       display: flex; flex-direction: column; gap: 12px;
       scroll-behavior: smooth;
     }
-    .message-row {
-      display: flex; gap: 10px; max-width: 85%;
-    }
+    .message-row { display: flex; gap: 10px; max-width: 85%; }
     .message-row.incoming { align-self: flex-start; }
     .message-row.outgoing { align-self: flex-end; flex-direction: row-reverse; }
     .msg-avatar {
@@ -167,8 +166,7 @@
     .msg-bubble {
       background: #1a2536; padding: 10px 14px; border-radius: 18px;
       color: #e2e8f0; font-size: 14px; line-height: 1.4;
-      border: 1px solid #2a3a4e;
-      word-break: break-word;
+      border: 1px solid #2a3a4e; word-break: break-word;
     }
     .outgoing .msg-bubble { background: #2563eb; border-color: #3b82f6; color: #fff; }
     .msg-time { font-size: 10px; opacity: 0.6; margin-top: 4px; text-align: right; }
@@ -182,42 +180,35 @@
       border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* 高亮跳转动画 */
-    @keyframes highlightPulse {
-      0% { background: #3b82f6; }
-      50% { background: #60a5fa; }
-      100% { background: #1a2536; }
-    }
-    .message-highlight { animation: highlightPulse 1.5s ease; }
-
-    /* 输入框区域 */
+    /* 输入框 (修复拉伸) */
     .chat-composer {
-      padding: 12px 16px; border-top: 1px solid #1e2a3a;
-      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid #1e2a3a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       background: #0e1522;
     }
     .composer-btn {
-      width: 42px; height: 42px; border-radius: 50%;
+      width: 40px; height: 40px; border-radius: 50%;
       background: #1a2536; border: none; color: #8b9bb5;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.15s;
+      cursor: pointer; flex-shrink: 0;
     }
-    .composer-btn:hover { background: #2a3a4e; color: #fff; }
+    .composer-input-wrapper { flex: 1; min-width: 0; }
     .composer-input {
-      flex: 1; background: #1a2536; border: 1px solid #2a3a4e;
-      border-radius: 30px; padding: 12px 18px; color: #fff;
+      width: 100%; background: #1a2536; border: 1px solid #2a3a4e;
+      border-radius: 30px; padding: 12px 16px; color: #fff;
       outline: none; font-size: 14px;
     }
     .composer-input::placeholder { color: #6b7c93; }
     .send-btn {
-      width: 48px; height: 48px; border-radius: 50%;
+      width: 44px; height: 44px; border-radius: 50%;
       background: #2563eb; border: none; color: #fff;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 20px; transition: 0.15s;
+      cursor: pointer; flex-shrink: 0;
     }
-    .send-btn:hover { background: #3b82f6; }
 
-    /* 录音波纹 */
     .recording-indicator {
       display: flex; align-items: center; gap: 12px; margin: 8px 16px;
       background: #1e1e2e; padding: 8px 16px; border-radius: 40px;
@@ -226,17 +217,13 @@
       width: 3px; height: 12px; background: #3b82f6; border-radius: 2px;
       animation: wave 1.2s infinite ease-in-out;
     }
-    @keyframes wave {
-      0%,100% { transform: scaleY(1); }
-      50% { transform: scaleY(2); }
-    }
+    @keyframes wave { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(2); } }
     .hidden { display: none !important; }
   </style>
 </head>
 <body class="flex justify-center items-center min-h-screen">
 <div class="w-[390px] h-[844px] rounded-3xl overflow-hidden relative space-bg text-white">
 
-  <!-- 星空背景 -->
   <div id="stars"></div>
 
   <!-- 头部 (Telegram风格) -->
@@ -250,24 +237,29 @@
     </div>
   </div>
 
-  <!-- 页面容器 (聊天列表) -->
+  <!-- 页面容器 -->
   <div class="page-container" id="pageContainer">
     <div id="chatListPage" class="page active">
       <div style="padding: 8px 16px;">
         <h2 style="font-size: 20px; font-weight: 700;">Chats</h2>
       </div>
       
-      <!-- 改进的聊天卡片 -->
+      <!-- 改进的聊天卡片 (Logo + 描述) -->
       <div class="chat-card" onclick="openChatRoom()">
-        <div class="chat-avatar">💬</div>
-        <div class="chat-info">
-          <h3>Abrox General Chat</h3>
-          <div class="chat-meta">
-            <span class="online-dot"></span>
-            <span class="member-count">6,324 members</span>
-          </div>
+        <div class="card-avatar">
+          <img src="assets/logo.png" alt="Abrox" onerror="this.innerHTML='💬';">
         </div>
-        <div style="color:#8b9bb5; font-size:13px;">➤</div>
+        <div class="card-info">
+          <h3>Abrox General Chat</h3>
+          <div class="card-meta">
+            <span class="online-dot"></span>
+            <span>247 online</span>
+            <span>•</span>
+            <span>6,324 members</span>
+          </div>
+          <div class="card-description">Tap to join the conversation · AI active</div>
+        </div>
+        <div style="color:#8b9bb5;">➤</div>
       </div>
     </div>
   </div>
@@ -275,17 +267,21 @@
   <!-- 深色聊天室 -->
   <div class="chat-room-overlay" id="chatRoomOverlay">
     <div class="room-header">
-      <button class="back-btn" onclick="closeChatRoom()">←</button>
+      <button class="back-btn" onclick="closeChatRoom()">
+        <i data-lucide="arrow-left"></i>
+      </button>
       <div class="room-info">
         <h2>Abrox General Chat</h2>
         <div class="room-sub">
           <span class="online-dot"></span>
-          <span>6,324 members</span>
-          <span>•</span>
           <span id="chatOnlineCount">247 online</span>
+          <span>•</span>
+          <span>6,324 members</span>
         </div>
       </div>
-      <button class="composer-btn" style="margin-left:auto;">⋮</button>
+      <button class="composer-btn" style="margin-left:auto;">
+        <i data-lucide="more-vertical"></i>
+      </button>
     </div>
 
     <!-- 回复预览条 -->
@@ -297,7 +293,7 @@
       <button class="reply-preview-close" onclick="cancelReply()">✕</button>
     </div>
 
-    <!-- 消息容器 -->
+    <!-- 消息列表 -->
     <div class="chat-messages" id="chatMessagesContainer">
       <div class="message-row incoming">
         <div class="msg-avatar">🤖</div>
@@ -308,17 +304,19 @@
       </div>
     </div>
 
-    <!-- 新消息蓝色药丸 -->
+    <!-- 蓝色药丸 -->
     <div class="unread-pill" id="unreadPill" onclick="scrollToBottom()">
       <span>↓</span> <span id="unreadCount">1 new message</span>
     </div>
 
-    <!-- 输入区域 (Lucide图标) -->
+    <!-- 输入栏 (修复拉伸) -->
     <div class="chat-composer">
       <button class="composer-btn" id="emojiBtn">
         <i data-lucide="smile"></i>
       </button>
-      <input type="text" class="composer-input" placeholder="Message..." id="chatInput">
+      <div class="composer-input-wrapper">
+        <input type="text" class="composer-input" placeholder="Message..." id="chatInput">
+      </div>
       <button class="composer-btn" id="mediaBtn">
         <i data-lucide="image"></i>
       </button>
@@ -339,7 +337,7 @@
     </div>
   </div>
 
-  <!-- 底部导航 (顺序: 信号/训练/聊天/推荐/进度) -->
+  <!-- 底部导航 (信号第一，聊天第四) -->
   <div class="bottom-nav">
     <div class="nav-item" data-page="signals" onclick="switchPage('signals')">
       <i>📡</i><span>Signals</span>
@@ -360,7 +358,6 @@
 </div>
 
 <script>
-  // 初始化 Lucide 图标
   lucide.createIcons();
 
   // 星空
@@ -375,161 +372,111 @@
     starsContainer.appendChild(s);
   }
 
-  // ----- 聊天逻辑 -----
+  // 聊天逻辑
   const messagesContainer = document.getElementById('chatMessagesContainer');
   const unreadPill = document.getElementById('unreadPill');
   const unreadCountSpan = document.getElementById('unreadCount');
   let unreadMessages = 0;
   let isUserAtBottom = true;
-  let replyingTo = null;
 
-  // 滚动监听
   messagesContainer.addEventListener('scroll', () => {
-    const nearBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 80;
-    if (nearBottom) {
-      unreadMessages = 0;
-      unreadPill.style.display = 'none';
-      isUserAtBottom = true;
-    } else {
-      isUserAtBottom = false;
-    }
+    const near = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 80;
+    if (near) { unreadMessages=0; unreadPill.style.display='none'; isUserAtBottom=true; }
+    else { isUserAtBottom=false; }
   });
 
   function scrollToBottom() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    unreadMessages = 0;
-    unreadPill.style.display = 'none';
-    isUserAtBottom = true;
+    unreadMessages=0; unreadPill.style.display='none'; isUserAtBottom=true;
   }
 
-  // 打开聊天室
   function openChatRoom() {
     document.getElementById('chatRoomOverlay').classList.add('open');
-    // 模拟在线人数
-    setInterval(() => {
-      const count = 180 + Math.floor(Math.random() * 100);
-      document.getElementById('chatOnlineCount').innerText = count + ' online';
-    }, 8000);
+    setInterval(()=>{
+      document.getElementById('chatOnlineCount').innerText = (180+Math.floor(Math.random()*100)) + ' online';
+    },8000);
     scrollToBottom();
   }
   function closeChatRoom() {
     document.getElementById('chatRoomOverlay').classList.remove('open');
   }
 
-  // 发送消息 (示例)
-  function sendMessage() {
-    const input = document.getElementById('chatInput');
-    const text = input.value.trim();
-    if (!text) return;
-    addMessage('outgoing', text);
-    input.value = '';
-    // 模拟对方回复
-    setTimeout(() => {
-      addMessage('incoming', 'Thanks for your message!', '🤖');
-    }, 1200);
-  }
-
   function addMessage(side, text, avatar='👤') {
     const row = document.createElement('div');
     row.className = `message-row ${side}`;
     const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    row.innerHTML = `
-      <div class="msg-avatar">${avatar}</div>
-      <div class="msg-bubble">
-        ${text}
-        <div class="msg-time">${time}</div>
-      </div>
-    `;
-    // 点击消息设置回复
+    row.innerHTML = `<div class="msg-avatar">${avatar}</div><div class="msg-bubble">${text}<div class="msg-time">${time}</div></div>`;
     row.addEventListener('click', (e) => {
-      if (e.target.closest('.msg-bubble')) {
-        setReplyTarget(side === 'outgoing' ? 'You' : 'User', text);
-      }
+      if(e.target.closest('.msg-bubble')) setReplyTarget(side==='outgoing'?'You':'User', text);
     });
     messagesContainer.appendChild(row);
-    if (!isUserAtBottom) {
+    if(!isUserAtBottom) {
       unreadMessages++;
-      unreadCountSpan.innerText = unreadMessages === 1 ? '1 new message' : `${unreadMessages} new messages`;
-      unreadPill.style.display = 'flex';
-    } else {
-      scrollToBottom();
-    }
+      unreadCountSpan.innerText = unreadMessages===1?'1 new message':`${unreadMessages} new messages`;
+      unreadPill.style.display='flex';
+    } else scrollToBottom();
   }
 
   function setReplyTarget(name, text) {
-    replyingTo = { name, text };
     document.getElementById('replyTargetName').innerText = name;
-    document.getElementById('replyTargetText').innerText = text.length > 40 ? text.substring(0,40)+'…' : text;
+    document.getElementById('replyTargetText').innerText = text.length>40? text.substring(0,40)+'…':text;
     document.getElementById('replyPreviewBar').classList.remove('hidden');
   }
   function cancelReply() {
-    replyingTo = null;
     document.getElementById('replyPreviewBar').classList.add('hidden');
   }
 
-  // 绑定事件
-  document.getElementById('sendBtn').addEventListener('click', sendMessage);
-  document.getElementById('chatInput').addEventListener('keypress', (e) => {
-    if(e.key==='Enter') sendMessage();
-  });
+  function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if(!text) return;
+    addMessage('outgoing', text, '👤');
+    input.value = '';
+    setTimeout(()=> addMessage('incoming', 'Thanks for your message!', '🤖'), 1200);
+  }
 
-  // 语音录制 (模拟)
-  let mediaRecorder, isRecording = false;
-  document.getElementById('voiceBtn').addEventListener('click', async () => {
-    if (isRecording) return;
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  document.getElementById('sendBtn').addEventListener('click', sendMessage);
+  document.getElementById('chatInput').addEventListener('keypress', e=> { if(e.key==='Enter') sendMessage(); });
+
+  // 语音模拟
+  let mediaRecorder, isRecording=false;
+  document.getElementById('voiceBtn').addEventListener('click', async ()=>{
+    if(isRecording) return;
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
       mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.start();
-      isRecording = true;
+      mediaRecorder.start(); isRecording=true;
       document.getElementById('recordingIndicator').classList.remove('hidden');
-      mediaRecorder.onstop = () => {
+      mediaRecorder.onstop = ()=>{
         document.getElementById('recordingIndicator').classList.add('hidden');
-        isRecording = false;
-        stream.getTracks().forEach(t=>t.stop());
-        // 模拟发送语音消息
+        isRecording=false; stream.getTracks().forEach(t=>t.stop());
         addMessage('outgoing', '🎤 Voice message', '👤');
       };
-    } catch(e) { alert('Microphone access denied'); }
+    }catch(e){ alert('Microphone access denied'); }
   });
-  document.getElementById('stopRecordingBtn').addEventListener('click', () => {
+  document.getElementById('stopRecordingBtn').addEventListener('click', ()=>{
     if(mediaRecorder && isRecording) mediaRecorder.stop();
   });
-
-  // 媒体选择
-  document.getElementById('mediaBtn').addEventListener('click', () => {
-    // 简单模拟
+  document.getElementById('mediaBtn').addEventListener('click', ()=>{
     addMessage('outgoing', '📎 Media attachment', '👤');
   });
-
-  // Emoji 按钮
-  document.getElementById('emojiBtn').addEventListener('click', () => {
-    const input = document.getElementById('chatInput');
-    input.value += '😊';
+  document.getElementById('emojiBtn').addEventListener('click', ()=>{
+    document.getElementById('chatInput').value += '😊';
   });
 
-  // 页面切换占位
   function switchPage(pageId) {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
     event.currentTarget.classList.add('active');
     console.log('Switch to', pageId);
   }
 
-  // 全局函数
   window.openChatRoom = openChatRoom;
   window.closeChatRoom = closeChatRoom;
   window.sendMessage = sendMessage;
   window.cancelReply = cancelReply;
   window.scrollToBottom = scrollToBottom;
   window.switchPage = switchPage;
-
-  // 加载完成滚动到底部
-  window.addEventListener('load', () => {
-    // 接入AI引擎 (取消注释即可)
-    // if (typeof AIPersonaSimulator !== 'undefined') { ... }
-  });
 </script>
-
 <!-- 接入 AI 引擎 (取消注释以激活) -->
 <!-- <script src="media-manifest.js"></script> -->
 <!-- <script src="ai-persona-engine.js"></script> -->
