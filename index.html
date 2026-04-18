@@ -33,17 +33,16 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
 .logo-container img { max-height:100%; max-width:50vw; height:auto; width:auto; display:block; animation:logoGlowPulse 2s infinite ease-in-out; transition: transform 0.3s ease; }
 .logo-container:hover img { transform:scale(1.05); }
 
-/* 语言切换器默认显示，在非信号页隐藏 */
 .lang-switch { transition: opacity 0.2s; }
 .lang-switch.hidden { display: none; }
 
-/* Page wrapper – ensures content scrolls and bottom nav has space */
+/* Page wrapper – 滚动容器 */
 .page-container {
   position: relative;
   z-index: 10;
-  height: calc(100% - 100px); /* subtract header height */
+  height: calc(100% - 100px);
   overflow-y: auto;
-  padding-bottom: 90px;        /* space for bottom nav */
+  padding-bottom: 90px;
   box-sizing: border-box;
 }
 
@@ -85,30 +84,28 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
   display: block;
 }
 
-/* 信号页专用星空背景（继承父级） */
-#signalsPage {
+/* 所有页面背景统一透明，继承父级星空 */
+#signalsPage,
+#trainingPage,
+#chatPage,
+#referralsPage,
+#progressPage {
   background: transparent;
 }
 
-/* 其他页面：高级深色背景 */
-.dark-premium-bg {
-  background: #0a0f1a;
-  min-height: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.placeholder-page {
+/* 占位页面内容样式 */
+.placeholder-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  min-height: 100%;
   color: #cbd5e1;
   font-size: 18px;
   font-weight: 500;
   text-align: center;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 @media(max-width:420px){ .w-[390px]{width:95vw;} .h-[844px]{height:95vh;} #startBtn{padding:3vw;font-size:4vw;} .dropdown-btn{padding:2.5vw 3vw;font-size:3.5vw;} }
@@ -117,7 +114,6 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
 <body class="flex justify-center items-center min-h-screen">
 <div class="w-[390px] h-[844px] rounded-3xl overflow-hidden relative space-bg text-white">
 
-  <!-- Stars (only visible on signals page because other pages have solid bg) -->
   <div id="stars"></div>
 
   <!-- HEADER -->
@@ -125,13 +121,12 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
     <div class="logo-container">
       <img id="abroxLogo" src="assets/logo.png" alt="ABROX Logo"/>
     </div>
-    <!-- 语言切换器，将在非信号页隐藏 -->
     <div class="bg-cyan-600 px-3 py-1 rounded-lg text-sm font-medium lang-switch" id="langSwitch">🇺🇸 en</div>
   </div>
 
   <!-- PAGES CONTAINER -->
   <div class="page-container" id="pageContainer">
-    <!-- SIGNALS PAGE (active by default) -->
+    <!-- SIGNALS PAGE (active) -->
     <div id="signalsPage" class="page active">
       <div class="content-wrapper px-6 mt-6">
         <h1 class="text-2xl font-semibold tracking-tight">TRADING BOT</h1>
@@ -171,47 +166,39 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
       </div>
     </div>
 
-    <!-- TRAINING PAGE (深色背景) -->
+    <!-- TRAINING PAGE -->
     <div id="trainingPage" class="page">
-      <div class="dark-premium-bg">
-        <div class="placeholder-page">
-          <div class="text-5xl mb-4">📘</div>
-          <h2 class="text-2xl font-bold mb-2 text-white">Training Center</h2>
-          <p class="opacity-70">Beginner guides, strategy lessons, and video tutorials.</p>
-        </div>
+      <div class="placeholder-content">
+        <div class="text-5xl mb-4">📘</div>
+        <h2 class="text-2xl font-bold mb-2">Training Center</h2>
+        <p class="opacity-70">Beginner guides, strategy lessons, and video tutorials.</p>
       </div>
     </div>
 
-    <!-- CHAT PAGE (深色背景) -->
+    <!-- CHAT PAGE -->
     <div id="chatPage" class="page">
-      <div class="dark-premium-bg">
-        <div class="placeholder-page">
-          <div class="text-5xl mb-4">💬</div>
-          <h2 class="text-2xl font-bold mb-2 text-white">Community Chat</h2>
-          <p class="opacity-70">Connect with pro traders and AI personas.</p>
-        </div>
+      <div class="placeholder-content">
+        <div class="text-5xl mb-4">💬</div>
+        <h2 class="text-2xl font-bold mb-2">Community Chat</h2>
+        <p class="opacity-70">Connect with pro traders and AI personas.</p>
       </div>
     </div>
 
-    <!-- REFERRALS PAGE (深色背景) -->
+    <!-- REFERRALS PAGE -->
     <div id="referralsPage" class="page">
-      <div class="dark-premium-bg">
-        <div class="placeholder-page">
-          <div class="text-5xl mb-4">👥</div>
-          <h2 class="text-2xl font-bold mb-2 text-white">Refer & Earn</h2>
-          <p class="opacity-70">Invite friends and earn up to 20% commission.</p>
-        </div>
+      <div class="placeholder-content">
+        <div class="text-5xl mb-4">👥</div>
+        <h2 class="text-2xl font-bold mb-2">Refer & Earn</h2>
+        <p class="opacity-70">Invite friends and earn up to 20% commission.</p>
       </div>
     </div>
 
-    <!-- PROGRESS PAGE (深色背景) -->
+    <!-- PROGRESS PAGE -->
     <div id="progressPage" class="page">
-      <div class="dark-premium-bg">
-        <div class="placeholder-page">
-          <div class="text-5xl mb-4">📊</div>
-          <h2 class="text-2xl font-bold mb-2 text-white">Your Progress</h2>
-          <p class="opacity-70">Track your learning and trading milestones.</p>
-        </div>
+      <div class="placeholder-content">
+        <div class="text-5xl mb-4">📊</div>
+        <h2 class="text-2xl font-bold mb-2">Your Progress</h2>
+        <p class="opacity-70">Track your learning and trading milestones.</p>
       </div>
     </div>
   </div>
@@ -255,7 +242,7 @@ for(let i=0;i<40;i++){
   starsContainer.appendChild(s);
 }
 
-// ========== PAGE SWITCHING WITH LANG TOGGLE ==========
+// Page switching with language toggle
 const langSwitch = document.getElementById('langSwitch');
 function switchPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -264,7 +251,6 @@ function switchPage(pageId) {
     item.classList.toggle('active', item.dataset.page === pageId);
   });
   
-  // 仅在信号页显示语言切换器
   if (pageId === 'signals') {
     langSwitch.classList.remove('hidden');
   } else {
@@ -272,7 +258,7 @@ function switchPage(pageId) {
   }
 }
 
-// ========== AUTO SCROLL TO BOTTOM ON PAGE LOAD ==========
+// Auto scroll to bottom on page load
 window.addEventListener('load', function() {
   const container = document.getElementById('pageContainer');
   if (container) {
@@ -280,7 +266,7 @@ window.addEventListener('load', function() {
   }
 });
 
-// ========== ORIGINAL DROPDOWN & SIGNAL LOGIC (UNTOUCHED) ==========
+// Original dropdown & signal logic
 let currency=null, timeframe=null;
 
 function toggleDropdown(id){ 
