@@ -33,54 +33,18 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
 .logo-container img { max-height:100%; max-width:50vw; height:auto; width:auto; display:block; animation:logoGlowPulse 2s infinite ease-in-out; transition: transform 0.3s ease; }
 .logo-container:hover img { transform:scale(1.05); }
 
+/* 语言切换器默认显示，在非信号页隐藏 */
 .lang-switch { transition: opacity 0.2s; }
 .lang-switch.hidden { display: none; }
 
-/* Page container: 占满剩余高度，可滚动 */
+/* Page wrapper – ensures content scrolls and bottom nav has space */
 .page-container {
   position: relative;
   z-index: 10;
-  height: calc(100% - 100px);
+  height: calc(100% - 100px); /* subtract header height */
   overflow-y: auto;
-  padding-bottom: 90px;
+  padding-bottom: 90px;        /* space for bottom nav */
   box-sizing: border-box;
-}
-
-/* 所有页面默认占满高度 */
-.page {
-  display: none;
-  height: 100%;
-}
-.page.active {
-  display: block;
-}
-
-/* 信号页背景透明，由父级星空显示 */
-#signalsPage {
-  background: transparent;
-}
-
-/* 其他页面：完全深色背景 */
-.dark-premium-bg {
-  background: #0a0f1a;
-  min-height: 100%;
-  height: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-}
-
-.placeholder-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  color: #cbd5e1;
-  font-size: 18px;
-  font-weight: 500;
-  text-align: center;
 }
 
 /* Bottom Navigation */
@@ -113,12 +77,47 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
 .nav-item.active { color: #3b82f6; }
 .nav-item i { font-size: 22px; }
 
+/* Pages */
+.page {
+  display: none;
+}
+.page.active {
+  display: block;
+}
+
+/* 信号页专用星空背景（继承父级） */
+#signalsPage {
+  background: transparent;
+}
+
+/* 其他页面：高级深色背景 */
+.dark-premium-bg {
+  background: #0a0f1a;
+  min-height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.placeholder-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #cbd5e1;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  padding: 20px;
+}
+
 @media(max-width:420px){ .w-[390px]{width:95vw;} .h-[844px]{height:95vh;} #startBtn{padding:3vw;font-size:4vw;} .dropdown-btn{padding:2.5vw 3vw;font-size:3.5vw;} }
 </style>
 </head>
 <body class="flex justify-center items-center min-h-screen">
 <div class="w-[390px] h-[844px] rounded-3xl overflow-hidden relative space-bg text-white">
 
+  <!-- Stars (only visible on signals page because other pages have solid bg) -->
   <div id="stars"></div>
 
   <!-- HEADER -->
@@ -126,12 +125,13 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
     <div class="logo-container">
       <img id="abroxLogo" src="assets/logo.png" alt="ABROX Logo"/>
     </div>
+    <!-- 语言切换器，将在非信号页隐藏 -->
     <div class="bg-cyan-600 px-3 py-1 rounded-lg text-sm font-medium lang-switch" id="langSwitch">🇺🇸 en</div>
   </div>
 
   <!-- PAGES CONTAINER -->
   <div class="page-container" id="pageContainer">
-    <!-- SIGNALS PAGE -->
+    <!-- SIGNALS PAGE (active by default) -->
     <div id="signalsPage" class="page active">
       <div class="content-wrapper px-6 mt-6">
         <h1 class="text-2xl font-semibold tracking-tight">TRADING BOT</h1>
@@ -171,7 +171,7 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
       </div>
     </div>
 
-    <!-- TRAINING PAGE -->
+    <!-- TRAINING PAGE (深色背景) -->
     <div id="trainingPage" class="page">
       <div class="dark-premium-bg">
         <div class="placeholder-page">
@@ -182,7 +182,7 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
       </div>
     </div>
 
-    <!-- CHAT PAGE -->
+    <!-- CHAT PAGE (深色背景) -->
     <div id="chatPage" class="page">
       <div class="dark-premium-bg">
         <div class="placeholder-page">
@@ -193,7 +193,7 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
       </div>
     </div>
 
-    <!-- REFERRALS PAGE -->
+    <!-- REFERRALS PAGE (深色背景) -->
     <div id="referralsPage" class="page">
       <div class="dark-premium-bg">
         <div class="placeholder-page">
@@ -204,7 +204,7 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
       </div>
     </div>
 
-    <!-- PROGRESS PAGE -->
+    <!-- PROGRESS PAGE (深色背景) -->
     <div id="progressPage" class="page">
       <div class="dark-premium-bg">
         <div class="placeholder-page">
@@ -255,7 +255,7 @@ for(let i=0;i<40;i++){
   starsContainer.appendChild(s);
 }
 
-// Page switching with language toggle
+// ========== PAGE SWITCHING WITH LANG TOGGLE ==========
 const langSwitch = document.getElementById('langSwitch');
 function switchPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -264,6 +264,7 @@ function switchPage(pageId) {
     item.classList.toggle('active', item.dataset.page === pageId);
   });
   
+  // 仅在信号页显示语言切换器
   if (pageId === 'signals') {
     langSwitch.classList.remove('hidden');
   } else {
@@ -271,7 +272,7 @@ function switchPage(pageId) {
   }
 }
 
-// Auto scroll to bottom on load
+// ========== AUTO SCROLL TO BOTTOM ON PAGE LOAD ==========
 window.addEventListener('load', function() {
   const container = document.getElementById('pageContainer');
   if (container) {
@@ -279,7 +280,7 @@ window.addEventListener('load', function() {
   }
 });
 
-// Original dropdown & signal logic
+// ========== ORIGINAL DROPDOWN & SIGNAL LOGIC (UNTOUCHED) ==========
 let currency=null, timeframe=null;
 
 function toggleDropdown(id){ 
