@@ -357,6 +357,14 @@
     }
     .room-members, .room-online { display: flex; align-items: center; gap: 4px; }
     .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 8px #4caf50; }
+    .online-badge {
+      background: rgba(76, 175, 80, 0.15);
+      color: #8bc34a;
+      padding: 2px 8px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 600;
+    }
 
     /* System banner */
     .system-banner {
@@ -423,6 +431,7 @@
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       overflow: hidden; color: #fff; font-weight: 600; font-size: 16px;
+      cursor: pointer;
     }
     .chat-bubble {
       --bg: #1a2536;
@@ -567,6 +576,94 @@
       position: absolute; top: -40px; right: 0; background: rgba(255,255,255,0.2);
       border: none; color: white; width: 40px; height: 40px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+
+    /* ---------- PROFILE MODAL (NEW) ---------- */
+    .profile-modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85);
+      z-index: 300; display: flex; align-items: center; justify-content: center;
+      visibility: hidden; opacity: 0; transition: 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .profile-modal-overlay.active { visibility: visible; opacity: 1; }
+    .profile-modal-container {
+      background: #1a2536; max-width: 340px; width: 85%; border-radius: 28px;
+      padding: 24px 20px; text-align: center; box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+      border: 1px solid #2a3a4e; color: #e2e8f0;
+    }
+    .profile-avatar {
+      width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px;
+      overflow: hidden; background: #0e1522; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: 2px solid #3b82f6;
+    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-name { font-size: 20px; font-weight: 800; margin-bottom: 4px; color: #fff; }
+    .profile-level-status {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-bottom: 16px; font-size: 13px;
+    }
+    .profile-level { color: #3b82f6; font-weight: 600; }
+    .profile-status {
+      display: inline-flex; align-items: center; gap: 4px; background: rgba(76, 175, 80, 0.15);
+      color: #8bc34a; padding: 2px 8px; border-radius: 40px; font-weight: 600;
+    }
+    .profile-stats { background: #0e1522; border-radius: 20px; padding: 12px; margin-top: 8px; }
+    .stat-row {
+      display: flex; justify-content: space-between; padding: 8px 0;
+      border-bottom: 1px solid #2a3a4e; font-size: 13px;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: #8b9bb5; }
+    .stat-value { font-weight: 700; color: #e2e8f0; }
+    .profit-positive { color: #4ade80; }
+    .profit-negative { color: #f87171; }
+    .profile-id { font-size: 11px; color: #6b7280; margin-top: 12px; font-family: monospace; }
+    .profile-message-btn {
+      background: #3b82f6; color: white; border: none; border-radius: 40px;
+      padding: 12px; font-weight: 700; width: 100%; margin-top: 16px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background 0.2s;
+    }
+    .profile-message-btn:hover { background: #2563eb; }
+    .profile-view-link {
+      margin-top: 12px; color: #3b82f6; font-size: 14px; font-weight: 600;
+      cursor: pointer; text-align: center;
+    }
+
+    /* ---------- ACTIVATION MODAL (NEW - CONTACT SUPPORT FOCUS) ---------- */
+    .activation-modal {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85); z-index: 400;
+      display: flex; align-items: center; justify-content: center;
+      visibility: hidden; opacity: 0; transition: 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .activation-modal.active { visibility: visible; opacity: 1; }
+    .activation-card {
+      background: #1a2536; max-width: 360px; width: 90%; border-radius: 32px;
+      padding: 32px 24px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 1px solid #2a3a4e;
+    }
+    .activation-icon {
+      width: 64px; height: 64px; background: rgba(59, 130, 246, 0.15); border-radius: 20px;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+      color: #3b82f6; border: 1px solid #3b82f6;
+    }
+    .activation-title { font-size: 24px; font-weight: 800; margin-bottom: 12px; color: #fff; }
+    .activation-text { color: #cbd5e1; margin-bottom: 24px; line-height: 1.5; }
+    .activation-highlight {
+      background: #0e1522; padding: 12px; border-radius: 12px;
+      margin-bottom: 20px; border-left: 3px solid #3b82f6;
+    }
+    .activation-highlight p { color: #e2e8f0; font-weight: 500; }
+    .activation-support-btn {
+      background: #3b82f6; color: white; border: none; border-radius: 40px;
+      padding: 14px; font-weight: 700; width: 100%; margin-bottom: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .activation-close-btn {
+      background: none; border: 1px solid #2a3a4e; color: #8b9bb5;
+      border-radius: 40px; padding: 12px; font-weight: 600; width: 100%; cursor: pointer;
     }
 
     /* Responsive */
@@ -774,6 +871,30 @@
     </div>
   </div>
 
+  <!-- PROFILE MODAL (NEW) -->
+  <div class="profile-modal-overlay" id="profileModal">
+    <div class="profile-modal-container" id="profileModalContent"></div>
+  </div>
+
+  <!-- ACTIVATION MODAL (NEW - CONTACT SUPPORT) -->
+  <div class="activation-modal" id="activationModal">
+    <div class="activation-card">
+      <div class="activation-icon"><i data-lucide="shield-check" class="w-8 h-8"></i></div>
+      <div class="activation-title">Verification Required</div>
+      <div class="activation-text">
+        To chat with the community and access all features, your account must be verified.
+      </div>
+      <div class="activation-highlight">
+        <p>✅ This helps us keep the community safe and spam‑free.</p>
+        <p style="margin-top: 8px;">📩 Contact support to complete verification in under 2 minutes.</p>
+      </div>
+      <button class="activation-support-btn" id="activationContactSupportBtn">
+        <i data-lucide="headphones"></i> Contact Support
+      </button>
+      <button class="activation-close-btn" id="activationCloseBtn">Maybe Later</button>
+    </div>
+  </div>
+
   <!-- Bottom navigation -->
   <div class="bottom-nav">
     <div class="nav-item active" data-page="signals" onclick="switchPage('signals', event)">
@@ -889,13 +1010,26 @@
     const lightboxOverlay = document.getElementById('lightboxOverlay');
     const lightboxMedia = document.getElementById('lightboxMediaContainer');
     const lightboxClose = document.getElementById('lightboxCloseBtn');
+    
+    // Profile & Activation modals
+    const profileModal = document.getElementById('profileModal');
+    const profileModalContent = document.getElementById('profileModalContent');
+    const activationModal = document.getElementById('activationModal');
+    const activationContactBtn = document.getElementById('activationContactSupportBtn');
+    const activationCloseBtn = document.getElementById('activationCloseBtn');
 
-    let unread = 0, isAtBottom = true, onlineInterval = null;
+    let unread = 0, isAtBottom = true;
     let replyingTo = null;
     let pendingMedia = null;
     let mediaRecorder = null, isRecording = false, audioStream = null;
+    
+    // LocalStorage persistence
+    const ROOM_STORAGE_PREFIX = 'abrox_chat_';
+    let isHydrating = false;
+    let currentRoom = 'general';
 
     function getTime() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+    function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
 
     function updateComposer() {
       const has = chatInput.value.trim().length > 0 || pendingMedia;
@@ -933,7 +1067,7 @@
     lightboxClose.onclick = () => lightboxOverlay.classList.remove('active');
     lightboxOverlay.addEventListener('click', (e) => { if(e.target === lightboxOverlay) lightboxOverlay.classList.remove('active'); });
 
-    // Voice recording
+    // Voice recording (unchanged)
     voiceBtn.addEventListener('click', async () => {
       if (isRecording) return;
       try {
@@ -968,6 +1102,148 @@
       }
     };
     emojiBtn.onclick = () => { chatInput.value += '😊'; updateComposer(); };
+
+    // ========== ONLINE COUNT SIMULATION (63-137) ==========
+    function updateOnlineCount() {
+      const count = Math.floor(Math.random() * (137 - 63 + 1)) + 63;
+      if (onlineSpan) onlineSpan.innerText = count + ' online';
+    }
+    updateOnlineCount();
+    setInterval(updateOnlineCount, 30000);
+
+    // ========== PROFILE MODAL ==========
+    function showProfile(personaData) {
+      const exp = personaData.experience || personaData.type || 'beginner';
+      const arch = personaData.archetype || 'active';
+      let level = exp === 'advanced' ? 'Experienced' : (exp === 'intermediate' ? 'Amateur' : 'Beginner');
+      const seed = (personaData.id || personaData.senderName).split('').reduce((a,b)=>a+b.charCodeAt(0),0);
+      let trades, winRate, turnover, profit, maxTrade;
+      if (exp === 'advanced') {
+        trades = 120 + (seed % 80); winRate = 65 + (seed % 20); turnover = 2500 + (seed % 1500);
+        profit = 340 + (seed % 400); maxTrade = 85 + (seed % 100);
+      } else if (exp === 'intermediate') {
+        trades = 35 + (seed % 30); winRate = 52 + (seed % 15); turnover = 450 + (seed % 300);
+        profit = 35 + (seed % 80); maxTrade = 25 + (seed % 40);
+      } else {
+        trades = 8 + (seed % 15); winRate = 38 + (seed % 20); turnover = 80 + (seed % 100);
+        profit = -25 + (seed % 60); maxTrade = 12 + (seed % 15);
+      }
+      if (arch === 'leader' || arch === 'analytical') { winRate += 5; profit *= 1.2; }
+      if (arch === 'watcher') trades = Math.floor(trades * 0.5);
+      const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
+      const profitSymbol = profit >= 0 ? '+' : '';
+      
+      profileModalContent.innerHTML = `
+        <div class="profile-avatar" id="profileAvatarTap">
+          ${personaData.senderAvatar ? `<img src="${personaData.senderAvatar}" id="profileAvatarImg">` : personaData.senderName.charAt(0)}
+        </div>
+        <div class="profile-name">${escapeHtml(personaData.senderName)}</div>
+        <div class="profile-level-status">
+          <span class="profile-level">${level}</span>
+          <span class="profile-status"><i data-lucide="circle" class="w-3 h-3 fill-green-500"></i> Online</span>
+        </div>
+        <div class="profile-stats">
+          <div class="stat-row"><span class="stat-label">Trades</span><span class="stat-value">${trades}</span></div>
+          <div class="stat-row"><span class="stat-label">Win rate</span><span class="stat-value">${winRate}%</span></div>
+          <div class="stat-row"><span class="stat-label">Turnover</span><span class="stat-value">$${turnover.toFixed(2)}</span></div>
+          <div class="stat-row"><span class="stat-label">Profit</span><span class="stat-value ${profitClass}">${profitSymbol}$${Math.abs(profit).toFixed(2)}</span></div>
+          <div class="stat-row"><span class="stat-label">Max trade</span><span class="stat-value">$${maxTrade}</span></div>
+        </div>
+        <div class="profile-id">ID: ${(seed + 1000000).toString().slice(0,9)}</div>
+        <button class="profile-message-btn" id="profileMessageBtn">
+          <i data-lucide="send" class="w-4 h-4"></i> Send Message
+        </button>
+        <div class="profile-view-link" id="profileViewFullLink">View Full Profile ›</div>
+      `;
+      
+      document.getElementById('profileAvatarTap').onclick = () => {
+        if (personaData.senderAvatar) showLightbox(personaData.senderAvatar, 'image');
+      };
+      document.getElementById('profileMessageBtn').onclick = () => {
+        closeProfileModal();
+        showActivationModal();
+      };
+      document.getElementById('profileViewFullLink').onclick = () => alert('Full profile coming soon.');
+      
+      profileModal.classList.add('active');
+      lucide.createIcons();
+    }
+    
+    function closeProfileModal() { profileModal.classList.remove('active'); }
+    profileModal.addEventListener('click', (e) => { if (e.target === profileModal) closeProfileModal(); });
+
+    // ========== ACTIVATION MODAL (CONTACT SUPPORT) ==========
+    function showActivationModal() { activationModal.classList.add('active'); }
+    function hideActivationModal() { activationModal.classList.remove('active'); }
+    
+    activationContactBtn.onclick = () => {
+      // Replace with actual support link
+      window.open('https://t.me/abrox_support', '_blank');
+      hideActivationModal();
+    };
+    activationCloseBtn.onclick = hideActivationModal;
+    activationModal.addEventListener('click', (e) => { if (e.target === activationModal) hideActivationModal(); });
+
+    // ========== LOCAL STORAGE PERSISTENCE ==========
+    function roomStorageKey(room) { return ROOM_STORAGE_PREFIX + room; }
+    
+    function saveMessagesToStorage(room) {
+      if (isHydrating) return;
+      try {
+        const messages = [];
+        document.querySelectorAll('#chatMessagesContainer .chat-msg-row').forEach(row => {
+          const isOutgoing = row.classList.contains('outgoing');
+          const bubble = row.querySelector('.chat-bubble');
+          if (!bubble) return;
+          const clone = bubble.cloneNode(true);
+          clone.querySelectorAll('.chat-bubble-time, .chat-ticks, .reply-preview').forEach(el => el.remove());
+          const text = clone.innerText.trim();
+          const time = bubble.querySelector('.chat-bubble-time')?.innerText || '';
+          const image = bubble.querySelector('.chat-image')?.src || null;
+          const video = bubble.querySelector('.chat-video')?.src || null;
+          const audio = bubble.querySelector('.chat-audio audio')?.src || null;
+          let tickStatus = null;
+          if (isOutgoing) {
+            const ticks = bubble.querySelector('.chat-ticks');
+            if (ticks) {
+              if (ticks.classList.contains('seen')) tickStatus = 'seen';
+              else if (ticks.classList.contains('delivered')) tickStatus = 'delivered';
+              else tickStatus = 'sent';
+            }
+          }
+          messages.push({
+            side: isOutgoing ? 'outgoing' : 'incoming',
+            senderName: isOutgoing ? 'You' : (bubble.querySelector('.chat-sender-name')?.innerText || 'AI'),
+            text, time, imageUrl: image, videoUrl: video, audioUrl: audio, tickStatus
+          });
+        });
+        localStorage.setItem(roomStorageKey(room), JSON.stringify(messages));
+      } catch(e) { console.warn('Save failed:', e); }
+    }
+    
+    function loadMessagesFromStorage(room) {
+      const key = roomStorageKey(room);
+      const stored = localStorage.getItem(key);
+      if (!stored) return;
+      try {
+        const messages = JSON.parse(stored);
+        isHydrating = true;
+        messages.forEach(msg => {
+          if (msg.side === 'outgoing') {
+            addMessageToFeed('outgoing', msg.text, msg.time, msg.tickStatus, msg.imageUrl, msg.videoUrl, msg.audioUrl, false);
+          } else {
+            buildIncomingMessage({
+              senderName: msg.senderName,
+              text: msg.text,
+              time: msg.time,
+              mediaUrl: msg.imageUrl || msg.videoUrl || msg.audioUrl,
+              mediaType: msg.imageUrl ? 'image' : (msg.videoUrl ? 'video' : (msg.audioUrl ? 'audio' : null))
+            }, false);
+          }
+        });
+      } catch(e) { console.warn('Load failed:', e); }
+      finally { isHydrating = false; }
+    }
 
     // ========== CHAT API INTEGRATION FOR AI ENGINE ==========
     window.__activeChatRoom = null;
@@ -1006,63 +1282,7 @@
       },
 
       addIncomingMessage: function(msgData) {
-        const container = document.getElementById('chatMessagesContainer');
-        if (!container) return null;
-
-        const row = document.createElement('div');
-        row.className = 'chat-msg-row incoming';
-        row.dataset.personaId = msgData.personaId;
-        row.dataset.messageType = msgData.messageType;
-
-        const avatarHtml = msgData.senderAvatar 
-          ? `<div class="chat-avatar-bubble" style="background-image: url('${msgData.senderAvatar}'); background-size: cover; background-position: center;"></div>`
-          : `<div class="chat-avatar-bubble">${msgData.senderName.charAt(0)}</div>`;
-
-        let contentHtml = '';
-        const senderName = msgData.senderName || 'AI';
-
-        if (msgData.replyTo) {
-          contentHtml += `<div class="reply-preview" style="background: rgba(255,255,255,0.08); padding: 8px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #3b82f6;">
-            <div style="font-size: 11px; color: #8b9bb5;">Replying to ${msgData.replyTo.senderName}</div>
-            <div style="font-size: 13px; color: #cbd5e1;">${msgData.replyTo.text}</div>
-          </div>`;
-        }
-
-        if (msgData.mediaUrl) {
-          if (msgData.mediaType === 'image') {
-            contentHtml += `<img src="${msgData.mediaUrl}" class="chat-image" onclick="showLightbox('${msgData.mediaUrl}', 'img')">`;
-          } else if (msgData.mediaType === 'video') {
-            contentHtml += `<video src="${msgData.mediaUrl}" class="chat-video" controls onclick="showLightbox('${msgData.mediaUrl}', 'video')"></video>`;
-          } else if (msgData.mediaType === 'audio') {
-            contentHtml += `<div class="chat-audio"><i data-lucide="volume-2"></i><audio src="${msgData.mediaUrl}" controls style="width:100%;height:30px;"></audio></div>`;
-          }
-        }
-
-        if (msgData.text) {
-          contentHtml += `<div style="margin-top: ${msgData.mediaUrl ? '8px' : '0'};">${msgData.text}</div>`;
-        }
-
-        const timeHtml = `<div class="chat-bubble-time">${msgData.time || getTime()}</div>`;
-
-        row.innerHTML = `${avatarHtml}<div class="chat-bubble incoming"><span style="font-weight:700;margin-bottom:4px;display:block;">${senderName}</span>${contentHtml}${timeHtml}</div>`;
-
-        const bubble = row.querySelector('.chat-bubble');
-        bubble.addEventListener('click', (e) => {
-          if (e.target.closest('.chat-image') || e.target.closest('.chat-video')) return;
-          setReplyTarget(senderName, msgData.text || 'Media message');
-        });
-
-        row.querySelectorAll('.chat-image, .chat-video').forEach(el => {
-          el.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showLightbox(el.src, el.tagName.toLowerCase());
-          });
-        });
-
-        container.appendChild(row);
-        scrollIfNeeded();
-        lucide.createIcons();
-        return row;
+        return buildIncomingMessage(msgData, true);
       },
 
       addSystemMessage: function(msgData) {
@@ -1074,6 +1294,7 @@
           <div class="chat-bubble incoming" style="background:#1e3a5f;">${msgData.text}<div class="chat-bubble-time">${msgData.time || getTime()}</div></div>`;
         container.appendChild(row);
         scrollIfNeeded();
+        if (!isHydrating) saveMessagesToStorage(currentRoom);
       },
 
       isChatRoomActive: function() {
@@ -1081,8 +1302,82 @@
       }
     };
 
+    function buildIncomingMessage(msgData, shouldSave = true) {
+      const container = document.getElementById('chatMessagesContainer');
+      if (!container) return null;
+      const row = document.createElement('div');
+      row.className = 'chat-msg-row incoming';
+      row.dataset.personaId = msgData.personaId;
+      row.dataset.messageType = msgData.messageType;
+      const avatarHtml = msgData.senderAvatar 
+        ? `<div class="chat-avatar-bubble" style="background-image: url('${msgData.senderAvatar}'); background-size: cover; background-position: center;"></div>`
+        : `<div class="chat-avatar-bubble">${msgData.senderName.charAt(0)}</div>`;
+      let contentHtml = '';
+      const senderName = msgData.senderName || 'AI';
+      if (msgData.replyTo) {
+        contentHtml += `<div class="reply-preview" style="background: rgba(255,255,255,0.08); padding: 8px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #3b82f6;">
+          <div style="font-size: 11px; color: #8b9bb5;">Replying to ${msgData.replyTo.senderName}</div>
+          <div style="font-size: 13px; color: #cbd5e1;">${msgData.replyTo.text}</div>
+        </div>`;
+      }
+      if (msgData.mediaUrl) {
+        if (msgData.mediaType === 'image') contentHtml += `<img src="${msgData.mediaUrl}" class="chat-image">`;
+        else if (msgData.mediaType === 'video') contentHtml += `<video src="${msgData.mediaUrl}" class="chat-video" controls></video>`;
+        else if (msgData.mediaType === 'audio') contentHtml += `<div class="chat-audio"><i data-lucide="volume-2"></i><audio src="${msgData.mediaUrl}" controls style="width:100%;height:30px;"></audio></div>`;
+      }
+      if (msgData.text) contentHtml += `<div style="margin-top: ${msgData.mediaUrl ? '8px' : '0'};">${msgData.text}</div>`;
+      const timeHtml = `<div class="chat-bubble-time">${msgData.time || getTime()}</div>`;
+      row.innerHTML = `${avatarHtml}<div class="chat-bubble incoming"><span class="chat-sender-name" style="font-weight:700;margin-bottom:4px;display:block;cursor:pointer;color:#e2e8f0;">${senderName}</span>${contentHtml}${timeHtml}</div>`;
+      
+      const bubble = row.querySelector('.chat-bubble');
+      bubble.addEventListener('click', (e) => {
+        if (e.target.closest('.chat-image') || e.target.closest('.chat-video')) return;
+        setReplyTarget(senderName, msgData.text || 'Media message');
+      });
+      row.querySelectorAll('.chat-image, .chat-video').forEach(el => {
+        el.addEventListener('click', (e) => { e.stopPropagation(); showLightbox(el.src, el.tagName.toLowerCase()); });
+      });
+      
+      // Profile modal triggers
+      const avatarDiv = row.querySelector('.chat-avatar-bubble');
+      const nameSpan = bubble.querySelector('.chat-sender-name');
+      if (msgData.personaId && msgData.personaId !== 'user') {
+        avatarDiv.style.cursor = 'pointer';
+        avatarDiv.addEventListener('click', (e) => { e.stopPropagation(); showProfile(msgData); });
+        nameSpan.addEventListener('click', (e) => { e.stopPropagation(); showProfile(msgData); });
+      }
+      
+      container.appendChild(row);
+      scrollIfNeeded();
+      lucide.createIcons();
+      if (shouldSave && !isHydrating) saveMessagesToStorage(currentRoom);
+      return row;
+    }
+
+    function addMessageToFeed(side, text, time, tickStatus=null, imageUrl=null, videoUrl=null, audioUrl=null, shouldSave = true) {
+      const container = document.getElementById('chatMessagesContainer');
+      if (!container) return;
+      const row = document.createElement('div');
+      row.className = `chat-msg-row ${side}`;
+      let content = text;
+      if(imageUrl) content = `<img src="${imageUrl}" class="chat-image">` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
+      else if(videoUrl) content = `<video src="${videoUrl}" class="chat-video" controls></video>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
+      else if(audioUrl) content = `<div class="chat-audio"><i data-lucide="volume-2"></i><audio src="${audioUrl}" controls style="width:100%;height:30px;"></audio></div>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
+      if(side==='outgoing'){
+        row.innerHTML = `<div class="chat-bubble outgoing">${content}<div class="chat-bubble-time">${time}<span class="chat-ticks ${tickStatus||'sent'}">${tickStatus==='seen'?'✓✓':(tickStatus==='delivered'?'✓✓':'✓')}</span></div></div>`;
+      } else {
+        row.innerHTML = `<div class="chat-avatar-bubble">👤</div><div class="chat-bubble incoming"><span class="chat-sender-name">You</span>${content}<div class="chat-bubble-time">${time}</div></div>`;
+      }
+      container.appendChild(row);
+      scrollIfNeeded();
+      lucide.createIcons();
+      if (shouldSave && !isHydrating) saveMessagesToStorage(currentRoom);
+      return row;
+    }
+
     // ========== CHAT ROOM OPEN/CLOSE ==========
     window.openChatRoom = function(room) {
+      currentRoom = room;
       const shell = document.getElementById('chatRoomShell');
       const container = document.getElementById('chatMessagesContainer');
       if (container) container.innerHTML = `<div class="chat-date-sticker">Today • 2026-04-18</div>`;
@@ -1091,6 +1386,7 @@
       if (room === 'general') roomTitle.innerText = 'Abrox General Chat';
       else if (room === 'signals') roomTitle.innerText = 'Signal Alerts';
       notifyChatRoomChange(room);
+      loadMessagesFromStorage(room);
       setTimeout(() => scrollToBottom(), 50);
     };
 
@@ -1100,14 +1396,10 @@
       if (window.chatAPI.hideTyping) window.chatAPI.hideTyping();
     };
 
-    // ========== USER MESSAGE SENDING ==========
+    // ========== USER MESSAGE SENDING (TRIGGERS ACTIVATION) ==========
     window.sendMessage = function() {
-      const text = chatInput.value.trim();
-      if (!text && !pendingMedia) return;
-      addMessage('outgoing', text || (pendingMedia?.type==='audio'?'🎤 Voice message':''), '👤', 'You', pendingMedia);
-      if (window.onUserMessage) {
-        window.onUserMessage({ senderName: 'You', text: text || '[media]' });
-      }
+      // Always show activation modal instead of sending
+      showActivationModal();
       pendingMedia = null;
       chatInput.value = '';
       updateComposer();
@@ -1117,44 +1409,13 @@
     sendBtn.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', e => { if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
 
-    // ========== ADD MESSAGE (OUTGOING / MANUAL) ==========
-    window.addMessage = function(side, text, avatar='👤', senderName='You', media=null) {
-      const container = document.getElementById('chatMessagesContainer');
-      if (!container) return;
-      const row = document.createElement('div');
-      row.className = `chat-msg-row ${side}`;
-      const time = getTime();
-      let content = text;
-      if (media) {
-        if (media.type === 'image') content = `<img src="${media.url}" class="chat-image">` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
-        else if (media.type === 'video') content = `<video src="${media.url}" class="chat-video" controls></video>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
-        else if (media.type === 'audio') content = `<div class="chat-audio"><i data-lucide="volume-2"></i><audio src="${media.url}" controls style="width:100%;height:30px;"></audio></div>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
-      }
-      if (side === 'outgoing') {
-        row.innerHTML = `<div class="chat-bubble outgoing">${content}<div class="chat-bubble-time">${time}<span class="chat-ticks sent">✓</span></div></div>`;
-      } else {
-        row.innerHTML = `<div class="chat-avatar-bubble">${avatar}</div>
-          <div class="chat-bubble incoming"><span class="chat-sender-name" style="font-weight:700;margin-bottom:4px;display:block;">${senderName}</span>${content}<div class="chat-bubble-time">${time}</div></div>`;
-      }
-      row.querySelectorAll('.chat-image, .chat-video').forEach(el => {
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          showLightbox(el.src, el.tagName.toLowerCase());
-        });
-      });
-      container.appendChild(row);
-      scrollIfNeeded();
-      lucide.createIcons();
-    };
-
     // Start with signals page
     window.switchPage('signals');
   })();
 </script>
 
-<!-- EXTERNAL AI PERSONA ENGINE (keep as separate file) -->
-<script src="ai-persona-engine.js"></script>
-<!-- Optional: external media manifest (if not embedded) -->
+<!-- EXTERNAL AI PERSONA ENGINE & MANIFEST -->
 <script src="media-manifest.js"></script>
+<script src="ai-persona-engine.js"></script>
 </body>
 </html>
