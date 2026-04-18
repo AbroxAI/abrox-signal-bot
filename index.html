@@ -89,53 +89,60 @@
 
     /* "Chats" title */
     .chats-title {
-      padding: 8px 16px;
-      font-size: 20px;
+      padding: 12px 16px 4px;
+      font-size: 22px;
       font-weight: 700;
       color: #fff;
     }
 
-    /* Chat card */
+    /* Enhanced chat card */
     .chat-card {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 16px;
+      background: rgba(20, 35, 55, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 18px;
       margin: 12px 16px;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.25);
     }
-    .chat-card:hover { background: rgba(255, 255, 255, 0.12); }
+    .chat-card:hover { 
+      background: rgba(30, 50, 75, 0.8); 
+      border-color: rgba(59, 130, 246, 0.3);
+      transform: translateY(-1px);
+    }
     .card-header {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
     .card-title {
       font-size: 18px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; gap: 6px;
     }
+    .card-title i { color: #3b82f6; font-size: 20px; }
     .card-arrow {
-      color: #8b9bb5; font-size: 18px;
+      color: #8b9bb5; font-size: 20px; font-weight: 300;
     }
     .card-meta-row {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 8px;
     }
     .members-count {
       color: #a0bbd8; font-size: 14px; font-weight: 500;
+      display: flex; align-items: center; gap: 4px;
     }
     .online-count {
-      display: flex; align-items: center; gap: 4px;
+      display: flex; align-items: center; gap: 6px;
       color: #a0bbd8; font-size: 14px;
     }
-    .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; }
+    .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 8px #4caf50; }
     .card-description {
       color: #cbd5e1; font-size: 14px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    /* Chat room overlay */
+    /* Chat room overlay - fix height and flex */
     .chat-room-overlay {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: #0a0f17;
@@ -143,6 +150,7 @@
       display: flex; flex-direction: column;
       transform: translateX(100%);
       transition: transform 0.3s ease;
+      height: 100%; /* ensure full height */
     }
     .chat-room-overlay.open { transform: translateX(0); }
 
@@ -151,6 +159,7 @@
       border-bottom: 1px solid #1e2a3a;
       display: flex; align-items: center; gap: 12px;
       background: #0e1522;
+      flex-shrink: 0;
     }
     .room-header .back-btn {
       width: 40px; height: 40px; border-radius: 50%;
@@ -161,8 +170,8 @@
     .room-info { flex: 1; }
     .room-info h2 { font-size: 18px; font-weight: 700; margin: 0; color: #fff; }
     .room-info .room-sub {
-      font-size: 13px; color: #8b9bb5; margin-top: 2px;
-      display: flex; align-items: center; justify-content: space-between;
+      font-size: 13px; color: #8b9bb5; margin-top: 4px;
+      display: flex; align-items: center; gap: 16px;  /* balanced spacing */
     }
     .room-members { display: flex; align-items: center; gap: 4px; }
     .room-online { display: flex; align-items: center; gap: 4px; }
@@ -172,17 +181,23 @@
       background: #1a2536; border-left: 4px solid #3b82f6;
       padding: 8px 16px; margin: 8px 12px; border-radius: 12px;
       display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
     }
     .reply-preview-content { flex:1; }
     .reply-preview-label { font-size: 12px; color: #3b82f6; font-weight: 600; }
     .reply-preview-text { font-size: 13px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .reply-preview-close { background: none; border: none; color: #8b9bb5; cursor: pointer; font-size: 18px; }
 
-    /* Messages area */
+    /* Messages area - takes remaining space */
     .chat-messages {
-      flex: 1; overflow-y: auto; padding: 12px 16px;
-      display: flex; flex-direction: column; gap: 12px;
+      flex: 1; 
+      overflow-y: auto; 
+      padding: 12px 16px;
+      display: flex; 
+      flex-direction: column; 
+      gap: 12px;
       scroll-behavior: smooth;
+      min-height: 0;  /* important for flex child scrolling */
     }
     .message-row { display: flex; gap: 10px; max-width: 85%; }
     .message-row.incoming { align-self: flex-start; }
@@ -210,7 +225,7 @@
       border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* Composer */
+    /* Composer - always visible */
     .chat-composer {
       padding: 10px 12px;
       border-top: 1px solid #1e2a3a;
@@ -218,6 +233,7 @@
       align-items: center;
       gap: 6px;
       background: #0e1522;
+      flex-shrink: 0;
     }
     .composer-btn {
       width: 40px; height: 40px; border-radius: 50%;
@@ -238,12 +254,17 @@
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; flex-shrink: 0;
     }
-    .mic-btn { background: #1a2536; }
+    /* Blue mic button */
+    .mic-btn { 
+      background: #2563eb !important; 
+      color: white;
+    }
     .hidden { display: none !important; }
 
     .recording-indicator {
       display: flex; align-items: center; gap: 12px; margin: 8px 16px;
       background: #1e1e2e; padding: 8px 16px; border-radius: 40px;
+      flex-shrink: 0;
     }
     .wave-bar {
       width: 3px; height: 12px; background: #3b82f6; border-radius: 2px;
@@ -272,21 +293,30 @@
     <div class="page-container" id="pageContainer">
       <div id="chatListPage" class="page active">
         <div class="chats-title">Chats</div>
+        
+        <!-- Enhanced chat card -->
         <div class="chat-card" onclick="openChatRoom()">
           <div class="card-header">
-            <span class="card-title">Abrox General Chat</span>
+            <span class="card-title">
+              <i data-lucide="message-circle" style="width:20px; height:20px;"></i>
+              Abrox General Chat
+            </span>
             <span class="card-arrow">›</span>
           </div>
           <div class="card-meta-row">
-            <span class="members-count">6,324 members</span>
-            <span class="online-count"><span class="online-dot"></span> 247 online</span>
+            <span class="members-count">
+              <i data-lucide="users" style="width:14px; height:14px;"></i> 6,324 members
+            </span>
+            <span class="online-count">
+              <span class="online-dot"></span> 247 online
+            </span>
           </div>
           <div class="card-description">Join the discussion with traders worldwide.</div>
         </div>
       </div>
     </div>
 
-    <!-- Chat room overlay -->
+    <!-- Chat room overlay (fixed flex) -->
     <div class="chat-room-overlay" id="chatRoomOverlay">
       <div class="room-header">
         <button class="back-btn" onclick="closeChatRoom()">
@@ -295,8 +325,12 @@
         <div class="room-info">
           <h2>Abrox General Chat</h2>
           <div class="room-sub">
-            <span class="room-members">6,324 members</span>
-            <span class="room-online"><span class="online-dot"></span> <span id="chatOnlineCount">247 online</span></span>
+            <span class="room-members">
+              <i data-lucide="users" style="width:14px; height:14px;"></i> 6,324 members
+            </span>
+            <span class="room-online">
+              <span class="online-dot"></span> <span id="chatOnlineCount">247 online</span>
+            </span>
           </div>
         </div>
         <button class="composer-btn" style="margin-left:auto;">
@@ -329,7 +363,7 @@
         <span>↓</span> <span id="unreadCount">1 new message</span>
       </div>
 
-      <!-- Composer -->
+      <!-- Composer (input bar always visible) -->
       <div class="chat-composer">
         <button class="composer-btn" id="emojiBtn">
           <i data-lucide="smile"></i>
@@ -448,7 +482,6 @@
     window.openChatRoom = function() {
       const overlay = document.getElementById('chatRoomOverlay');
       overlay.classList.add('open');
-      // Clear any existing interval to avoid duplicates
       if (onlineInterval) clearInterval(onlineInterval);
       onlineInterval = setInterval(() => {
         if (chatOnlineSpan) {
@@ -464,7 +497,6 @@
         clearInterval(onlineInterval);
         onlineInterval = null;
       }
-      // Reset unread when leaving
       unreadMessages = 0;
       unreadPill.style.display = 'none';
     };
@@ -485,7 +517,6 @@
       const row = document.createElement('div');
       row.className = `message-row ${side}`;
       const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-      // Store clean text in data attribute for reply feature
       row.innerHTML = `
         <div class="msg-avatar">${avatar}</div>
         <div class="msg-bubble" data-msg-text="${text.replace(/"/g, '&quot;')}">${text}<div class="msg-time">${time}</div></div>
@@ -517,9 +548,8 @@
       addMessage('outgoing', text, '👤');
       chatInput.value = '';
       updateComposerMode();
-      cancelReply(); // clear reply when sending new message
+      cancelReply();
       
-      // Simulate AI response
       setTimeout(() => {
         addMessage('incoming', 'Thanks for your message! 👍', '🤖');
       }, 1200);
@@ -576,25 +606,21 @@
       updateComposerMode();
     });
 
-    // Bottom navigation switch (fixed event handling)
+    // Bottom navigation switch
     window.switchPage = function(pageId, ev) {
-      // Remove active class from all nav items
       document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-      // Add active class to clicked item (ev.currentTarget is the nav-item)
       if (ev && ev.currentTarget) {
         ev.currentTarget.classList.add('active');
       } else {
-        // Fallback: find by data-page attribute
         const activeItem = Array.from(document.querySelectorAll('.nav-item')).find(
           item => item.dataset.page === pageId
         );
         if (activeItem) activeItem.classList.add('active');
       }
       console.log('Switch to', pageId);
-      // In a real app, you'd swap pages here
     };
 
-    // Make sure existing reply on initial messages works
+    // Attach reply to existing messages
     document.querySelectorAll('.msg-bubble').forEach(bubble => {
       bubble.addEventListener('click', (e) => {
         const row = bubble.closest('.message-row');
@@ -606,7 +632,6 @@
       });
     });
 
-    // Expose functions needed by inline handlers
     window.addMessage = addMessage;
     window.updateComposerMode = updateComposerMode;
   })();
