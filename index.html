@@ -28,7 +28,7 @@
     #stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
     .star { position: absolute; background: #fff; border-radius: 50%; }
 
-    /* ----- SIGNALS HEADER (kept intact, hidden on signals to match card layout) ----- */
+    /* ----- SIGNALS HEADER ----- */
     .signals-header {
       display: flex;
       align-items: center;
@@ -70,7 +70,7 @@
     }
     .lang-switch.hidden { display: none; }
 
-    /* ----- CHAT HEADER (different) ----- */
+    /* ----- CHAT HEADER ----- */
     .chat-header {
       display: flex;
       align-items: center;
@@ -125,7 +125,7 @@
     .nav-item.active { color: #3b82f6; }
     .nav-item i { font-size: 22px; }
 
-    /* ----- SIGNALS CARD LAYOUT (matches reference image) ----- */
+    /* ----- SIGNALS CARD LAYOUT ----- */
     .signals-wrap {
       display: flex;
       justify-content: center;
@@ -256,7 +256,7 @@
       color: #f87171;
     }
 
-    /* ----- CHAT LIST (flat, no cards) ----- */
+    /* ----- CHAT LIST ----- */
     .chats-title {
       padding: 16px 16px 8px;
       font-size: 24px;
@@ -322,7 +322,7 @@
       border-radius: 50%;
     }
 
-    /* ----- CHAT ROOM SHELL (fullscreen overlay) ----- */
+    /* ----- CHAT ROOM SHELL ----- */
     .chat-room-shell {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -358,7 +358,7 @@
     .room-members, .room-online { display: flex; align-items: center; gap: 4px; }
     .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 8px #4caf50; }
 
-    /* System banner rule */
+    /* System banner */
     .system-banner {
       background: #1e2a3a;
       color: #cbd5e1;
@@ -585,7 +585,7 @@
 <div id="app">
   <div id="stars"></div>
 
-  <!-- SIGNALS HEADER (hidden on signals page to match reference card layout) -->
+  <!-- SIGNALS HEADER -->
   <div id="signalsHeader" class="signals-header" style="display:none;">
     <div></div>
     <div class="logo-container">
@@ -594,7 +594,7 @@
     <div class="lang-switch" id="langSwitch">🇺🇸 en</div>
   </div>
 
-  <!-- CHAT HEADER (for other pages) -->
+  <!-- CHAT HEADER -->
   <div id="chatGlobalHeader" class="chat-header" style="display:none;">
     <div class="header-logo">
       <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
@@ -607,7 +607,7 @@
 
   <!-- Page container -->
   <div class="page-container" id="pageContainer">
-    <!-- SIGNALS PAGE (fixed layout) -->
+    <!-- SIGNALS PAGE -->
     <div id="signalsPage" class="page active">
       <div class="signals-wrap">
         <div class="signals-card">
@@ -661,7 +661,7 @@
       </div>
     </div>
 
-    <!-- CHAT PAGE (flat list) -->
+    <!-- CHAT PAGE -->
     <div id="chatPage" class="page">
       <div class="chats-title">Chats</div>
       <div class="chat-list">
@@ -713,7 +713,7 @@
     </div>
   </div>
 
-  <!-- CHAT ROOM SHELL (fullscreen overlay) -->
+  <!-- CHAT ROOM SHELL -->
   <div class="chat-room-shell" id="chatRoomShell">
     <div class="room-header">
       <button class="back-btn" onclick="closeChatRoom()"><i data-lucide="arrow-left"></i></button>
@@ -727,7 +727,6 @@
       <button class="composer-btn" style="margin-left:auto;"><i data-lucide="more-vertical"></i></button>
     </div>
 
-    <!-- SYSTEM BANNER RULE -->
     <div class="system-banner">
       <i data-lucide="alert-circle" style="width:18px;height:18px;"></i>
       <span>Be respectful. No spam, no hate speech. Violations will result in a ban.</span>
@@ -796,6 +795,7 @@
 </div>
 
 <script>
+  // ========== CORE UI & SIGNALS LOGIC ==========
   (function(){
     lucide.createIcons();
     // Stars background
@@ -835,7 +835,7 @@
       setTimeout(() => lucide.createIcons(), 20);
     };
 
-    // Signals logic (unchanged)
+    // Signals logic
     let currency = null, timeframe = null;
     window.toggleDropdown = (id) => document.getElementById(id).classList.toggle("hidden");
     window.selectCurrency = (val) => {
@@ -868,7 +868,7 @@
       }
     });
 
-    // ========== ENHANCED CHAT ==========
+    // ========== CHAT UI STATE & HELPERS ==========
     const chatRoomShell = document.getElementById('chatRoomShell');
     const msgContainer = document.getElementById('chatMessagesContainer');
     const unreadPill = document.getElementById('unreadPill');
@@ -897,22 +897,6 @@
 
     function getTime() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
 
-    function initChat() {
-      msgContainer.innerHTML = `<div class="chat-date-sticker">Today • 2026-04-18</div>`;
-      addMessage('incoming', 'Welcome to Abrox General Chat! AI personas are active.', '🤖', 'Abrox AI');
-      setTimeout(() => addSystemJoin('Alex joined the chat'), 800);
-      setTimeout(() => addSystemJoin('Maria joined the chat'), 1500);
-    }
-    
-    function addSystemJoin(text) {
-      const row = document.createElement('div');
-      row.className = 'chat-msg-row incoming';
-      row.innerHTML = `<div class="chat-avatar-bubble" style="background:#3b82f6;">📢</div>
-        <div class="chat-bubble incoming" style="background:#1e3a5f;">${text}<div class="chat-bubble-time">${getTime()}</div></div>`;
-      msgContainer.appendChild(row);
-      scrollIfNeeded();
-    }
-
     function updateComposer() {
       const has = chatInput.value.trim().length > 0 || pendingMedia;
       voiceBtn.classList.toggle('hidden', has);
@@ -934,47 +918,6 @@
 
     window.scrollToBottom = () => { msgContainer.scrollTop = msgContainer.scrollHeight; unread=0; unreadPill.style.display='none'; isAtBottom=true; };
 
-    function addMessage(side, text, avatar='👤', senderName='You', media=null) {
-      const row = document.createElement('div');
-      row.className = `chat-msg-row ${side}`;
-      const time = getTime();
-      let content = text;
-      if (media) {
-        if (media.type === 'image') content = `<img src="${media.url}" class="chat-image">` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
-        else if (media.type === 'video') content = `<video src="${media.url}" class="chat-video" controls></video>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
-        else if (media.type === 'audio') content = `<div class="chat-audio"><i data-lucide="volume-2"></i><audio src="${media.url}" controls style="width:100%;height:30px;"></audio></div>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
-      }
-      if (side === 'outgoing') {
-        row.innerHTML = `<div class="chat-bubble outgoing">${content}<div class="chat-bubble-time">${time}<span class="chat-ticks sent">✓</span></div></div>`;
-      } else {
-        row.innerHTML = `<div class="chat-avatar-bubble">${avatar}</div>
-          <div class="chat-bubble incoming"><span class="chat-sender-name" style="font-weight:700;margin-bottom:4px;display:block;">${senderName}</span>${content}<div class="chat-bubble-time">${time}</div></div>`;
-      }
-      const bubble = row.querySelector('.chat-bubble');
-      if (side === 'incoming') {
-        bubble.addEventListener('click', (e) => {
-          if (e.target.closest('.chat-image') || e.target.closest('.chat-video')) return;
-          setReplyTarget(senderName, text);
-        });
-      }
-      row.querySelectorAll('.chat-image, .chat-video').forEach(el => {
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          showLightbox(el.src, el.tagName.toLowerCase());
-        });
-      });
-      msgContainer.appendChild(row);
-      scrollIfNeeded();
-      lucide.createIcons();
-    }
-
-    function showLightbox(src, type) {
-      lightboxMedia.innerHTML = type==='img'? `<img src="${src}">` : `<video src="${src}" controls></video>`;
-      lightboxOverlay.classList.add('active');
-    }
-    lightboxClose.onclick = () => lightboxOverlay.classList.remove('active');
-    lightboxOverlay.addEventListener('click', (e) => { if(e.target === lightboxOverlay) lightboxOverlay.classList.remove('active'); });
-
     function setReplyTarget(name, text) {
       replyingTo = { name, text };
       replyName.innerText = name;
@@ -983,40 +926,12 @@
     }
     window.cancelReply = () => { replyBar.classList.add('hidden'); replyingTo = null; };
 
-    window.openChatRoom = (room) => {
-      chatRoomShell.classList.add('is-open');
-      if (!msgContainer.hasChildNodes() || msgContainer.children.length <= 1) initChat();
-      if (onlineInterval) clearInterval(onlineInterval);
-      onlineInterval = setInterval(() => { if(onlineSpan) onlineSpan.innerText = (180+Math.floor(Math.random()*100))+' online'; }, 8000);
-      setTimeout(scrollToBottom, 50);
-    };
-    window.closeChatRoom = () => {
-      chatRoomShell.classList.remove('is-open');
-      if (onlineInterval) { clearInterval(onlineInterval); onlineInterval = null; }
-    };
-
-    function sendMessage() {
-      const text = chatInput.value.trim();
-      if (!text && !pendingMedia) return;
-      let media = pendingMedia;
-      addMessage('outgoing', text || (media?.type==='audio'?'🎤 Voice message':''), '👤', 'You', media);
-      pendingMedia = null; chatInput.value = ''; updateComposer(); cancelReply();
-      showTypingIndicator();
-      setTimeout(() => {
-        hideTypingIndicator();
-        addMessage('incoming', 'Thanks for your message! 👍', '🤖', 'Abrox AI');
-      }, 1500);
+    function showLightbox(src, type) {
+      lightboxMedia.innerHTML = type==='img'? `<img src="${src}">` : `<video src="${src}" controls></video>`;
+      lightboxOverlay.classList.add('active');
     }
-
-    function showTypingIndicator() {
-      const row = document.createElement('div'); row.className = 'chat-msg-row incoming'; row.id = 'typingIndicator';
-      row.innerHTML = `<div class="chat-avatar-bubble">🤖</div><div class="chat-bubble incoming typing-bubble"><span></span><span></span><span></span></div>`;
-      msgContainer.appendChild(row); msgContainer.scrollTop = msgContainer.scrollHeight;
-    }
-    function hideTypingIndicator() { document.getElementById('typingIndicator')?.remove(); }
-
-    sendBtn.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', e => { if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
+    lightboxClose.onclick = () => lightboxOverlay.classList.remove('active');
+    lightboxOverlay.addEventListener('click', (e) => { if(e.target === lightboxOverlay) lightboxOverlay.classList.remove('active'); });
 
     // Voice recording
     voiceBtn.addEventListener('click', async () => {
@@ -1054,13 +969,192 @@
     };
     emojiBtn.onclick = () => { chatInput.value += '😊'; updateComposer(); };
 
+    // ========== CHAT API INTEGRATION FOR AI ENGINE ==========
+    window.__activeChatRoom = null;
+
+    function notifyChatRoomChange(room) {
+      window.__activeChatRoom = room;
+      window.dispatchEvent(new CustomEvent('chat-room-changed', { detail: { room } }));
+    }
+
+    window.chatAPI = {
+      showTypingForPersona: function(persona, typingType = 'text') {
+        const container = document.getElementById('chatMessagesContainer');
+        if (!container) return;
+        this.hideTyping();
+        const row = document.createElement('div');
+        row.className = 'chat-msg-row incoming';
+        row.id = 'typingIndicator';
+        const avatarUrl = persona.avatar || '';
+        const avatarHtml = persona.avatar 
+          ? `<div class="chat-avatar-bubble" style="background-image: url('${avatarUrl}'); background-size: cover; background-position: center;"></div>`
+          : `<div class="chat-avatar-bubble">🤖</div>`;
+        let typingContent = '';
+        if (typingType === 'audio') {
+          typingContent = `<div class="chat-audio" style="padding: 6px 12px;"><i data-lucide="mic"></i><span style="margin-left: 8px;">Recording voice...</span></div>`;
+        } else {
+          typingContent = `<div class="typing-bubble"><span></span><span></span><span></span></div>`;
+        }
+        row.innerHTML = `${avatarHtml}<div class="chat-bubble incoming">${typingContent}</div>`;
+        container.appendChild(row);
+        container.scrollTop = container.scrollHeight;
+      },
+
+      hideTyping: function() {
+        const existing = document.getElementById('typingIndicator');
+        if (existing) existing.remove();
+      },
+
+      addIncomingMessage: function(msgData) {
+        const container = document.getElementById('chatMessagesContainer');
+        if (!container) return null;
+
+        const row = document.createElement('div');
+        row.className = 'chat-msg-row incoming';
+        row.dataset.personaId = msgData.personaId;
+        row.dataset.messageType = msgData.messageType;
+
+        const avatarHtml = msgData.senderAvatar 
+          ? `<div class="chat-avatar-bubble" style="background-image: url('${msgData.senderAvatar}'); background-size: cover; background-position: center;"></div>`
+          : `<div class="chat-avatar-bubble">${msgData.senderName.charAt(0)}</div>`;
+
+        let contentHtml = '';
+        const senderName = msgData.senderName || 'AI';
+
+        if (msgData.replyTo) {
+          contentHtml += `<div class="reply-preview" style="background: rgba(255,255,255,0.08); padding: 8px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #3b82f6;">
+            <div style="font-size: 11px; color: #8b9bb5;">Replying to ${msgData.replyTo.senderName}</div>
+            <div style="font-size: 13px; color: #cbd5e1;">${msgData.replyTo.text}</div>
+          </div>`;
+        }
+
+        if (msgData.mediaUrl) {
+          if (msgData.mediaType === 'image') {
+            contentHtml += `<img src="${msgData.mediaUrl}" class="chat-image" onclick="showLightbox('${msgData.mediaUrl}', 'img')">`;
+          } else if (msgData.mediaType === 'video') {
+            contentHtml += `<video src="${msgData.mediaUrl}" class="chat-video" controls onclick="showLightbox('${msgData.mediaUrl}', 'video')"></video>`;
+          } else if (msgData.mediaType === 'audio') {
+            contentHtml += `<div class="chat-audio"><i data-lucide="volume-2"></i><audio src="${msgData.mediaUrl}" controls style="width:100%;height:30px;"></audio></div>`;
+          }
+        }
+
+        if (msgData.text) {
+          contentHtml += `<div style="margin-top: ${msgData.mediaUrl ? '8px' : '0'};">${msgData.text}</div>`;
+        }
+
+        const timeHtml = `<div class="chat-bubble-time">${msgData.time || getTime()}</div>`;
+
+        row.innerHTML = `${avatarHtml}<div class="chat-bubble incoming"><span style="font-weight:700;margin-bottom:4px;display:block;">${senderName}</span>${contentHtml}${timeHtml}</div>`;
+
+        const bubble = row.querySelector('.chat-bubble');
+        bubble.addEventListener('click', (e) => {
+          if (e.target.closest('.chat-image') || e.target.closest('.chat-video')) return;
+          setReplyTarget(senderName, msgData.text || 'Media message');
+        });
+
+        row.querySelectorAll('.chat-image, .chat-video').forEach(el => {
+          el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showLightbox(el.src, el.tagName.toLowerCase());
+          });
+        });
+
+        container.appendChild(row);
+        scrollIfNeeded();
+        lucide.createIcons();
+        return row;
+      },
+
+      addSystemMessage: function(msgData) {
+        const container = document.getElementById('chatMessagesContainer');
+        if (!container) return;
+        const row = document.createElement('div');
+        row.className = 'chat-msg-row incoming';
+        row.innerHTML = `<div class="chat-avatar-bubble" style="background:#3b82f6;">📢</div>
+          <div class="chat-bubble incoming" style="background:#1e3a5f;">${msgData.text}<div class="chat-bubble-time">${msgData.time || getTime()}</div></div>`;
+        container.appendChild(row);
+        scrollIfNeeded();
+      },
+
+      isChatRoomActive: function() {
+        return window.__activeChatRoom === 'general' && document.getElementById('chatRoomShell').classList.contains('is-open');
+      }
+    };
+
+    // ========== CHAT ROOM OPEN/CLOSE ==========
+    window.openChatRoom = function(room) {
+      const shell = document.getElementById('chatRoomShell');
+      const container = document.getElementById('chatMessagesContainer');
+      if (container) container.innerHTML = `<div class="chat-date-sticker">Today • 2026-04-18</div>`;
+      shell.classList.add('is-open');
+      const roomTitle = shell.querySelector('.room-info h2');
+      if (room === 'general') roomTitle.innerText = 'Abrox General Chat';
+      else if (room === 'signals') roomTitle.innerText = 'Signal Alerts';
+      notifyChatRoomChange(room);
+      setTimeout(() => scrollToBottom(), 50);
+    };
+
+    window.closeChatRoom = function() {
+      document.getElementById('chatRoomShell').classList.remove('is-open');
+      notifyChatRoomChange(null);
+      if (window.chatAPI.hideTyping) window.chatAPI.hideTyping();
+    };
+
+    // ========== USER MESSAGE SENDING ==========
+    window.sendMessage = function() {
+      const text = chatInput.value.trim();
+      if (!text && !pendingMedia) return;
+      addMessage('outgoing', text || (pendingMedia?.type==='audio'?'🎤 Voice message':''), '👤', 'You', pendingMedia);
+      if (window.onUserMessage) {
+        window.onUserMessage({ senderName: 'You', text: text || '[media]' });
+      }
+      pendingMedia = null;
+      chatInput.value = '';
+      updateComposer();
+      cancelReply();
+    };
+
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', e => { if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
+
+    // ========== ADD MESSAGE (OUTGOING / MANUAL) ==========
+    window.addMessage = function(side, text, avatar='👤', senderName='You', media=null) {
+      const container = document.getElementById('chatMessagesContainer');
+      if (!container) return;
+      const row = document.createElement('div');
+      row.className = `chat-msg-row ${side}`;
+      const time = getTime();
+      let content = text;
+      if (media) {
+        if (media.type === 'image') content = `<img src="${media.url}" class="chat-image">` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
+        else if (media.type === 'video') content = `<video src="${media.url}" class="chat-video" controls></video>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
+        else if (media.type === 'audio') content = `<div class="chat-audio"><i data-lucide="volume-2"></i><audio src="${media.url}" controls style="width:100%;height:30px;"></audio></div>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
+      }
+      if (side === 'outgoing') {
+        row.innerHTML = `<div class="chat-bubble outgoing">${content}<div class="chat-bubble-time">${time}<span class="chat-ticks sent">✓</span></div></div>`;
+      } else {
+        row.innerHTML = `<div class="chat-avatar-bubble">${avatar}</div>
+          <div class="chat-bubble incoming"><span class="chat-sender-name" style="font-weight:700;margin-bottom:4px;display:block;">${senderName}</span>${content}<div class="chat-bubble-time">${time}</div></div>`;
+      }
+      row.querySelectorAll('.chat-image, .chat-video').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showLightbox(el.src, el.tagName.toLowerCase());
+        });
+      });
+      container.appendChild(row);
+      scrollIfNeeded();
+      lucide.createIcons();
+    };
+
     // Start with signals page
-    initChat();
     window.switchPage('signals');
   })();
 </script>
-<!-- Placeholders for engine/manifest -->
-<script src="media-manifest.js"></script>
+
+<!-- EXTERNAL AI PERSONA ENGINE (keep as separate file) -->
 <script src="ai-persona-engine.js"></script>
+<!-- Optional: external media manifest (if not embedded) -->
+<script src="media-manifest.js"></script>
 </body>
 </html>
