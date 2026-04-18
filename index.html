@@ -11,16 +11,19 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
 #stars { position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; }
 .star { position:absolute; background:#fff; border-radius:50%; }
 
-.icon-box { width:14vw; height:14vw; max-width:64px; max-height:64px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:6vw; font-weight:700; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 4px 10px rgba(0,0,0,0.4); }
+/* 图标缩小一点 */
+.icon-box { width:12vw; height:12vw; max-width:56px; max-height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:5.5vw; font-weight:700; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 4px 10px rgba(0,0,0,0.4); }
 .icon-box.usd { background:linear-gradient(180deg,#134b7a,#0f365e); color:#7dd3fc; }
 .icon-box.btc { background:linear-gradient(180deg,#0b233e,#091d33); color:#fff; }
 
-.dropdown-btn { background:linear-gradient(180deg,#1bb6c9,#0ea5b7); color:#fff; font-weight:600; padding:3vw 4vw; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12); cursor:pointer; font-size:4vw; border:none; width:100%; }
-.dropdown-list { position:absolute; top:calc(100% + 0.5vw); left:0; width:100%; background:#fff; border-radius:12px; overflow-y:auto; max-height:40vh; z-index:50; box-shadow:0 12px 35px rgba(0,0,0,0.45); font-size:4vw; -webkit-overflow-scrolling:touch; scroll-behavior:smooth; overscroll-behavior:contain; scroll-snap-type:y mandatory; }
-.dropdown-list div { padding:3vw 4vw; color:#000; font-weight:500; cursor:pointer; scroll-snap-align:center; transition: transform 0.2s, font-size 0.2s, color 0.2s; }
-.dropdown-list div.active { transform:scale(1.1); font-size:4.5vw; color:#1bb6c9; }
+/* 下拉按钮稍小 */
+.dropdown-btn { background:linear-gradient(180deg,#1bb6c9,#0ea5b7); color:#fff; font-weight:600; padding:2.5vw 3.5vw; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12); cursor:pointer; font-size:3.8vw; border:none; width:100%; }
+.dropdown-list { position:absolute; top:calc(100% + 0.5vw); left:0; width:100%; background:#fff; border-radius:12px; overflow-y:auto; max-height:35vh; z-index:50; box-shadow:0 12px 35px rgba(0,0,0,0.45); font-size:3.8vw; -webkit-overflow-scrolling:touch; scroll-behavior:smooth; overscroll-behavior:contain; scroll-snap-type:y mandatory; }
+.dropdown-list div { padding:2.5vw 3.5vw; color:#000; font-weight:500; cursor:pointer; scroll-snap-align:center; transition: transform 0.2s, font-size 0.2s, color 0.2s; }
+.dropdown-list div.active { transform:scale(1.08); font-size:4.2vw; color:#1bb6c9; }
 
-#startBtn { margin-top:4vw; width:100%; padding:4vw; border-radius:999px; font-weight:700; background:linear-gradient(90deg,#ec4899,#8b5cf6); color:#fff; cursor:pointer; font-size:4vw; border:none; }
+/* 开始按钮也缩小 */
+#startBtn { margin-top:3.5vw; width:100%; padding:3.5vw; border-radius:999px; font-weight:700; background:linear-gradient(90deg,#ec4899,#8b5cf6); color:#fff; cursor:pointer; font-size:3.8vw; border:none; }
 .dotAnim { display:inline-block; width:12vw; text-align:left; }
 
 @keyframes pulseScale { 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.1); opacity:0.8; } }
@@ -28,28 +31,29 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
 
 @keyframes logoGlowPulse { 0%{filter:drop-shadow(0 0 5px #ff5fd2) drop-shadow(0 0 10px #8b5cf6);} 50%{filter:drop-shadow(0 0 15px #ff5fd2) drop-shadow(0 0 25px #8b5cf6);} 100%{filter:drop-shadow(0 0 5px #ff5fd2) drop-shadow(0 0 10px #8b5cf6);} }
 
-.header { display:flex; align-items:center; justify-content:space-between; min-height:100px; padding:0 1rem; position:relative; z-index:10; }
+/* 头部压缩 */
+.header { display:flex; align-items:center; justify-content:space-between; min-height:70px; padding:0 1rem; position:relative; z-index:10; }
 .logo-container { display:flex; align-items:center; justify-content:center; overflow:visible; }
-.logo-container img { max-height:100%; max-width:50vw; height:auto; width:auto; display:block; animation:logoGlowPulse 2s infinite ease-in-out; transition: transform 0.3s ease; }
+.logo-container img { max-height:36px; width:auto; display:block; animation:logoGlowPulse 2s infinite ease-in-out; transition: transform 0.3s ease; }
 .logo-container:hover img { transform:scale(1.05); }
 
-/* Page wrapper – ensures content scrolls and bottom nav has space */
+/* 内容区域自动高度，不加固定高度，让底部自然可见 */
 .page-container {
   position: relative;
   z-index: 10;
-  height: calc(100% - 100px); /* subtract header height */
-  overflow-y: auto;
-  padding-bottom: 90px;        /* space for bottom nav */
+  height: auto;
+  min-height: 0;
+  padding-bottom: 90px; /* 为底部导航留空间 */
   box-sizing: border-box;
 }
 
-/* Bottom Navigation */
+/* 底部导航 */
 .bottom-nav {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 80px;
+  height: 76px;
   background: rgba(2, 11, 22, 0.9);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(255,255,255,0.08);
@@ -71,17 +75,13 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
   transition: color 0.15s;
 }
 .nav-item.active { color: #3b82f6; }
-.nav-item i { font-size: 22px; }
+.nav-item i { font-size: 20px; }
 
-/* Pages */
-.page {
-  display: none;
-}
-.page.active {
-  display: block;
-}
+/* 页面切换 */
+.page { display: none; }
+.page.active { display: block; }
 
-/* Placeholder pages styling */
+/* 占位页面 */
 .placeholder-page {
   display: flex;
   flex-direction: column;
@@ -95,7 +95,16 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
   padding: 20px;
 }
 
-@media(max-width:420px){ .w-[390px]{width:95vw;} .h-[844px]{height:95vh;} #startBtn{padding:3vw;font-size:4vw;} .dropdown-btn{padding:2.5vw 3vw;font-size:3.5vw;} }
+/* 减小内容区上边距 */
+.content-wrapper { padding-top: 0.5rem; }
+
+/* 字体大小微调 */
+h1 { font-size: 1.7rem !important; }
+h2 { font-size: 1.2rem !important; }
+.text-sm { font-size: 0.8rem !important; }
+
+/* 响应式保持 */
+@media(max-width:420px){ .w-[390px]{width:95vw;} .h-[844px]{height:95vh;} }
 </style>
 </head>
 <body class="flex justify-center items-center min-h-screen">
@@ -104,7 +113,7 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
   <!-- Stars -->
   <div id="stars"></div>
 
-  <!-- HEADER -->
+  <!-- HEADER (压缩后) -->
   <div class="header">
     <div class="logo-container">
       <img id="abroxLogo" src="assets/logo.png" alt="ABROX Logo"/>
@@ -114,19 +123,19 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
 
   <!-- PAGES CONTAINER -->
   <div class="page-container">
-    <!-- SIGNALS PAGE (active by default) -->
+    <!-- SIGNALS PAGE (active) -->
     <div id="signalsPage" class="page active">
-      <div class="content-wrapper px-6 mt-6">
-        <h1 class="text-2xl font-semibold tracking-tight">TRADING BOT</h1>
-        <h2 class="text-lg mt-3 font-semibold tracking-tight">SETTINGS</h2>
-        <p class="text-sm mt-3 opacity-80 leading-snug">(First select Currency Pair and Timeframe and then click on Start Signals.)</p>
+      <div class="content-wrapper px-5 mt-2">
+        <h1 class="font-semibold tracking-tight">TRADING BOT</h1>
+        <h2 class="mt-2 font-semibold tracking-tight">SETTINGS</h2>
+        <p class="text-sm mt-2 opacity-80 leading-snug">(First select Currency Pair and Timeframe and then click on Start Signals.)</p>
 
-        <div class="flex gap-4 mt-6">
+        <div class="flex gap-3 mt-4">
           <div class="icon-box usd"><span>$</span></div>
           <div class="icon-box btc"><span>₿</span></div>
         </div>
 
-        <div class="mt-6 space-y-4 relative">
+        <div class="mt-4 space-y-3 relative">
           <div class="relative">
             <div class="dropdown-btn" onclick="toggleDropdown('currencyList')">Choose Currency <span class="text-sm">▾</span></div>
             <div id="currencyList" class="dropdown-list hidden">
@@ -218,7 +227,7 @@ body { margin:0; background:#000; font-family:-apple-system,BlinkMacSystemFont,"
 </div>
 
 <script>
-// Stars background (unchanged)
+// Stars background
 const starsContainer=document.getElementById("stars");
 for(let i=0;i<40;i++){
   const s=document.createElement("div");
@@ -230,7 +239,7 @@ for(let i=0;i<40;i++){
   starsContainer.appendChild(s);
 }
 
-// ========== PAGE SWITCHING ==========
+// Page switching
 function switchPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId + 'Page').classList.add('active');
@@ -239,7 +248,7 @@ function switchPage(pageId) {
   });
 }
 
-// ========== ORIGINAL DROPDOWN & SIGNAL LOGIC (UNTOUCHED) ==========
+// Original dropdown & signal logic (unchanged)
 let currency=null, timeframe=null;
 
 function toggleDropdown(id){ 
@@ -266,9 +275,7 @@ function startSignals(){
     return; 
   }
   document.getElementById("warn").classList.add("hidden");
-  // Since payment modal is removed, we just show an alert for now.
   alert(`Signals started for ${currency} · ${timeframe}`);
-  // In future you can connect this to real signal logic.
 }
 
 document.addEventListener('click',e=>{
@@ -288,8 +295,6 @@ function highlightOption(listId,value){
     selected.scrollIntoView({behavior:'smooth', block:'center'});
   }
 }
-
-// ========== REMOVED ALL PAYMENT/PROCESSING MODAL CODE ==========
 </script>
 </body>
 </html>
