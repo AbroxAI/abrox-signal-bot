@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>ABROX AI · Signals & Chat</title>
-  <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Tailwind (only for utility classes, does not override custom signal styles) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* ----- RESET & GLOBAL ----- */
@@ -19,9 +17,8 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 12px; /* safe area for tiny screens */
+      padding: 12px;
     }
-    /* Phone frame – responsive */
     .phone-frame {
       width: 100%;
       max-width: 390px;
@@ -44,7 +41,7 @@
     #stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
     .star { position: absolute; background: #fff; border-radius: 50%; }
 
-    /* Bottom navigation – fluid sizing */
+    /* Bottom navigation */
     .bottom-nav {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -77,15 +74,57 @@
     .page { display: none; }
     .page.active { display: block; }
 
-    /* Global Header */
-    .app-header {
+    /* ----- SIGNALS PAGE HEADER (exact original) ----- */
+    .signals-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 100px;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 10;
+    }
+    .signals-logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      flex: 1;
+    }
+    .signals-logo-container img {
+      max-height: 100%;
+      max-width: 50vw;
+      height: auto;
+      width: auto;
+      display: block;
+      animation: logoGlowPulse 2s infinite ease-in-out;
+      transition: transform 0.3s ease;
+    }
+    .signals-logo-container:hover img { transform: scale(1.05); }
+    @keyframes logoGlowPulse {
+      0% { filter: drop-shadow(0 0 5px #ff5fd2) drop-shadow(0 0 10px #8b5cf6); }
+      50% { filter: drop-shadow(0 0 15px #ff5fd2) drop-shadow(0 0 25px #8b5cf6); }
+      100% { filter: drop-shadow(0 0 5px #ff5fd2) drop-shadow(0 0 10px #8b5cf6); }
+    }
+    .lang-switch {
+      background: #06b6d4;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    .lang-switch.hidden { display: none; }
+
+    /* ----- CHAT GLOBAL HEADER (different from signals) ----- */
+    .chat-header {
       display: flex; align-items: center; gap: clamp(8px, 3vw, 12px);
       padding: clamp(8px, 3vw, 12px) clamp(12px, 4vw, 16px);
       border-bottom: 1px solid rgba(255,255,255,0.06);
       background: transparent;
       position: relative; z-index: 10;
     }
-    .header-logo {
+    .chat-header .header-logo {
       width: clamp(32px, 10vw, 40px); height: clamp(32px, 10vw, 40px);
       border-radius: clamp(8px, 2.5vw, 12px);
       background: linear-gradient(145deg, #1e4f7a, #0f365e);
@@ -93,11 +132,25 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
       overflow: hidden;
     }
-    .header-logo img { width: 100%; height: 100%; object-fit: cover; }
-    .header-titles h1 { font-size: clamp(16px, 5vw, 20px); font-weight: 700; color: #fff; line-height: 1.2; }
-    .header-titles .subtitle { font-size: clamp(10px, 3.5vw, 13px); color: #8b9bb5; margin-top: 2px; }
+    .chat-header .header-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .chat-header .header-titles h1 { font-size: clamp(16px, 5vw, 20px); font-weight: 700; color: #fff; line-height: 1.2; }
+    .chat-header .header-titles .subtitle { font-size: clamp(10px, 3.5vw, 13px); color: #8b9bb5; margin-top: 2px; }
 
-    /* ----- SIGNALS PAGE (EXACT DESIGN, FULLY RESPONSIVE) ----- */
+    /* Hide headers conditionally */
+    #signalsHeader { display: none; }
+    #chatGlobalHeader { display: none; }
+    body[data-page="signals"] #signalsHeader { display: flex; }
+    body[data-page="signals"] #chatGlobalHeader { display: none; }
+    body[data-page="chat"] #chatGlobalHeader { display: flex; }
+    body[data-page="chat"] #signalsHeader { display: none; }
+    body[data-page="training"] #chatGlobalHeader,
+    body[data-page="referrals"] #chatGlobalHeader,
+    body[data-page="progress"] #chatGlobalHeader { display: flex; }
+    body[data-page="training"] #signalsHeader,
+    body[data-page="referrals"] #signalsHeader,
+    body[data-page="progress"] #signalsHeader { display: none; }
+
+    /* ----- SIGNALS CONTENT (exact original) ----- */
     .icon-box {
       width: clamp(56px, 14vw, 70px); 
       height: clamp(56px, 14vw, 70px);
@@ -136,10 +189,8 @@
       background: linear-gradient(90deg,#ec4899,#8b5cf6); color: #fff; cursor: pointer;
       font-size: clamp(16px, 5vw, 20px); border: none;
     }
-    .lang-switch { transition: opacity 0.2s; }
-    .lang-switch.hidden { display: none; }
 
-    /* ----- CHAT STYLES (KEPT FROM PREVIOUS FIX) ----- */
+    /* ----- CHAT STYLES (fixed input bar) ----- */
     .chats-title { padding: 12px 16px 4px; font-size: clamp(20px, 6vw, 24px); font-weight: 700; color: #fff; }
     .chat-card {
       background: rgba(20, 35, 55, 0.7); backdrop-filter: blur(16px);
@@ -154,7 +205,6 @@
     .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 8px #4caf50; }
     .card-description { color: #cbd5e1; font-size: clamp(12px, 4vw, 15px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* Chat overlay – fixed input bar (always visible) */
     .chat-room-overlay {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: #0a0f17; z-index: 50;
@@ -233,7 +283,6 @@
     .wave-bar { width: 3px; height: 12px; background: #3b82f6; border-radius: 2px; animation: wave 1.2s infinite; }
     @keyframes wave { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(2); } }
 
-    /* Placeholder pages */
     .placeholder-content {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       min-height: 100%; color: #cbd5e1; font-size: clamp(16px, 5vw, 20px); font-weight: 500;
@@ -241,13 +290,22 @@
     }
   </style>
 </head>
-<body>
+<body data-page="signals">
 <div class="phone-frame">
   <div class="space-bg text-white">
     <div id="stars"></div>
 
-    <!-- Global Header -->
-    <div class="app-header">
+    <!-- SIGNALS HEADER (exact original) -->
+    <div id="signalsHeader" class="signals-header">
+      <div></div> <!-- spacer for flex alignment -->
+      <div class="signals-logo-container">
+        <img id="abroxLogo" src="assets/logo.png" alt="ABROX Logo" onerror="this.parentElement.innerHTML='✨';">
+      </div>
+      <div class="lang-switch" id="langSwitch">🇺🇸 en</div>
+    </div>
+
+    <!-- CHAT GLOBAL HEADER (different) -->
+    <div id="chatGlobalHeader" class="chat-header">
       <div class="header-logo">
         <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
       </div>
@@ -255,12 +313,11 @@
         <h1>Abrox AI</h1>
         <div class="subtitle" id="globalSubtitle">6,324 members</div>
       </div>
-      <div class="bg-cyan-600 px-3 py-1 rounded-lg text-sm font-medium lang-switch hidden" id="langSwitch">🇺🇸 en</div>
     </div>
 
     <!-- Page container -->
     <div class="page-container" id="pageContainer">
-      <!-- SIGNALS PAGE (EXACT DESIGN) -->
+      <!-- SIGNALS PAGE -->
       <div id="signalsPage" class="page active">
         <div class="px-6 mt-6">
           <h1 class="text-2xl font-semibold tracking-tight">TRADING BOT</h1>
@@ -347,7 +404,7 @@
       </div>
     </div>
 
-    <!-- CHAT ROOM OVERLAY (FIXED INPUT BAR) -->
+    <!-- CHAT ROOM OVERLAY (fixed input bar) -->
     <div class="chat-room-overlay" id="chatRoomOverlay">
       <div class="room-header">
         <button class="back-btn" onclick="closeChatRoom()"><i data-lucide="arrow-left"></i></button>
@@ -437,22 +494,21 @@
       starsContainer.appendChild(s);
     }
 
-    // Page switching
-    const langSwitch = document.getElementById('langSwitch');
-    const globalSubtitle = document.getElementById('globalSubtitle');
-    
+    // Page switching – update body attribute to control headers
     window.switchPage = function(pageId, ev) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId + 'Page').classList.add('active');
+      
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.toggle('active', item.dataset.page === pageId);
       });
       
-      if (pageId === 'signals') {
-        langSwitch.classList.remove('hidden');
-        globalSubtitle.innerText = 'Trading signals';
-      } else {
-        langSwitch.classList.add('hidden');
+      // Set body attribute for header switching
+      document.body.setAttribute('data-page', pageId);
+      
+      // Update chat global subtitle when on chat
+      const globalSubtitle = document.getElementById('globalSubtitle');
+      if (pageId === 'chat' && globalSubtitle) {
         globalSubtitle.innerText = '6,324 members';
       }
       
@@ -460,7 +516,7 @@
       setTimeout(() => lucide.createIcons(), 20);
     };
 
-    // Signals logic (unchanged)
+    // Signals logic
     let currency = null, timeframe = null;
     window.toggleDropdown = (id) => document.getElementById(id).classList.toggle("hidden");
     window.selectCurrency = (val) => {
@@ -493,7 +549,7 @@
       }
     });
 
-    // Chat logic (fixed input bar always visible)
+    // Chat logic
     const msgContainer = document.getElementById('chatMessagesContainer');
     const unreadPill = document.getElementById('unreadPill');
     const unreadCountSpan = document.getElementById('unreadCount');
