@@ -9,7 +9,6 @@
   <!-- Tailwind (for signals page) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Custom base styles (chat & global) */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       margin: 0;
@@ -91,7 +90,7 @@
     .header-titles h1 { font-size: 18px; font-weight: 700; color: #fff; margin: 0; line-height: 1.2; }
     .header-titles .subtitle { font-size: 12px; color: #8b9bb5; margin-top: 2px; }
 
-    /* Chat specific styles (unchanged) */
+    /* Chat specific */
     .chats-title { padding: 12px 16px 4px; font-size: 22px; font-weight: 700; color: #fff; }
     .chat-card {
       background: rgba(20, 35, 55, 0.7); backdrop-filter: blur(16px);
@@ -107,16 +106,20 @@
     .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 8px #4caf50; }
     .card-description { color: #cbd5e1; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* Chat room overlay */
+    /* CHAT ROOM OVERLAY – FIXED LAYOUT */
     .chat-room-overlay {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: #0a0f17; z-index: 50; display: flex; flex-direction: column;
-      transform: translateX(100%); transition: transform 0.3s; height: 100%;
+      background: #0a0f17; z-index: 50;
+      display: flex; flex-direction: column;
+      transform: translateX(100%); transition: transform 0.3s ease;
+      height: 100%; width: 100%;
     }
     .chat-room-overlay.open { transform: translateX(0); }
+
     .room-header {
       padding: 14px 16px; border-bottom: 1px solid #1e2a3a;
-      display: flex; align-items: center; gap: 12px; background: #0e1522; flex-shrink: 0;
+      display: flex; align-items: center; gap: 12px;
+      background: #0e1522; flex-shrink: 0;
     }
     .room-header .back-btn {
       width: 40px; height: 40px; border-radius: 50%; background: #1a2536;
@@ -129,17 +132,33 @@
 
     .reply-preview-bar {
       background: #1a2536; border-left: 4px solid #3b82f6; padding: 8px 16px;
-      margin: 8px 12px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+      margin: 8px 12px; border-radius: 12px; display: flex; align-items: center;
+      justify-content: space-between; flex-shrink: 0;
     }
+    .reply-preview-content { flex:1; }
+    .reply-preview-label { font-size: 12px; color: #3b82f6; font-weight: 600; }
+    .reply-preview-text { font-size: 13px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .reply-preview-close { background: none; border: none; color: #8b9bb5; cursor: pointer; font-size: 18px; }
+
+    /* Messages area – takes all remaining space, scrolls internally */
     .chat-messages {
-      flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; min-height: 0;
+      flex: 1 1 0;
+      min-height: 0;   /* crucial for flex scrolling */
+      overflow-y: auto;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
     }
+
     .message-row { display: flex; gap: 10px; max-width: 85%; }
     .message-row.incoming { align-self: flex-start; }
     .message-row.outgoing { align-self: flex-end; flex-direction: row-reverse; }
     .msg-avatar {
       width: 36px; height: 36px; border-radius: 50%; background: #1e4f7a;
-      display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; color: #fff;
+      font-weight: 600; flex-shrink: 0;
     }
     .msg-bubble {
       background: #1a2536; padding: 10px 14px; border-radius: 18px; color: #e2e8f0;
@@ -154,9 +173,12 @@
       font-size: 13px; font-weight: 600; box-shadow: 0 6px 14px rgba(59,130,246,0.3);
       cursor: pointer; z-index: 45; display: none; align-items: center; gap: 8px;
     }
+
+    /* Composer – fixed at bottom */
     .chat-composer {
-      padding: 10px 12px; border-top: 1px solid #1e2a3a; display: flex; align-items: center;
-      gap: 6px; background: #0e1522; flex-shrink: 0;
+      padding: 10px 12px; border-top: 1px solid #1e2a3a;
+      display: flex; align-items: center; gap: 6px;
+      background: #0e1522; flex-shrink: 0;
     }
     .composer-btn {
       width: 40px; height: 40px; border-radius: 50%; background: #1a2536;
@@ -173,6 +195,7 @@
     }
     .mic-btn { background: #2563eb !important; color: white; }
     .hidden { display: none !important; }
+
     .recording-indicator {
       display: flex; align-items: center; gap: 12px; margin: 8px 16px;
       background: #1e1e2e; padding: 8px 16px; border-radius: 40px; flex-shrink: 0;
@@ -180,7 +203,7 @@
     .wave-bar { width: 3px; height: 12px; background: #3b82f6; border-radius: 2px; animation: wave 1.2s infinite; }
     @keyframes wave { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(2); } }
 
-    /* Signals page specific (custom non-tailwind overrides) */
+    /* Signals page custom styles */
     .icon-box {
       width: 14vw; height: 14vw; max-width: 64px; max-height: 64px;
       border-radius: 14px; display: flex; align-items: center; justify-content: center;
@@ -212,7 +235,6 @@
       margin-top: 4vw; width: 100%; padding: 4vw; border-radius: 999px; font-weight: 700;
       background: linear-gradient(90deg,#ec4899,#8b5cf6); color: #fff; cursor: pointer; font-size: 4vw; border: none;
     }
-    @keyframes logoGlowPulse { 0%{filter:drop-shadow(0 0 5px #ff5fd2) drop-shadow(0 0 10px #8b5cf6);} 50%{filter:drop-shadow(0 0 15px #ff5fd2) drop-shadow(0 0 25px #8b5cf6);} 100%{filter:drop-shadow(0 0 5px #ff5fd2) drop-shadow(0 0 10px #8b5cf6);} }
     .lang-switch { transition: opacity 0.2s; }
     .lang-switch.hidden { display: none; }
     .placeholder-content {
@@ -226,7 +248,7 @@
   <div class="space-bg text-white">
     <div id="stars"></div>
 
-    <!-- Global Header (used across pages) -->
+    <!-- Global Header -->
     <div class="app-header">
       <div class="header-logo">
         <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
@@ -235,13 +257,12 @@
         <h1>Abrox AI</h1>
         <div class="subtitle" id="globalSubtitle">6,324 members</div>
       </div>
-      <!-- Language switch (only visible on signals page) -->
       <div class="bg-cyan-600 px-3 py-1 rounded-lg text-sm font-medium lang-switch hidden" id="langSwitch">🇺🇸 en</div>
     </div>
 
     <!-- Page container -->
     <div class="page-container" id="pageContainer">
-      <!-- SIGNALS PAGE (Trading Bot) -->
+      <!-- SIGNALS PAGE -->
       <div id="signalsPage" class="page active">
         <div class="px-6 mt-6">
           <h1 class="text-2xl font-semibold tracking-tight">TRADING BOT</h1>
@@ -290,7 +311,7 @@
         </div>
       </div>
 
-      <!-- CHAT PAGE (integrated chat list and overlay) -->
+      <!-- CHAT PAGE -->
       <div id="chatPage" class="page">
         <div class="chats-title">Chats</div>
         <div class="chat-card" onclick="openChatRoom()">
@@ -328,7 +349,7 @@
       </div>
     </div>
 
-    <!-- Chat Room Overlay (visible when chat room is open) -->
+    <!-- CHAT ROOM OVERLAY (fixed) -->
     <div class="chat-room-overlay" id="chatRoomOverlay">
       <div class="room-header">
         <button class="back-btn" onclick="closeChatRoom()"><i data-lucide="arrow-left"></i></button>
@@ -350,6 +371,7 @@
         <button class="reply-preview-close" onclick="cancelReply()">✕</button>
       </div>
 
+      <!-- Messages container – scrolls internally -->
       <div class="chat-messages" id="chatMessagesContainer">
         <div class="message-row incoming">
           <div class="msg-avatar">🤖</div>
@@ -364,6 +386,7 @@
         <span>↓</span> <span id="unreadCount">1 new message</span>
       </div>
 
+      <!-- Composer – always visible at bottom -->
       <div class="chat-composer">
         <button class="composer-btn" id="emojiBtn"><i data-lucide="smile"></i></button>
         <div class="composer-input-wrapper">
@@ -404,10 +427,9 @@
 
 <script>
   (function(){
-    // Initialize icons
     lucide.createIcons();
 
-    // Stars background
+    // Stars
     const starsContainer = document.getElementById("stars");
     for(let i=0;i<40;i++){
       const s=document.createElement("div");
@@ -419,21 +441,17 @@
       starsContainer.appendChild(s);
     }
 
-    // ---------- PAGE SWITCHING (with language toggle) ----------
+    // Page switching
     const langSwitch = document.getElementById('langSwitch');
     const globalSubtitle = document.getElementById('globalSubtitle');
     
     window.switchPage = function(pageId, ev) {
-      // Update active page
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId + 'Page').classList.add('active');
-      
-      // Update nav active state
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.toggle('active', item.dataset.page === pageId);
       });
       
-      // Show/hide language switch only on signals page
       if (pageId === 'signals') {
         langSwitch.classList.remove('hidden');
         globalSubtitle.innerText = 'Trading signals';
@@ -442,59 +460,36 @@
         globalSubtitle.innerText = '6,324 members';
       }
       
-      // Close chat overlay if switching away from chat
-      if (pageId !== 'chat') {
-        closeChatRoom();
-      }
-      
-      // Re-render lucide icons if needed
+      if (pageId !== 'chat') closeChatRoom();
       setTimeout(() => lucide.createIcons(), 20);
     };
 
-    // ---------- SIGNALS PAGE LOGIC ----------
+    // Signals logic
     let currency = null, timeframe = null;
-
-    window.toggleDropdown = function(id) {
-      document.getElementById(id).classList.toggle("hidden");
-    };
-
-    window.selectCurrency = function(val) {
+    window.toggleDropdown = (id) => document.getElementById(id).classList.toggle("hidden");
+    window.selectCurrency = (val) => {
       currency = val;
-      const btn = document.querySelectorAll('.dropdown-btn')[0];
-      btn.innerHTML = val + ' <span class="text-sm">▾</span>';
+      document.querySelectorAll('.dropdown-btn')[0].innerHTML = val + ' <span class="text-sm">▾</span>';
       document.getElementById('currencyList').classList.add("hidden");
       highlightOption('currencyList', val);
     };
-
-    window.selectTime = function(val) {
+    window.selectTime = (val) => {
       timeframe = val;
-      const btn = document.querySelectorAll('.dropdown-btn')[1];
-      btn.innerHTML = val + ' <span class="text-sm">▾</span>';
+      document.querySelectorAll('.dropdown-btn')[1].innerHTML = val + ' <span class="text-sm">▾</span>';
       document.getElementById('timeList').classList.add("hidden");
       highlightOption('timeList', val);
     };
-
-    window.startSignals = function() {
-      if (!currency || !timeframe) {
-        document.getElementById("warn").classList.remove("hidden");
-        return;
-      }
+    window.startSignals = () => {
+      if (!currency || !timeframe) return document.getElementById("warn").classList.remove("hidden");
       document.getElementById("warn").classList.add("hidden");
       alert(`Signals started for ${currency} · ${timeframe}`);
     };
-
     function highlightOption(listId, value) {
-      const list = document.getElementById(listId);
-      const items = list.querySelectorAll('div');
+      const items = document.querySelectorAll(`#${listId} div`);
       items.forEach(i => i.classList.remove('active'));
       const selected = Array.from(items).find(i => i.textContent === value);
-      if (selected) {
-        selected.classList.add('active');
-        selected.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      if (selected) { selected.classList.add('active'); selected.scrollIntoView({behavior:'smooth', block:'center'}); }
     }
-
-    // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.dropdown-btn')) {
         document.getElementById('currencyList')?.classList.add('hidden');
@@ -502,79 +497,51 @@
       }
     });
 
-    // ---------- CHAT LOGIC ----------
-    const messagesContainer = document.getElementById('chatMessagesContainer');
+    // Chat logic
+    const msgContainer = document.getElementById('chatMessagesContainer');
     const unreadPill = document.getElementById('unreadPill');
     const unreadCountSpan = document.getElementById('unreadCount');
     const chatInput = document.getElementById('chatInput');
     const voiceBtn = document.getElementById('voiceBtn');
     const sendBtn = document.getElementById('sendBtn');
-    const replyPreviewBar = document.getElementById('replyPreviewBar');
-    const replyTargetName = document.getElementById('replyTargetName');
-    const replyTargetText = document.getElementById('replyTargetText');
-    const chatOnlineSpan = document.getElementById('chatOnlineCount');
+    const replyBar = document.getElementById('replyPreviewBar');
+    const replyName = document.getElementById('replyTargetName');
+    const replyText = document.getElementById('replyTargetText');
+    const onlineSpan = document.getElementById('chatOnlineCount');
+    let unread = 0, isAtBottom = true, onlineInterval = null;
 
-    let unreadMessages = 0;
-    let isUserAtBottom = true;
-    let onlineInterval = null;
-
-    function updateComposerMode() {
-      const hasText = chatInput.value.trim().length > 0;
-      if (hasText) {
-        voiceBtn.classList.add('hidden');
-        sendBtn.classList.remove('hidden');
-      } else {
-        voiceBtn.classList.remove('hidden');
-        sendBtn.classList.add('hidden');
-      }
+    function updateComposer() {
+      const has = chatInput.value.trim().length > 0;
+      voiceBtn.classList.toggle('hidden', has);
+      sendBtn.classList.toggle('hidden', !has);
     }
-    chatInput.addEventListener('input', updateComposerMode);
-    updateComposerMode();
+    chatInput.addEventListener('input', updateComposer);
+    updateComposer();
 
-    messagesContainer.addEventListener('scroll', () => {
-      const nearBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 80;
-      if (nearBottom) {
-        unreadMessages = 0;
-        unreadPill.style.display = 'none';
-        isUserAtBottom = true;
-      } else {
-        isUserAtBottom = false;
-      }
+    msgContainer.addEventListener('scroll', () => {
+      const near = msgContainer.scrollHeight - msgContainer.scrollTop - msgContainer.clientHeight < 80;
+      if (near) { unread = 0; unreadPill.style.display = 'none'; isAtBottom = true; }
+      else isAtBottom = false;
     });
 
-    window.scrollToBottom = function() {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      unreadMessages = 0;
-      unreadPill.style.display = 'none';
-      isUserAtBottom = true;
-    };
-
-    window.openChatRoom = function() {
-      const overlay = document.getElementById('chatRoomOverlay');
-      overlay.classList.add('open');
+    window.scrollToBottom = () => { msgContainer.scrollTop = msgContainer.scrollHeight; unread = 0; unreadPill.style.display = 'none'; isAtBottom = true; };
+    window.openChatRoom = () => {
+      document.getElementById('chatRoomOverlay').classList.add('open');
       if (onlineInterval) clearInterval(onlineInterval);
-      onlineInterval = setInterval(() => {
-        if (chatOnlineSpan) chatOnlineSpan.innerText = (180 + Math.floor(Math.random() * 100)) + ' online';
-      }, 8000);
-      setTimeout(() => scrollToBottom(), 50);
+      onlineInterval = setInterval(() => { if(onlineSpan) onlineSpan.innerText = (180+Math.floor(Math.random()*100))+' online'; }, 8000);
+      setTimeout(scrollToBottom, 50);
     };
-
-    window.closeChatRoom = function() {
+    window.closeChatRoom = () => {
       document.getElementById('chatRoomOverlay').classList.remove('open');
       if (onlineInterval) { clearInterval(onlineInterval); onlineInterval = null; }
-      unreadMessages = 0;
-      unreadPill.style.display = 'none';
+      unread = 0; unreadPill.style.display = 'none';
     };
-
-    window.setReplyTarget = function(name, text) {
-      replyTargetName.innerText = name;
-      replyTargetText.innerText = text.length > 40 ? text.substring(0,40) + '…' : text;
-      replyPreviewBar.classList.remove('hidden');
+    window.setReplyTarget = (name, text) => {
+      replyName.innerText = name;
+      replyText.innerText = text.length > 40 ? text.substring(0,40)+'…' : text;
+      replyBar.classList.remove('hidden');
     };
-
-    window.cancelReply = function() {
-      replyPreviewBar.classList.add('hidden');
-    };
+    window.cancelReply = () => replyBar.classList.add('hidden');
 
     function addMessage(side, text, avatar='👤') {
       const row = document.createElement('div');
@@ -584,68 +551,58 @@
       const bubble = row.querySelector('.msg-bubble');
       bubble.addEventListener('click', (e) => {
         e.stopPropagation();
-        const msgText = bubble.dataset.msgText || text;
-        const senderName = side === 'outgoing' ? 'You' : (avatar === '🤖' ? 'Abrox AI' : 'User');
-        setReplyTarget(senderName, msgText);
+        const msg = bubble.dataset.msgText || text;
+        const sender = side === 'outgoing' ? 'You' : (avatar === '🤖' ? 'Abrox AI' : 'User');
+        setReplyTarget(sender, msg);
       });
-      messagesContainer.appendChild(row);
-      if (!isUserAtBottom) {
-        unreadMessages++;
-        unreadCountSpan.innerText = unreadMessages === 1 ? '1 new message' : `${unreadMessages} new messages`;
-        unreadPill.style.display = 'flex';
-      } else { scrollToBottom(); }
+      msgContainer.appendChild(row);
+      if (!isAtBottom) { unread++; unreadCountSpan.innerText = unread===1?'1 new message':`${unread} new messages`; unreadPill.style.display='flex'; }
+      else scrollToBottom();
     }
 
-    window.sendMessage = function() {
+    window.sendMessage = () => {
       const text = chatInput.value.trim();
       if (!text) return;
       addMessage('outgoing', text, '👤');
       chatInput.value = '';
-      updateComposerMode();
+      updateComposer();
       cancelReply();
       setTimeout(() => addMessage('incoming', 'Thanks for your message! 👍', '🤖'), 1200);
     };
-
     sendBtn.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
+    chatInput.addEventListener('keypress', e => { if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
 
-    // Voice recording simulation
-    let mediaRecorder = null, isRecording = false, audioStream = null;
+    // Voice
+    let mediaRecorder, isRecording = false, stream;
     voiceBtn.addEventListener('click', async () => {
       if (isRecording) return;
       try {
-        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(audioStream);
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
         mediaRecorder.start(); isRecording = true;
         document.getElementById('recordingIndicator').classList.remove('hidden');
         mediaRecorder.onstop = () => {
           document.getElementById('recordingIndicator').classList.add('hidden');
-          isRecording = false;
-          if (audioStream) { audioStream.getTracks().forEach(t => t.stop()); audioStream = null; }
+          isRecording = false; stream.getTracks().forEach(t=>t.stop());
           addMessage('outgoing', '🎤 Voice message', '👤');
         };
-      } catch (e) { alert('Microphone access denied'); }
+      } catch { alert('Microphone access denied'); }
     });
-    document.getElementById('stopRecordingBtn').addEventListener('click', () => {
-      if (mediaRecorder && isRecording) mediaRecorder.stop();
-    });
-    document.getElementById('mediaBtn').addEventListener('click', () => addMessage('outgoing', '📎 Media attachment', '👤'));
-    document.getElementById('emojiBtn').addEventListener('click', () => { chatInput.value += '😊'; updateComposerMode(); });
+    document.getElementById('stopRecordingBtn').onclick = () => { if(mediaRecorder && isRecording) mediaRecorder.stop(); };
+    document.getElementById('mediaBtn').onclick = () => addMessage('outgoing', '📎 Media attachment', '👤');
+    document.getElementById('emojiBtn').onclick = () => { chatInput.value += '😊'; updateComposer(); };
 
-    // Attach reply to existing messages
-    document.querySelectorAll('.msg-bubble').forEach(bubble => {
-      bubble.addEventListener('click', (e) => {
-        const row = bubble.closest('.message-row');
-        const isOut = row.classList.contains('outgoing');
-        const avatar = row.querySelector('.msg-avatar')?.innerText || '👤';
-        const sender = isOut ? 'You' : (avatar === '🤖' ? 'Abrox AI' : 'User');
-        const text = bubble.dataset.msgText || bubble.childNodes[0]?.nodeValue?.trim() || '';
-        setReplyTarget(sender, text);
+    // Existing messages reply
+    document.querySelectorAll('.msg-bubble').forEach(b => {
+      b.addEventListener('click', (e) => {
+        const row = b.closest('.message-row');
+        const out = row.classList.contains('outgoing');
+        const avatar = row.querySelector('.msg-avatar')?.innerText||'👤';
+        const sender = out ? 'You' : (avatar==='🤖'?'Abrox AI':'User');
+        const txt = b.dataset.msgText || b.childNodes[0]?.nodeValue?.trim() || '';
+        setReplyTarget(sender, txt);
       });
     });
-
-    // Ensure lucide icons refresh after dynamic content
-    window.addEventListener('load', () => lucide.createIcons());
   })();
 </script>
 </body>
