@@ -7,41 +7,28 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* ========== GLOBAL & SIGNALS (exact original) ========== */
+    /* ========== GLOBAL RESET & FULLSCREEN ========== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
       background: #000;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, Helvetica, Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 12px;
     }
-    .phone-frame {
+    #app {
       width: 100%;
-      max-width: 390px;
-      height: auto;
-      aspect-ratio: 390 / 844;
-      max-height: 90vh;
-      border-radius: clamp(20px, 5vw, 32px);
-      overflow: hidden;
-      position: relative;
-      background: #000;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
-    }
-    .space-bg {
+      height: 100%;
       position: relative;
       background: radial-gradient(circle at top, #0d4f8b 0%, #062a4d 35%, #020b16 75%);
       overflow: hidden;
-      width: 100%;
-      height: 100%;
+      color: white;
     }
     #stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
     .star { position: absolute; background: #fff; border-radius: 50%; }
 
-    /* ----- SIGNALS HEADER (original) ----- */
+    /* ----- SIGNALS HEADER (exact original) ----- */
     .signals-header {
       display: flex;
       align-items: center;
@@ -106,14 +93,13 @@
     .chat-header .header-titles h1 { font-size: 18px; font-weight: 700; color: #fff; line-height: 1.2; }
     .chat-header .header-titles .subtitle { font-size: 12px; color: #8b9bb5; margin-top: 2px; }
 
-    /* Page container & bottom nav (global) */
+    /* ----- PAGE CONTAINER & BOTTOM NAV ----- */
     .page-container {
       position: relative;
       z-index: 10;
-      height: calc(100% - 100px);
+      height: calc(100% - 80px);
       overflow-y: auto;
       padding-bottom: 20px;
-      box-sizing: border-box;
     }
     .page { display: none; }
     .page.active { display: block; }
@@ -173,57 +159,134 @@
       font-size: 4vw; border: none;
     }
 
-    /* ----- CHAT CARD (list) & OVERLAY (enhanced) ----- */
-    .chats-title { padding: 12px 16px 4px; font-size: 22px; font-weight: 700; color: #fff; }
-    .chat-card {
-      background: rgba(20, 35, 55, 0.7); backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.12); border-radius: 24px;
-      padding: 18px; margin: 12px 16px; cursor: pointer;
-      transition: all 0.2s; box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+    /* ----- CHAT LIST (flat, no cards) ----- */
+    .chats-title {
+      padding: 16px 16px 8px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
     }
-    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .card-title { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 6px; }
-    .card-meta-row { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
-    .members-count, .online-count { color: #a0bbd8; font-size: 14px; display: flex; align-items: center; gap: 4px; }
-    .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 8px #4caf50; }
-    .card-description { color: #cbd5e1; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chat-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .chat-item:active { background: rgba(255,255,255,0.05); }
+    .chat-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #1e4f7a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      flex-shrink: 0;
+      color: #fff;
+    }
+    .chat-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .chat-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .chat-preview {
+      font-size: 13px;
+      color: #8b9bb5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chat-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .chat-time {
+      font-size: 12px;
+      color: #8b9bb5;
+    }
+    .online-badge-small {
+      background: #4caf50;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
 
-    /* Chat Room Shell */
+    /* ----- CHAT ROOM SHELL (fullscreen overlay) ----- */
     .chat-room-shell {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: #0a0f17; z-index: 60;
-      display: flex; flex-direction: column;
-      transform: translateX(100%); transition: transform 0.25s ease;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #0a0f17;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
     }
     .chat-room-shell.is-open { transform: translateX(0); }
 
     .room-header {
-      padding: 14px 16px; border-bottom: 1px solid #1e2a3a;
-      display: flex; align-items: center; gap: 12px;
-      background: #0e1522; flex-shrink: 0;
+      padding: 14px 16px;
+      border-bottom: 1px solid #1e2a3a;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #0e1522;
+      flex-shrink: 0;
     }
     .room-header .back-btn {
-      width: 40px; height: 40px; border-radius: 50%; background: #1a2536;
-      border: none; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #1a2536; border: none; color: #fff;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     .room-info { flex: 1; }
     .room-info h2 { font-size: 18px; font-weight: 700; color: #fff; }
-    .room-info .room-sub { font-size: 13px; color: #8b9bb5; margin-top: 4px; display: flex; align-items: center; gap: 16px; }
+    .room-info .room-sub {
+      font-size: 13px; color: #8b9bb5; margin-top: 4px;
+      display: flex; align-items: center; gap: 16px;
+    }
     .room-members, .room-online { display: flex; align-items: center; gap: 4px; }
+    .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 8px #4caf50; }
 
     /* System banner rule */
     .system-banner {
-      background: #1e2a3a; color: #cbd5e1; padding: 8px 16px;
-      font-size: 12px; font-weight: 500; border-bottom: 1px solid #2a3a4e;
-      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+      background: #1e2a3a;
+      color: #cbd5e1;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      border-bottom: 1px solid #2a3a4e;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
     }
     .system-banner i { color: #3b82f6; }
 
     /* Reply preview */
     .reply-preview-bar {
-      background: #1a2536; border-left: 4px solid #3b82f6; padding: 8px 16px;
-      margin: 8px 12px; border-radius: 12px; display: flex; align-items: center;
-      justify-content: space-between; flex-shrink: 0;
+      background: #1a2536;
+      border-left: 4px solid #3b82f6;
+      padding: 10px 16px;
+      margin: 8px 12px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
     }
     .reply-preview-content { flex:1; }
     .reply-preview-label { font-size: 12px; color: #3b82f6; font-weight: 600; }
@@ -231,66 +294,145 @@
     .reply-preview-close { background: none; border: none; color: #8b9bb5; cursor: pointer; font-size: 18px; }
 
     .chat-feed {
-      flex: 1 1 0; min-height: 0; overflow-y: auto;
-      padding: 12px 16px; display: flex; flex-direction: column; gap: 12px;
+      flex: 1 1 0;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
     .chat-date-sticker {
-      width: max-content; margin: 6px auto 2px; padding: 6px 12px; border-radius: 999px;
-      background: #1a2536; color: #a0bbd8; font-size: 11px; font-weight: 700;
+      width: max-content;
+      margin: 6px auto 2px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #1a2536;
+      color: #a0bbd8;
+      font-size: 11px;
+      font-weight: 700;
     }
-    .chat-msg-row { display: flex; align-items: flex-end; gap: 6px; max-width: 100%; }
+    .chat-msg-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      max-width: 100%;
+    }
     .chat-msg-row.incoming { justify-content: flex-start; }
     .chat-msg-row.outgoing { justify-content: flex-end; margin-left: auto; }
     .chat-avatar-bubble {
-      width: 40px; height: 40px; border-radius: 50%; background: #1e4f7a;
-      border: 1px solid #2a3a4e; display: flex; align-items: center; justify-content: center;
-      flex: 0 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #1e4f7a; border: 1px solid #2a3a4e;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       overflow: hidden; color: #fff; font-weight: 600; font-size: 16px;
     }
     .chat-bubble {
-      --bg: #1a2536; position: relative; max-width: 78%; padding: 10px 14px;
-      font-size: 14px; line-height: 1.45; word-break: break-word; border-radius: 18px;
-      background: var(--bg); color: #e2e8f0; border: 1px solid #2a3a4e;
+      --bg: #1a2536;
+      position: relative;
+      max-width: 75%;
+      padding: 10px 14px;
+      font-size: 14px;
+      line-height: 1.45;
+      word-break: break-word;
+      border-radius: 18px;
+      background: var(--bg);
+      color: #e2e8f0;
+      border: 1px solid #2a3a4e;
     }
     .chat-bubble.outgoing {
-      background: #2563eb; border-color: #3b82f6; color: #fff;
+      background: #2563eb;
+      border-color: #3b82f6;
+      color: #fff;
     }
-    .chat-bubble-time { font-size: 10px; opacity: 0.6; margin-top: 4px; text-align: right; }
-    .chat-ticks { font-size: 12px; font-weight: 700; letter-spacing: -2px; margin-left: 4px; }
-    .chat-ticks.sent { color: #cbd5e1; } .chat-ticks.delivered { color: #94a3b8; } .chat-ticks.seen { color: #3b82f6; }
+    .chat-bubble-time {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-top: 4px;
+      text-align: right;
+    }
+    .chat-ticks {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -2px;
+      margin-left: 4px;
+    }
+    .chat-ticks.sent { color: #cbd5e1; }
+    .chat-ticks.delivered { color: #94a3b8; }
+    .chat-ticks.seen { color: #3b82f6; }
 
-    .typing-bubble { display: flex; align-items: center; gap: 4px; padding: 10px 14px; }
+    .typing-bubble {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 14px;
+    }
     .typing-bubble span {
       width: 6px; height: 6px; background: #9aa3b2; border-radius: 50%;
       animation: typingBounce 1.3s infinite;
     }
     .typing-bubble span:nth-child(2) { animation-delay: .2s; }
     .typing-bubble span:nth-child(3) { animation-delay: .4s; }
-    @keyframes typingBounce { 0%,80%,100% { transform: scale(0.6); opacity: .5; } 40% { transform: scale(1); opacity: 1; } }
+    @keyframes typingBounce {
+      0%,80%,100% { transform: scale(0.6); opacity: .5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
 
-    .chat-image, .chat-video { max-width: 100%; max-height: 200px; border-radius: 12px; margin-top: 8px; object-fit: cover; cursor: pointer; }
-    .chat-audio { display: flex; align-items: center; gap: 8px; margin-top: 8px; background: #0e1522; padding: 8px 12px; border-radius: 20px; }
+    .chat-image, .chat-video {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 12px;
+      margin-top: 8px;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .chat-audio {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      background: #0e1522;
+      padding: 8px 12px;
+      border-radius: 20px;
+    }
 
     .unread-pill {
-      position: absolute; bottom: 140px; left: 50%; transform: translateX(-50%);
-      background: #3b82f6; color: #fff; padding: 8px 16px; border-radius: 40px;
-      font-size: 13px; font-weight: 600; box-shadow: 0 6px 14px rgba(59,130,246,0.3);
-      cursor: pointer; z-index: 55; display: none; align-items: center; gap: 8px;
+      position: absolute;
+      bottom: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #3b82f6;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 6px 14px rgba(59,130,246,0.3);
+      cursor: pointer;
+      z-index: 55;
+      display: none;
+      align-items: center;
+      gap: 8px;
     }
 
     .chat-composer {
-      padding: 10px 12px; border-top: 1px solid #1e2a3a;
-      display: flex; align-items: center; gap: 6px;
-      background: #0e1522; flex-shrink: 0;
+      padding: 10px 12px;
+      border-top: 1px solid #1e2a3a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #0e1522;
+      flex-shrink: 0;
     }
     .composer-btn {
-      width: 40px; height: 40px; border-radius: 50%; background: #1a2536;
-      border: none; color: #8b9bb5; display: flex; align-items: center; justify-content: center; cursor: pointer;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #1a2536; border: none; color: #8b9bb5;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     .composer-input-wrapper { flex: 1; }
     .composer-input {
-      width: 100%; background: #1a2536; border: 1px solid #2a3a4e; border-radius: 30px;
-      padding: 12px 16px; color: #fff; outline: none;
+      width: 100%; background: #1a2536; border: 1px solid #2a3a4e;
+      border-radius: 30px; padding: 12px 16px; color: #fff; outline: none;
     }
     .send-btn {
       width: 44px; height: 44px; border-radius: 50%; background: #2563eb;
@@ -303,7 +445,10 @@
       display: flex; align-items: center; gap: 12px; margin: 8px 16px;
       background: #1e1e2e; padding: 8px 16px; border-radius: 40px; flex-shrink: 0;
     }
-    .wave-bar { width: 3px; height: 12px; background: #3b82f6; border-radius: 2px; animation: wave 1.2s infinite; }
+    .wave-bar {
+      width: 3px; height: 12px; background: #3b82f6; border-radius: 2px;
+      animation: wave 1.2s infinite;
+    }
     @keyframes wave { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(2); } }
 
     .placeholder-content {
@@ -328,202 +473,217 @@
     }
 
     /* Responsive */
-    @media(max-width:420px){
-      .w-[390px]{width:95vw;} .h-[844px]{height:95vh;}
-      #startBtn{padding:3vw;font-size:4vw;} .dropdown-btn{padding:2.5vw 3vw;font-size:3.5vw;}
+    @media (max-width: 420px) {
+      #startBtn { padding: 3.5vw; font-size: 4.5vw; }
+      .dropdown-btn { padding: 3vw 4vw; font-size: 4.5vw; }
     }
   </style>
 </head>
-<body data-page="signals">
-<div class="phone-frame">
-  <div class="space-bg text-white">
-    <div id="stars"></div>
+<body>
+<div id="app">
+  <div id="stars"></div>
 
-    <!-- SIGNALS HEADER (only on signals page) -->
-    <div id="signalsHeader" class="signals-header">
-      <div></div>
-      <div class="logo-container">
-        <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
-      </div>
-      <div class="lang-switch" id="langSwitch">🇺🇸 en</div>
+  <!-- SIGNALS HEADER (only on signals page) -->
+  <div id="signalsHeader" class="signals-header">
+    <div></div>
+    <div class="logo-container">
+      <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
     </div>
+    <div class="lang-switch" id="langSwitch">🇺🇸 en</div>
+  </div>
 
-    <!-- CHAT HEADER (for other pages) -->
-    <div id="chatGlobalHeader" class="chat-header" style="display:none;">
-      <div class="header-logo">
-        <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
-      </div>
-      <div class="header-titles">
-        <h1>Abrox AI</h1>
-        <div class="subtitle" id="globalSubtitle">6,324 members</div>
-      </div>
+  <!-- CHAT HEADER (for other pages) -->
+  <div id="chatGlobalHeader" class="chat-header" style="display:none;">
+    <div class="header-logo">
+      <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
     </div>
+    <div class="header-titles">
+      <h1>Abrox AI</h1>
+      <div class="subtitle" id="globalSubtitle">6,324 members</div>
+    </div>
+  </div>
 
-    <!-- Page container -->
-    <div class="page-container" id="pageContainer">
-      <!-- SIGNALS PAGE (exact) -->
-      <div id="signalsPage" class="page active">
-        <div class="px-6 mt-6">
-          <h1 class="text-2xl font-semibold tracking-tight">TRADING BOT</h1>
-          <h2 class="text-lg mt-3 font-semibold tracking-tight">SETTINGS</h2>
-          <p class="text-sm mt-3 opacity-80 leading-snug">(First select Currency Pair and Timeframe and then click on Start Signals.)</p>
+  <!-- Page container -->
+  <div class="page-container" id="pageContainer">
+    <!-- SIGNALS PAGE (exact) -->
+    <div id="signalsPage" class="page active">
+      <div class="px-6 mt-6">
+        <h1 class="text-2xl font-semibold tracking-tight">TRADING BOT</h1>
+        <h2 class="text-lg mt-3 font-semibold tracking-tight">SETTINGS</h2>
+        <p class="text-sm mt-3 opacity-80 leading-snug">(First select Currency Pair and Timeframe and then click on Start Signals.)</p>
 
-          <div class="flex gap-4 mt-6">
-            <div class="icon-box usd"><span>$</span></div>
-            <div class="icon-box btc"><span>₿</span></div>
-          </div>
+        <div class="flex gap-4 mt-6">
+          <div class="icon-box usd"><span>$</span></div>
+          <div class="icon-box btc"><span>₿</span></div>
+        </div>
 
-          <div class="mt-6 space-y-4 relative">
-            <div class="relative">
-              <div class="dropdown-btn" onclick="toggleDropdown('currencyList')">Choose Currency <span class="text-sm">▾</span></div>
-              <div id="currencyList" class="dropdown-list hidden">
-                <div onclick="selectCurrency('USD/JPY')">USD/JPY</div>
-                <div onclick="selectCurrency('USD/CHF')">USD/CHF</div>
-                <div onclick="selectCurrency('USD/CAD')">USD/CAD</div>
-                <div onclick="selectCurrency('GBP/USD')">GBP/USD</div>
-                <div onclick="selectCurrency('EUR/USD')">EUR/USD</div>
-                <div onclick="selectCurrency('AUD/USD')">AUD/USD</div>
-              </div>
+        <div class="mt-6 space-y-4 relative">
+          <div class="relative">
+            <div class="dropdown-btn" onclick="toggleDropdown('currencyList')">Choose Currency <span class="text-sm">▾</span></div>
+            <div id="currencyList" class="dropdown-list hidden">
+              <div onclick="selectCurrency('USD/JPY')">USD/JPY</div>
+              <div onclick="selectCurrency('USD/CHF')">USD/CHF</div>
+              <div onclick="selectCurrency('USD/CAD')">USD/CAD</div>
+              <div onclick="selectCurrency('GBP/USD')">GBP/USD</div>
+              <div onclick="selectCurrency('EUR/USD')">EUR/USD</div>
+              <div onclick="selectCurrency('AUD/USD')">AUD/USD</div>
             </div>
-            <div class="relative">
-              <div class="dropdown-btn" onclick="toggleDropdown('timeList')">Timeframe <span class="text-sm">▾</span></div>
-              <div id="timeList" class="dropdown-list hidden">
-                <div onclick="selectTime('1 Minute')">1 Minute</div>
-                <div onclick="selectTime('5 Minutes')">5 Minutes</div>
-                <div onclick="selectTime('15 Minutes')">15 Minutes</div>
-                <div onclick="selectTime('30 Minutes')">30 Minutes</div>
-                <div onclick="selectTime('1 Hour')">1 Hour</div>
-              </div>
+          </div>
+          <div class="relative">
+            <div class="dropdown-btn" onclick="toggleDropdown('timeList')">Timeframe <span class="text-sm">▾</span></div>
+            <div id="timeList" class="dropdown-list hidden">
+              <div onclick="selectTime('1 Minute')">1 Minute</div>
+              <div onclick="selectTime('5 Minutes')">5 Minutes</div>
+              <div onclick="selectTime('15 Minutes')">15 Minutes</div>
+              <div onclick="selectTime('30 Minutes')">30 Minutes</div>
+              <div onclick="selectTime('1 Hour')">1 Hour</div>
             </div>
-            <button id="startBtn" onclick="startSignals()">Start Signals</button>
-            <p id="warn" class="text-red-400 text-xs text-center hidden mt-2">Please select currency and timeframe</p>
           </div>
-        </div>
-      </div>
-
-      <!-- TRAINING PAGE -->
-      <div id="trainingPage" class="page">
-        <div class="placeholder-content">
-          <div class="text-5xl mb-4">📘</div>
-          <h2 class="text-2xl font-bold mb-2">Training Center</h2>
-          <p class="opacity-70">Beginner guides, strategy lessons, and video tutorials.</p>
-        </div>
-      </div>
-
-      <!-- CHAT PAGE (list) -->
-      <div id="chatPage" class="page">
-        <div class="chats-title">Chats</div>
-        <div class="chat-card" onclick="openChatRoom('general')">
-          <div class="card-header">
-            <span class="card-title"><i data-lucide="message-circle" style="width:20px;height:20px;"></i> Abrox General Chat</span>
-            <span class="card-arrow">›</span>
-          </div>
-          <div class="card-meta-row">
-            <span class="members-count"><i data-lucide="users" style="width:14px;height:14px;"></i> 6,324 members</span>
-            <span class="online-count"><span class="online-dot"></span> 247 online</span>
-          </div>
-          <div class="card-description">Join the discussion with traders worldwide.</div>
-        </div>
-      </div>
-
-      <!-- REFERRALS PAGE -->
-      <div id="referralsPage" class="page">
-        <div class="placeholder-content">
-          <div class="text-5xl mb-4">👥</div>
-          <h2 class="text-2xl font-bold mb-2">Refer & Earn</h2>
-          <p class="opacity-70">Invite friends and earn up to 20% commission.</p>
-        </div>
-      </div>
-
-      <!-- PROGRESS PAGE -->
-      <div id="progressPage" class="page">
-        <div class="placeholder-content">
-          <div class="text-5xl mb-4">📊</div>
-          <h2 class="text-2xl font-bold mb-2">Your Progress</h2>
-          <p class="opacity-70">Track your learning and trading milestones.</p>
+          <button id="startBtn" onclick="startSignals()">Start Signals</button>
+          <p id="warn" class="text-red-400 text-xs text-center hidden mt-2">Please select currency and timeframe</p>
         </div>
       </div>
     </div>
 
-    <!-- CHAT ROOM SHELL (enhanced) -->
-    <div class="chat-room-shell" id="chatRoomShell">
-      <div class="room-header">
-        <button class="back-btn" onclick="closeChatRoom()"><i data-lucide="arrow-left"></i></button>
-        <div class="room-info">
-          <h2>Abrox General Chat</h2>
-          <div class="room-sub">
-            <span class="room-members"><i data-lucide="users" style="width:14px;height:14px;"></i> 6,324 members</span>
-            <span class="room-online"><span class="online-dot"></span> <span id="chatOnlineCount">247 online</span></span>
+    <!-- TRAINING PAGE -->
+    <div id="trainingPage" class="page">
+      <div class="placeholder-content">
+        <div class="text-5xl mb-4">📘</div>
+        <h2 class="text-2xl font-bold mb-2">Training Center</h2>
+        <p class="opacity-70">Beginner guides, strategy lessons, and video tutorials.</p>
+      </div>
+    </div>
+
+    <!-- CHAT PAGE (flat list) -->
+    <div id="chatPage" class="page">
+      <div class="chats-title">Chats</div>
+      <div class="chat-list">
+        <div class="chat-item" onclick="openChatRoom('general')">
+          <div class="chat-avatar">
+            <i data-lucide="message-circle" style="width:24px;height:24px;"></i>
+          </div>
+          <div class="chat-info">
+            <div class="chat-name">Abrox General Chat</div>
+            <div class="chat-preview">Tap to join the conversation</div>
+          </div>
+          <div class="chat-meta">
+            <span class="chat-time">now</span>
+            <span class="online-badge-small"></span>
           </div>
         </div>
-        <button class="composer-btn" style="margin-left:auto;"><i data-lucide="more-vertical"></i></button>
-      </div>
-
-      <!-- SYSTEM BANNER RULE -->
-      <div class="system-banner">
-        <i data-lucide="alert-circle" style="width:18px;height:18px;"></i>
-        <span>Be respectful. No spam, no hate speech. Violations will result in a ban.</span>
-      </div>
-
-      <div id="replyPreviewBar" class="reply-preview-bar hidden">
-        <div class="reply-preview-content">
-          <div class="reply-preview-label">Replying to <span id="replyTargetName"></span></div>
-          <div class="reply-preview-text" id="replyTargetText"></div>
+        <div class="chat-item" onclick="openChatRoom('signals')">
+          <div class="chat-avatar">
+            <i data-lucide="radio" style="width:24px;height:24px;"></i>
+          </div>
+          <div class="chat-info">
+            <div class="chat-name">Signal Alerts</div>
+            <div class="chat-preview">Real-time trade signals</div>
+          </div>
+          <div class="chat-meta">
+            <span class="chat-time">12:30</span>
+            <span class="online-badge-small"></span>
+          </div>
         </div>
-        <button class="reply-preview-close" onclick="cancelReply()">✕</button>
-      </div>
-
-      <div class="chat-feed" id="chatMessagesContainer">
-        <div class="chat-date-sticker">Today • 2026-04-18</div>
-      </div>
-
-      <div class="unread-pill" id="unreadPill" onclick="scrollToBottom()">
-        <span>↓</span> <span id="unreadCount">1 new message</span>
-      </div>
-
-      <div class="chat-composer">
-        <button class="composer-btn" id="emojiBtn"><i data-lucide="smile"></i></button>
-        <button class="composer-btn" id="mediaBtn"><i data-lucide="image"></i></button>
-        <div class="composer-input-wrapper">
-          <input type="text" class="composer-input" placeholder="Message..." id="chatInput">
-        </div>
-        <button class="composer-btn mic-btn" id="voiceBtn"><i data-lucide="mic"></i></button>
-        <button class="send-btn hidden" id="sendBtn"><i data-lucide="send"></i></button>
-      </div>
-
-      <div id="recordingIndicator" class="recording-indicator hidden">
-        <div style="display:flex; gap:3px;" id="waveformContainer"></div>
-        <span style="color:#ef4444;">Recording...</span>
-        <button id="stopRecordingBtn" style="margin-left:auto; background:none; border:none; color:#fff; font-size:18px;">■</button>
-      </div>
-      <input type="file" id="imageUploadInput" accept="image/*,video/*" style="display:none;">
-    </div>
-
-    <!-- LIGHTBOX -->
-    <div class="lightbox-overlay" id="lightboxOverlay">
-      <div class="lightbox-content">
-        <button class="lightbox-close" id="lightboxCloseBtn"><i data-lucide="x"></i></button>
-        <div id="lightboxMediaContainer"></div>
       </div>
     </div>
 
-    <!-- Bottom navigation -->
-    <div class="bottom-nav">
-      <div class="nav-item active" data-page="signals" onclick="switchPage('signals', event)">
-        <i>📡</i><span>Signals</span>
+    <!-- REFERRALS PAGE -->
+    <div id="referralsPage" class="page">
+      <div class="placeholder-content">
+        <div class="text-5xl mb-4">👥</div>
+        <h2 class="text-2xl font-bold mb-2">Refer & Earn</h2>
+        <p class="opacity-70">Invite friends and earn up to 20% commission.</p>
       </div>
-      <div class="nav-item" data-page="training" onclick="switchPage('training', event)">
-        <i>📚</i><span>Training</span>
+    </div>
+
+    <!-- PROGRESS PAGE -->
+    <div id="progressPage" class="page">
+      <div class="placeholder-content">
+        <div class="text-5xl mb-4">📊</div>
+        <h2 class="text-2xl font-bold mb-2">Your Progress</h2>
+        <p class="opacity-70">Track your learning and trading milestones.</p>
       </div>
-      <div class="nav-item" data-page="chat" onclick="switchPage('chat', event)">
-        <i>💬</i><span>Chat</span>
+    </div>
+  </div>
+
+  <!-- CHAT ROOM SHELL (fullscreen overlay) -->
+  <div class="chat-room-shell" id="chatRoomShell">
+    <div class="room-header">
+      <button class="back-btn" onclick="closeChatRoom()"><i data-lucide="arrow-left"></i></button>
+      <div class="room-info">
+        <h2>Abrox General Chat</h2>
+        <div class="room-sub">
+          <span class="room-members"><i data-lucide="users" style="width:14px;height:14px;"></i> 6,324 members</span>
+          <span class="room-online"><span class="online-dot"></span> <span id="chatOnlineCount">247 online</span></span>
+        </div>
       </div>
-      <div class="nav-item" data-page="referrals" onclick="switchPage('referrals', event)">
-        <i>👥</i><span>Referrals</span>
+      <button class="composer-btn" style="margin-left:auto;"><i data-lucide="more-vertical"></i></button>
+    </div>
+
+    <!-- SYSTEM BANNER RULE -->
+    <div class="system-banner">
+      <i data-lucide="alert-circle" style="width:18px;height:18px;"></i>
+      <span>Be respectful. No spam, no hate speech. Violations will result in a ban.</span>
+    </div>
+
+    <div id="replyPreviewBar" class="reply-preview-bar hidden">
+      <div class="reply-preview-content">
+        <div class="reply-preview-label">Replying to <span id="replyTargetName"></span></div>
+        <div class="reply-preview-text" id="replyTargetText"></div>
       </div>
-      <div class="nav-item" data-page="progress" onclick="switchPage('progress', event)">
-        <i>📈</i><span>Progress</span>
+      <button class="reply-preview-close" onclick="cancelReply()">✕</button>
+    </div>
+
+    <div class="chat-feed" id="chatMessagesContainer">
+      <div class="chat-date-sticker">Today • 2026-04-18</div>
+    </div>
+
+    <div class="unread-pill" id="unreadPill" onclick="scrollToBottom()">
+      <span>↓</span> <span id="unreadCount">1 new message</span>
+    </div>
+
+    <div class="chat-composer">
+      <button class="composer-btn" id="emojiBtn"><i data-lucide="smile"></i></button>
+      <button class="composer-btn" id="mediaBtn"><i data-lucide="image"></i></button>
+      <div class="composer-input-wrapper">
+        <input type="text" class="composer-input" placeholder="Message..." id="chatInput">
       </div>
+      <button class="composer-btn mic-btn" id="voiceBtn"><i data-lucide="mic"></i></button>
+      <button class="send-btn hidden" id="sendBtn"><i data-lucide="send"></i></button>
+    </div>
+
+    <div id="recordingIndicator" class="recording-indicator hidden">
+      <div style="display:flex; gap:3px;" id="waveformContainer"></div>
+      <span style="color:#ef4444;">Recording...</span>
+      <button id="stopRecordingBtn" style="margin-left:auto; background:none; border:none; color:#fff; font-size:18px;">■</button>
+    </div>
+    <input type="file" id="imageUploadInput" accept="image/*,video/*" style="display:none;">
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox-overlay" id="lightboxOverlay">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightboxCloseBtn"><i data-lucide="x"></i></button>
+      <div id="lightboxMediaContainer"></div>
+    </div>
+  </div>
+
+  <!-- Bottom navigation -->
+  <div class="bottom-nav">
+    <div class="nav-item active" data-page="signals" onclick="switchPage('signals', event)">
+      <i>📡</i><span>Signals</span>
+    </div>
+    <div class="nav-item" data-page="training" onclick="switchPage('training', event)">
+      <i>📚</i><span>Training</span>
+    </div>
+    <div class="nav-item" data-page="chat" onclick="switchPage('chat', event)">
+      <i>💬</i><span>Chat</span>
+    </div>
+    <div class="nav-item" data-page="referrals" onclick="switchPage('referrals', event)">
+      <i>👥</i><span>Referrals</span>
+    </div>
+    <div class="nav-item" data-page="progress" onclick="switchPage('progress', event)">
+      <i>📈</i><span>Progress</span>
     </div>
   </div>
 </div>
@@ -531,7 +691,7 @@
 <script>
   (function(){
     lucide.createIcons();
-    // Stars
+    // Stars background
     const starsContainer = document.getElementById("stars");
     for(let i=0;i<40;i++){
       const s = document.createElement("div"); s.className="star";
@@ -553,7 +713,6 @@
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.toggle('active', item.dataset.page === pageId);
       });
-      document.body.setAttribute('data-page', pageId);
       
       if (pageId === 'signals') {
         signalsHeader.style.display = 'flex';
@@ -602,7 +761,7 @@
       }
     });
 
-    // ========== ENHANCED CHAT (with all features) ==========
+    // ========== ENHANCED CHAT ==========
     const chatRoomShell = document.getElementById('chatRoomShell');
     const msgContainer = document.getElementById('chatMessagesContainer');
     const unreadPill = document.getElementById('unreadPill');
@@ -629,14 +788,13 @@
     let pendingMedia = null;
     let mediaRecorder = null, isRecording = false, audioStream = null;
 
-    // Initialize messages
+    function getTime() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+
     function initChat() {
       msgContainer.innerHTML = `<div class="chat-date-sticker">Today • 2026-04-18</div>`;
       addMessage('incoming', 'Welcome to Abrox General Chat! AI personas are active.', '🤖', 'Abrox AI');
-      // Simulate join alert after 1 sec
-      setTimeout(() => {
-        addSystemJoin('Alex joined the chat');
-      }, 800);
+      setTimeout(() => addSystemJoin('Alex joined the chat'), 800);
+      setTimeout(() => addSystemJoin('Maria joined the chat'), 1500);
     }
     
     function addSystemJoin(text) {
@@ -647,8 +805,6 @@
       msgContainer.appendChild(row);
       scrollIfNeeded();
     }
-
-    function getTime() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
 
     function updateComposer() {
       const has = chatInput.value.trim().length > 0 || pendingMedia;
@@ -738,7 +894,6 @@
       let media = pendingMedia;
       addMessage('outgoing', text || (media?.type==='audio'?'🎤 Voice message':''), '👤', 'You', media);
       pendingMedia = null; chatInput.value = ''; updateComposer(); cancelReply();
-      // Simulate AI response / typing indicator
       showTypingIndicator();
       setTimeout(() => {
         hideTypingIndicator();
@@ -792,10 +947,13 @@
     };
     emojiBtn.onclick = () => { chatInput.value += '😊'; updateComposer(); };
 
-    // Start with signals page active and chat ready
+    // Start with signals page
     initChat();
     window.switchPage('signals');
   })();
 </script>
+<!-- Placeholders for engine/manifest -->
+<script src="media-manifest.js"></script>
+<script src="ai-persona-engine.js"></script>
 </body>
 </html>
