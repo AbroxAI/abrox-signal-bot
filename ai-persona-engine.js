@@ -1,23 +1,24 @@
-// ====================== AI PERSONA ENGINE v15 (Final – Humanlike, Unlimited Media) ======================
-// 150 custom personas · Embedded manifest · Higher testimonial/result chances · Natural cooldown
-// ====================================================================================================
+// ====================== AI PERSONA ENGINE v16 (Humanlike Tuning, Less Spam, Smarter Replies) ======================
+// Increased media cooldown · Reduced reply preview spam · Context‑aware replies with images · More natural pacing
+// =================================================================================================================
 
 (function(){
   "use strict";
 
   // ---------- CONFIGURATION (TUNED FOR HUMANLIKE BEHAVIOR) ----------
   const CONFIG = {
-    BASE_INTERVAL: 8000,                 // average time between messages
-    BURST_CHANCE: 0.15,                  // slightly lower burst chance for more natural flow
-    TRADE_RESULT_INTERVAL: 20000,
-    TRADE_RESULT_CHANCE: 0.65,           // results appear often (realistic trading chat)
-    TESTIMONIAL_CHANCE: 0.35,            // testimonials also frequent
-    JOIN_CHANCE: 0.05,
-    MAX_BURST_MESSAGES: 3,
+    BASE_INTERVAL: 12000,                // Slower average time between messages
+    BURST_CHANCE: 0.08,                  // Fewer random bursts
+    TRADE_RESULT_INTERVAL: 25000,
+    TRADE_RESULT_CHANCE: 0.55,
+    TESTIMONIAL_CHANCE: 0.30,
+    JOIN_CHANCE: 0.04,
+    MAX_BURST_MESSAGES: 2,
     ENABLE_LOGGING: true,
     WATCHER_ACTIVITY_PENALTY: 0.65,
-    REPLY_CHANCE: 0.90,                  // high reply rate keeps conversation alive
-    MEDIA_COOLDOWN_MINUTES: 3            // shorter cooldown lets media cycle faster
+    REPLY_CHANCE: 0.45,                  // Much lower – fewer forced replies, more natural
+    REPLY_WITH_MEDIA_CHANCE: 0.15,       // When replying to testimonial, chance to attach image
+    MEDIA_COOLDOWN_MINUTES: 12           // Longer cooldown prevents repetition
   };
 
   // ---------- MESSAGE TYPES ----------
@@ -78,16 +79,6 @@
     }
   }
 
-  // ---------- HELPER: STRIP EMOJIS ----------
-  function normalizeNameForMedia(name) {
-    return name
-      .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
-      .replace(/[^\w\s]/g, '')
-      .trim()
-      .replace(/\s+/g, '_')
-      .toLowerCase();
-  }
-
   // ---------- PERSONALITY PRESETS ----------
   const personalityPresets = {
     boss:       { archetype: 'leader', experience: 'advanced', intent: 'flex' },
@@ -102,7 +93,6 @@
 
   // ---------- 150 CUSTOM PERSONAS (100 real + 50 fallback) ----------
   const customPersonas = [
-    // 100 real names (exactly as you provided)
     { name: "oladapo ogunsakin", gender: "men", country: "Nigeria", isFallback: false },
     { name: "narciso panganiban", gender: "men", country: "Mexico", isFallback: false },
     { name: "Elmer nunez 📉", gender: "men", country: "Mexico", isFallback: false },
@@ -305,9 +295,9 @@
     const arch = archetypeDefs[personality.archetype] || archetypeDefs.active;
 
     let typingBase;
-    if (personality.experience === 'beginner') typingBase = [1800, 3500];
-    else if (personality.experience === 'intermediate') typingBase = [900, 1800];
-    else typingBase = [500, 1000];
+    if (personality.experience === 'beginner') typingBase = [2200, 4000];
+    else if (personality.experience === 'intermediate') typingBase = [1200, 2200];
+    else typingBase = [700, 1300];
 
     let grammar = personality.experience === 'beginner' ? 'informal' : (personality.experience === 'intermediate' ? 'mixed' : 'clean');
     let slang = personality.experience === 'beginner' ? 0.75 : (personality.experience === 'intermediate' ? 0.5 : 0.15);
@@ -536,7 +526,7 @@
   });
 
   // ################################################################
-  // ##########          EMBEDDED MEDIA MANIFEST (YOUR DATA) ##########
+  // ##########          EMBEDDED MEDIA MANIFEST          ##########
   // ################################################################
   const EMBEDDED_MANIFEST = {
     "Paul jande": { images: ["paul_jande_1.jpg"], voices: [], videos: [] },
@@ -576,9 +566,10 @@
     "Mates nsikak": { images: ["mates_nsikak_1.jpg"], voices: [], videos: [] }
   };
 
-  // ---------- MEDIA QUEUE (UNLIMITED, GUARANTEED ROTATION) ----------
+  // ---------- MEDIA QUEUE (WITH LONGER COOLDOWN & PER‑PERSONA COOLDOWN) ----------
   const personaMediaQueue = new Map();
   const recentlyUsed = new Map();
+  const personaLastMediaTime = new Map();
 
   function buildMediaQueues() {
     personaMediaQueue.clear();
@@ -603,19 +594,26 @@
 
   function pickMediaForPersona(personaId, preferredTypes = ['images','videos','voices']) {
     cleanRecentlyUsed();
+
+    const lastMediaTime = personaLastMediaTime.get(personaId) || 0;
+    if (Date.now() - lastMediaTime < 2 * 60 * 1000) return null;
+
     let queue = personaMediaQueue.get(personaId);
     if (!queue || !queue.length) return null;
+
     for (let i = 0; i < queue.length; i++) {
       const item = queue[i];
       if (!preferredTypes.includes(item.type)) continue;
       if (recentlyUsed.has(item.url)) continue;
       queue.splice(i, 1); queue.push(item);
       recentlyUsed.set(item.url, Date.now());
+      personaLastMediaTime.set(personaId, Date.now());
       log(`🎯 Media: ${item.url}`);
       return item;
     }
     const oldest = queue[0];
     recentlyUsed.set(oldest.url, Date.now());
+    personaLastMediaTime.set(personaId, Date.now());
     log(`⏳ Cooldown bypassed: ${oldest.url}`);
     return oldest;
   }
@@ -630,7 +628,7 @@
   function pickDifferentPersona(){ const active = getActivePersonas(); if(!active.length) return null; let f = active.filter(p=>p.id!==lastPersonaId); if(!f.length) f=active; return pick(f); }
 
   function applyTypos(text){
-    if(Math.random() > 0.2) return text;
+    if(Math.random() > 0.15) return text;
     const words = text.split(' ');
     return words.map(w => {
       if(w.length < 4 || Math.random() > 0.1) return w;
@@ -665,7 +663,7 @@
     return { text: applyTypos(text), type };
   }
 
-  function getTypingDelay(p, len){ return Math.min(randomBetween(p.typingSpeed[0], p.typingSpeed[1]) * len, 6000); }
+  function getTypingDelay(p, len){ return Math.min(randomBetween(p.typingSpeed[0], p.typingSpeed[1]) * len, 7000); }
   function showTyping(p, typingType = 'text'){ if(chatAPI.showTypingForPersona) chatAPI.showTypingForPersona(p, typingType); }
   function hideTyping(){ if(chatAPI.hideTyping) chatAPI.hideTyping(); }
   function isGeneralChatActive() { return window.__activeChatRoom === 'general' && chatAPI.isChatRoomActive?.(); }
@@ -673,10 +671,10 @@
   function getLastReplyTarget(excludePersonaId = null) {
     const target = [...recentMessages].reverse().find(m => m.text && m.personaId !== excludePersonaId);
     if (!target) return null;
-    return { senderName: target.senderName, text: target.text.substring(0, 50) };
+    return { senderName: target.senderName, text: target.text.substring(0, 50), messageType: target.messageType };
   }
 
-  function buildReplyText(lastText) {
+  function buildReplyText(lastText, targetMessageType) {
     const lowerText = (lastText || "").toLowerCase();
     if(lowerText.includes("win") || lowerText.includes("profit") || lowerText.includes("%") || lowerText.includes("tp")){
       return pick(["nice win! 🔥", "congrats on that profit", "that's what I'm talking about", "let's gooo", "🚀🚀", "well played"]);
@@ -686,23 +684,26 @@
       return pick(["good question", "I was wondering the same", "anyone have an answer?", "would like to know too", "curious about that as well"]);
     } else if(lowerText.includes("signal") || lowerText.includes("entry") || lowerText.includes("trade")){
       return pick(["following this 📈", "already in", "looks solid", "agree with the setup", "I'm watching this too"]);
-    } else if(lowerText.includes("testimonial") || lowerText.includes("proof") || lowerText.includes("withdrawal")){
-      return pick(["nice! keep it up", "love to see it", "inspiring", "motivating", "this is the way"]);
+    } else if(targetMessageType === MessageType.TESTIMONIAL){
+      return pick(["inspiring! 🙌", "keep it up!", "that's how it's done", "love to see this", "motivation right here"]);
     }
     return pick(["exactly!", "well said", "facts 💯", "this 👆", "couldn't agree more", "🔥🔥", "for real", "no cap"]);
   }
 
-  async function sendPersonaMessageOriginal(persona, replyTo=null){
+  async function sendPersonaMessageOriginal(persona, replyTo=null, forceNoMedia = false){
     if (!isGeneralChatActive()) return;
     if(persona.archetype === 'watcher' && Math.random() > 0.15) return;
+
     const isTestimonial = Math.random() < CONFIG.TESTIMONIAL_CHANCE && persona.messageBank[MessageType.TESTIMONIAL];
     let { text, type } = generateMessage(persona, isTestimonial ? MessageType.TESTIMONIAL : null);
     const now = new Date(); const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 
     let mediaItem = null;
     const qualifiesForMedia = (type === MessageType.TESTIMONIAL || type === MessageType.RESULT || type === MessageType.FLEX || type === MessageType.HYPE);
-    if (qualifiesForMedia) {
-      const preferredTypes = (type === MessageType.TESTIMONIAL || type === MessageType.RESULT) 
+    const isReplyToTestimonial = replyTo && replyTo.messageType === MessageType.TESTIMONIAL;
+
+    if (!forceNoMedia && (qualifiesForMedia || isReplyToTestimonial)) {
+      const preferredTypes = (type === MessageType.TESTIMONIAL || isReplyToTestimonial) 
         ? ['images','videos','voices'] 
         : ['images','videos'];
       mediaItem = pickMediaForPersona(persona.id, preferredTypes);
@@ -725,7 +726,7 @@
       if(chatAPI.addIncomingMessage){
         const el = chatAPI.addIncomingMessage(msgData);
         if(el) {
-          recentMessages.push({ id: persona.id+'_'+Date.now(), personaId: persona.id, senderName: persona.name, text: msgData.text, element: el });
+          recentMessages.push({ id: persona.id+'_'+Date.now(), personaId: persona.id, senderName: persona.name, text: msgData.text, messageType: type, element: el });
           if(recentMessages.length>30) recentMessages.shift();
         }
       }
@@ -740,20 +741,29 @@
     if(!lastAIMessage) return;
     const persona = pickDifferentPersona();
     if(!persona) return;
-    const replyText = buildReplyText(lastAIMessage.text);
+
+    const replyText = buildReplyText(lastAIMessage.text, lastAIMessage.messageType);
     const now = new Date(); const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+    let mediaItem = null;
+    if (lastAIMessage.messageType === MessageType.TESTIMONIAL && Math.random() < CONFIG.REPLY_WITH_MEDIA_CHANCE) {
+      mediaItem = pickMediaForPersona(persona.id, ['images']);
+    }
+
     const msgData = {
       senderName: persona.name, senderAvatar: persona.avatar, text: replyText, time: timeStr, personaId: persona.id,
       replyTo: { senderName: lastAIMessage.senderName, text: lastAIMessage.text.substring(0, 50) }
     };
-    log(`🤖 ${persona.name} forced reply to AI ${lastAIMessage.senderName}`);
+    if (mediaItem) { msgData.mediaType = mediaItem.mediaType; msgData.mediaUrl = mediaItem.url; }
+
+    log(`🤖 ${persona.name} reply to ${lastAIMessage.senderName} ${mediaItem ? '[with image]' : ''}`);
     if(chatAPI.addIncomingMessage) chatAPI.addIncomingMessage(msgData);
     lastPersonaId = persona.id;
   }
 
   const sendPersonaMessage = function(persona, replyTo=null) {
     sendPersonaMessageOriginal(persona, replyTo);
-    setTimeout(() => { forceReplyToLastAIMessage(); }, randomBetween(2000, 4500));
+    setTimeout(() => { forceReplyToLastAIMessage(); }, randomBetween(3000, 6000));
   };
 
   function simulateJoin(){
@@ -808,7 +818,7 @@
         const now = new Date(); const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
         if(chatAPI.addIncomingMessage) {
           const el = chatAPI.addIncomingMessage({ senderName: p.name, senderAvatar: p.avatar, text, time: timeStr, personaId: p.id, messageType: MessageType.RESULT });
-          if (el) { recentMessages.push({ id: p.id+'_'+Date.now(), personaId: p.id, senderName: p.name, text, element: el }); if(recentMessages.length>30) recentMessages.shift(); }
+          if (el) { recentMessages.push({ id: p.id+'_'+Date.now(), personaId: p.id, senderName: p.name, text, messageType: MessageType.RESULT, element: el }); if(recentMessages.length>30) recentMessages.shift(); }
         }
         lastPersonaId = p.id; lastMessageType = MessageType.RESULT;
         return;
@@ -859,5 +869,5 @@
     if(recentMessages.length > 30) recentMessages.shift();
   };
 
-  log(`🤖 AI Persona Engine v15 loaded with ${personas.length} personas. Humanlike behavior, unlimited media.`);
+  log(`🤖 AI Persona Engine v16 loaded. Humanlike tuning, less spam, smarter replies.`);
 })();
