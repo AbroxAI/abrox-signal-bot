@@ -4,11 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>PocketOptionInside</title>
-  <!-- base tag REMOVED for GitHub Pages compatibility -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* ========== FULL STYLES ========== */
+    /* ========== FULL STYLES (unchanged) ========== */
     :root{
       --bg:#ebf1fa; --card:#ffffff; --ink:#1f2633; --muted:#7f8794;
       --blue:#2e9fe8; --blue-dark:#24263d; --green:#4ab54d; --yellow:#f3bf23;
@@ -778,7 +777,7 @@
     <div class="page-section-title">Referral activity</div><div class="activity-list"><div class="activity-item"><span>No referral activity yet</span><span>0</span></div></div>
   </div>
 
-  <!-- PROGRESS PAGE (MODIFIED WITH ZEROED TRADE STATS) -->
+  <!-- PROGRESS PAGE -->
   <div id="progressPage" class="page">
     <div class="page-header-card">
       <div>
@@ -796,15 +795,14 @@
         </div>
       </div>
       <div class="progress-summary">
-        <!-- Real trade stats grid (all zero) -->
         <div class="progress-stats-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; margin-bottom:4px;">
-          <div class="stat-row"><span>Trades</span><span>0</span></div>
-          <div class="stat-row"><span>Win rate</span><span>0%</span></div>
-          <div class="stat-row"><span>Turnover</span><span>$0.00</span></div>
-          <div class="stat-row"><span>Profit</span><span>$0.00</span></div>
-          <div class="stat-row"><span>Max trade</span><span>$0</span></div>
+          <div class="stat-row"><span>Trades</span><span>—</span></div>
+          <div class="stat-row"><span>Win rate</span><span>—</span></div>
+          <div class="stat-row"><span>Turnover</span><span>—</span></div>
+          <div class="stat-row"><span>Profit</span><span>—</span></div>
+          <div class="stat-row"><span>Max trade</span><span>—</span></div>
         </div>
-        <!-- Existing learning progress rows -->
+        <p style="font-size:12px; color:#7f8794; margin-top:8px; text-align:center;">Stats will appear after account activation</p>
         <div class="progress-row"><span>Completed lessons</span><strong>0</strong></div>
         <div class="progress-row"><span>Checklist progress</span><strong>0%</strong></div>
         <div class="progress-row"><span>Practice mode</span><strong>Off</strong></div>
@@ -884,23 +882,24 @@
   </div>
 </div>
 
-<!-- PLAN SELECTION MODAL -->
+<!-- PLAN SELECTION MODAL (UPDATED) -->
 <div class="plan-modal-overlay" id="planModal">
   <div class="plan-modal-container">
     <div class="plan-header">
       <div class="plan-title">🚀 Choose Your Activation</div>
-      <div class="plan-fomo">⚠️ Only 28 spots left – Final window closes May 1st ⚠️</div>
+      <div class="plan-fomo" id="planFomoMsg">⚠️ Only 17 spots left – Final window closes May 1st ⚠️</div>
       <div class="countdown" id="countdownTimer">--d --h --m</div>
     </div>
-    <div class="plan-card" data-plan="weekly" data-price="99">
-      <div class="plan-name">🔥 Most Popular — WEEKLY ACCESS</div>
-      <div class="plan-price">$99</div>
-      <div class="plan-desc">Safe, consistent and perfect for growth-minded traders.</div>
+    <!-- Updated plans: weekly $50, monthly $150, VIP $299, Lifetime $749 -->
+    <div class="plan-card" data-plan="weekly" data-price="50">
+      <div class="plan-name">🔥 Weekly Access</div>
+      <div class="plan-price">$50</div>
+      <div class="plan-desc">Perfect for testing the waters with full signal access.</div>
     </div>
-    <div class="plan-card" data-plan="trial" data-price="35">
-      <div class="plan-name">💰 24H Trial</div>
-      <div class="plan-price">$35</div>
-      <div class="plan-desc">Test results immediately with low commitment.</div>
+    <div class="plan-card" data-plan="monthly" data-price="150">
+      <div class="plan-name">📅 Monthly Plan</div>
+      <div class="plan-price">$150</div>
+      <div class="plan-desc">Consistent trading with a full month of signals.</div>
     </div>
     <div class="plan-card" data-plan="vip" data-price="299">
       <div class="plan-name">🚀 VIP Monthly</div>
@@ -1002,8 +1001,8 @@
     function updateClock(){ document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
     setInterval(updateClock,1000); setInterval(updateAccuracy,60000); updateClock(); updateAccuracy(); renderSignal();
 
-    // ========== SUPPORT FUNCTION ==========
-    function contactSupport() { window.open('https://t.me/po_inside_support', '_blank'); }
+    // ========== SUPPORT FUNCTION (UPDATED LINK) ==========
+    function contactSupport() { window.open('https://t.me/po_signal_admin', '_blank'); }
 
     // ========== PLAN & PAYMENT MODAL ==========
     const planModal = document.getElementById('planModal');
@@ -1018,8 +1017,26 @@
     const paymentSupportBtn = document.getElementById('paymentSupportBtn');
     const retryPaymentBtn = document.getElementById('retryPaymentBtn');
     const paymentWalletAddressSpan = document.getElementById('paymentWalletAddress');
+    const planFomoMsg = document.getElementById('planFomoMsg');
 
     let selectedPlan = null, selectedPrice = null, paymentTimeout = null;
+
+    // Dynamic slots (starts at 17, decrements every 30 minutes)
+    let slotsRemaining = 17;
+    const SLOT_DECREMENT_INTERVAL = 30 * 60 * 1000; // 30 minutes in ms
+    function updatePlansFomo() {
+      if (planFomoMsg) {
+        planFomoMsg.textContent = `⚠️ Only ${slotsRemaining} spot${slotsRemaining !== 1 ? 's' : ''} left – Final window closes May 1st ⚠️`;
+      }
+    }
+    // Decrement slot count on interval
+    setInterval(() => {
+      if (slotsRemaining > 1) {
+        slotsRemaining--;
+        updatePlansFomo();
+      }
+    }, SLOT_DECREMENT_INTERVAL);
+    updatePlansFomo(); // initial display
 
     function updateCountdown() {
       const target = new Date(new Date().getFullYear(), 4, 1);
@@ -1083,7 +1100,7 @@
     planModal.addEventListener('click', (e) => { if (e.target === planModal) closePlanModal(); });
     paymentModal.addEventListener('click', (e) => { if (e.target === paymentModal) closePaymentModal(); });
 
-    // ========== ENHANCED CHAT LOGIC ==========
+    // ========== ENHANCED CHAT LOGIC (unchanged from before) ==========
     const ROOM_STORAGE_PREFIX = 'pocketOption_chat_messages_';
     const LEGACY_STORAGE_KEY = 'pocketOption_chat_messages';
     let isHydratingRoom = false;
@@ -1287,7 +1304,6 @@
       return row;
     }
 
-    // Lightbox
     function showLightbox(src, type = 'image') {
       lightboxMediaContainer.innerHTML = '';
       if (type === 'image') {
@@ -1302,7 +1318,6 @@
     lightboxCloseBtn.onclick = () => lightboxOverlay.classList.remove('active');
     lightboxOverlay.addEventListener('click', (e) => { if (e.target === lightboxOverlay) lightboxOverlay.classList.remove('active'); });
 
-    // Profile modal with Send Message and full photo tap
     const profileModal = document.getElementById('profileModal');
     const profileModalContent = document.getElementById('profileModalContent');
     
@@ -1392,7 +1407,6 @@
     }
     function closeChatRoom(){ chatRoomShell.classList.remove('is-open'); appContainer.classList.remove('chat-open'); document.body.style.overflow = ''; chatInput.value=''; updateComposerMode(); }
 
-    // Voice recording
     async function startVoiceRecording() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -1431,14 +1445,12 @@
       }
     };
 
-    // Online count simulation
     function updateOnlineCount() {
       const count = Math.floor(Math.random() * (137 - 65 + 1)) + 65;
       onlineCountDisplay.innerHTML = `● ${count} online`;
     }
     updateOnlineCount(); setInterval(updateOnlineCount, 30000);
 
-    // Activation modal
     function showActivationModal() { activationModal.classList.add('active'); }
     function hideActivationModal() { activationModal.classList.remove('active'); }
     activationChoosePlanBtn.onclick = () => { hideActivationModal(); openPlanModal(); };
