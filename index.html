@@ -258,6 +258,66 @@
     .milestone-item svg{flex:0 0 auto;}
     .referrals-header{align-items:center;}
 
+    /* ---------- VIDEO CARD ---------- */
+    .video-card {
+      background: #fff;
+      border: 1px solid #e6ecf5;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .video-card:active { transform: scale(0.98); }
+    .video-thumb {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .video-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .play-icon-overlay {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(6px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: 0.2s;
+    }
+    .video-card:hover .play-icon-overlay {
+      background: rgba(255,255,255,0.35);
+    }
+    .video-details {
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .video-details-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: #1f2633;
+    }
+    .video-details-meta {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
     /* ---------- CHAT LIST ---------- */
     .chat-section-label{
       margin:14px 2px 8px;font-size:12px;color:#7f8794;letter-spacing:.2px;text-transform:uppercase;font-weight:700;
@@ -737,7 +797,7 @@
     </div>
   </div>
 
-  <!-- TRAINING PAGE -->
+  <!-- TRAINING PAGE (now includes Pro Video Card) -->
   <div id="trainingPage" class="page">
     <div class="page-header-card"><div><div class="page-kicker">Beginner guide</div><h2 class="page-title">Training for New Users</h2><p class="page-text">Built for new users who have not activated yet, with simple lessons that explain the app before they use anything live.</p></div><i data-lucide="book-open" class="w-10 h-10 text-sky-500"></i></div>
     <div class="page-section-title">What members get</div>
@@ -747,6 +807,25 @@
       <div class="lesson-card"><div class="lesson-icon"><i data-lucide="target" class="w-5 h-5"></i></div><div><div class="lesson-title">Entry method</div><div class="lesson-text">Learn when to enter and when to stay out of the market.</div></div></div>
       <div class="lesson-card"><div class="lesson-icon"><i data-lucide="clock-3" class="w-5 h-5"></i></div><div><div class="lesson-title">Timing</div><div class="lesson-text">See how trade duration, expiry, and signal time fit together.</div></div></div>
       <div class="lesson-card"><div class="lesson-icon"><i data-lucide="wallet" class="w-5 h-5"></i></div><div><div class="lesson-title">Money management</div><div class="lesson-text">Use the same stake rules so results stay consistent.</div></div></div>
+    </div>
+
+    <!-- NEW PRO VIDEO CARD -->
+    <div class="page-section-title">Pro Video Tutorial</div>
+    <div class="video-card" id="proVideoCard">
+      <div class="video-thumb">
+        <!-- Placeholder thumbnail image; replace with a real thumbnail if desired -->
+        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop" alt="Tutorial thumbnail" onerror="this.style.display='none';">
+        <div class="play-icon-overlay">
+          <i data-lucide="play" class="w-8 h-8 fill-white"></i>
+        </div>
+      </div>
+      <div class="video-details">
+        <div>
+          <div class="video-details-title">Complete Signal Strategy</div>
+          <div class="video-details-meta">12:34 • Step‑by‑step guide</div>
+        </div>
+        <i data-lucide="chevron-right" class="w-5 h-5 text-slate-400"></i>
+      </div>
     </div>
   </div>
 
@@ -887,10 +966,9 @@
   <div class="plan-modal-container">
     <div class="plan-header">
       <div class="plan-title">🚀 Choose Your Activation</div>
-      <div class="plan-fomo" id="planFomoMsg">⚠️ Only 17 spots left – Final window closes May 1st ⚠️</div>
+      <div class="plan-fomo" id="planFomoMsg">⚠️ Only 17 spots left – Final window closes May 31st ⚠️</div>
       <div class="countdown" id="countdownTimer">--d --h --m</div>
     </div>
-    <!-- Updated plans: weekly $50, monthly $150, VIP $299, Lifetime $749 -->
     <div class="plan-card" data-plan="weekly" data-price="50">
       <div class="plan-name">🔥 Weekly Access</div>
       <div class="plan-price">$50</div>
@@ -1001,7 +1079,7 @@
     function updateClock(){ document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
     setInterval(updateClock,1000); setInterval(updateAccuracy,60000); updateClock(); updateAccuracy(); renderSignal();
 
-    // ========== SUPPORT FUNCTION (UPDATED LINK) ==========
+    // ========== SUPPORT FUNCTION ==========
     function contactSupport() { window.open('https://t.me/po_signal_admin', '_blank'); }
 
     // ========== PLAN & PAYMENT MODAL ==========
@@ -1021,25 +1099,23 @@
 
     let selectedPlan = null, selectedPrice = null, paymentTimeout = null;
 
-    // Dynamic slots (starts at 17, decrements every 30 minutes)
     let slotsRemaining = 17;
-    const SLOT_DECREMENT_INTERVAL = 30 * 60 * 1000; // 30 minutes in ms
+    const SLOT_DECREMENT_INTERVAL = 30 * 60 * 1000;
     function updatePlansFomo() {
       if (planFomoMsg) {
-        planFomoMsg.textContent = `⚠️ Only ${slotsRemaining} spot${slotsRemaining !== 1 ? 's' : ''} left – Final window closes May 1st ⚠️`;
+        planFomoMsg.textContent = `⚠️ Only ${slotsRemaining} spot${slotsRemaining !== 1 ? 's' : ''} left – Final window closes May 31st ⚠️`;
       }
     }
-    // Decrement slot count on interval
     setInterval(() => {
       if (slotsRemaining > 1) {
         slotsRemaining--;
         updatePlansFomo();
       }
     }, SLOT_DECREMENT_INTERVAL);
-    updatePlansFomo(); // initial display
+    updatePlansFomo();
 
     function updateCountdown() {
-      const target = new Date(new Date().getFullYear(), 4, 1);
+      const target = new Date(new Date().getFullYear(), 4, 31); // May 31st (month index 4)
       const now = new Date();
       const diff = target - now;
       if (diff <= 0) { document.getElementById('countdownTimer').innerText = "0d 0h 0m"; return; }
@@ -1100,7 +1176,7 @@
     planModal.addEventListener('click', (e) => { if (e.target === planModal) closePlanModal(); });
     paymentModal.addEventListener('click', (e) => { if (e.target === paymentModal) closePaymentModal(); });
 
-    // ========== ENHANCED CHAT LOGIC (unchanged from before) ==========
+    // ========== ENHANCED CHAT LOGIC ==========
     const ROOM_STORAGE_PREFIX = 'pocketOption_chat_messages_';
     const LEGACY_STORAGE_KEY = 'pocketOption_chat_messages';
     let isHydratingRoom = false;
@@ -1373,8 +1449,10 @@
         closeProfileModal();
         showActivationModal();
       };
+      // Changed: "View Full Profile" now opens activation modal
       document.getElementById('profileViewFullLink').onclick = () => {
-        alert('Full profile coming soon.');
+        closeProfileModal();
+        showActivationModal();
       };
       
       profileModal.classList.add('active');
@@ -1472,6 +1550,15 @@
     chatSendBtn.onclick = sendUserMessage;
     replyPreviewCloseBtn.onclick = ()=>{ replyingToMessage = null; replyPreviewBar.style.display = 'none'; };
     emojiBtn.onclick = ()=>{ chatInput.value += '😊'; updateComposerMode(); };
+
+    // ========== VIDEO CARD HANDLER ==========
+    const proVideoCard = document.getElementById('proVideoCard');
+    if (proVideoCard) {
+      proVideoCard.addEventListener('click', () => {
+        // Placeholder video URL – replace with your actual asset path later
+        showLightbox('assets/training-video.mp4', 'video');
+      });
+    }
 
     window.chatAPI = {
       showTypingForPersona: (persona, typingType = 'text') => {
