@@ -29,7 +29,7 @@ window.MEDIA_MANIFEST = {
     videos: []
   },
   "Boss  Mega ⚡⚡⚡": {
-    images: ["boss_mega_1.jpg"],
+    images: ["boss_mega_1.jpg" "boss_mega_2.jpg"],
     voices: [],
     videos: []
   },
