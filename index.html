@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* ========== FULL STYLES (unchanged) ========== */
+    /* ========== FULL STYLES ========== */
     :root{
       --bg:#ebf1fa; --card:#ffffff; --ink:#1f2633; --muted:#7f8794;
       --blue:#2e9fe8; --blue-dark:#24263d; --green:#4ab54d; --yellow:#f3bf23;
@@ -359,7 +359,7 @@
       display:flex;align-items:center;justify-content:center;color:#9aa3b2;flex:0 0 auto;
     }
 
-    /* ---------- CHAT ROOM SHELL (ENHANCED) ---------- */
+    /* ---------- CHAT ROOM SHELL ---------- */
     .chat-room-shell{
       position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;background:#fff;
       display:flex;flex-direction:column;padding:12px 12px 0;max-width:430px;margin:0 auto;
@@ -433,7 +433,6 @@
     .typing-bubble span:nth-child(2){animation-delay:.2s;}.typing-bubble span:nth-child(3){animation-delay:.4s;}
     @keyframes typingBounce{0%,80%,100%{transform:scale(0.6);opacity:.5;}40%{transform:scale(1);opacity:1;}}
 
-    /* Audio typing indicator */
     .typing-audio {
       display: flex; align-items: center; gap: 8px;
     }
@@ -533,7 +532,7 @@
       backdrop-filter: blur(4px);
     }
 
-    /* ---------- PROFILE MODAL ADDITIONS ---------- */
+    /* ---------- PROFILE MODAL ---------- */
     .profile-message-btn {
       background: #2f98e5; color: white; border: none; border-radius: 40px;
       padding: 12px; font-weight: 700; width: 100%; margin-top: 16px;
@@ -748,7 +747,7 @@
     </div>
   </div>
 
-  <!-- SIGNALS PAGE (active by default) -->
+  <!-- SIGNALS PAGE -->
   <div id="signalsPage" class="page active">
     <div class="topbar">
       <div class="brand"><div class="brand-mark"></div><div class="brand-text">PocketOptionInside</div></div>
@@ -797,7 +796,7 @@
     </div>
   </div>
 
-  <!-- TRAINING PAGE (now includes Pro Video Card) -->
+  <!-- TRAINING PAGE -->
   <div id="trainingPage" class="page">
     <div class="page-header-card"><div><div class="page-kicker">Beginner guide</div><h2 class="page-title">Training for New Users</h2><p class="page-text">Built for new users who have not activated yet, with simple lessons that explain the app before they use anything live.</p></div><i data-lucide="book-open" class="w-10 h-10 text-sky-500"></i></div>
     <div class="page-section-title">What members get</div>
@@ -809,11 +808,10 @@
       <div class="lesson-card"><div class="lesson-icon"><i data-lucide="wallet" class="w-5 h-5"></i></div><div><div class="lesson-title">Money management</div><div class="lesson-text">Use the same stake rules so results stay consistent.</div></div></div>
     </div>
 
-    <!-- NEW PRO VIDEO CARD -->
+    <!-- PRO VIDEO CARD -->
     <div class="page-section-title">Pro Video Tutorial</div>
     <div class="video-card" id="proVideoCard">
       <div class="video-thumb">
-        <!-- Placeholder thumbnail image; replace with a real thumbnail if desired -->
         <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop" alt="Tutorial thumbnail" onerror="this.style.display='none';">
         <div class="play-icon-overlay">
           <i data-lucide="play" class="w-8 h-8 fill-white"></i>
@@ -829,7 +827,7 @@
     </div>
   </div>
 
-  <!-- CHAT PAGE (list) -->
+  <!-- CHAT PAGE -->
   <div id="chatPage" class="page">
     <div class="chat-section-label">Choose a chat</div>
     <div class="chat-list" id="chatList">
@@ -961,7 +959,7 @@
   </div>
 </div>
 
-<!-- PLAN SELECTION MODAL (UPDATED) -->
+<!-- PLAN SELECTION MODAL -->
 <div class="plan-modal-overlay" id="planModal">
   <div class="plan-modal-container">
     <div class="plan-header">
@@ -1098,7 +1096,6 @@
     const planFomoMsg = document.getElementById('planFomoMsg');
 
     let selectedPlan = null, selectedPrice = null, paymentTimeout = null;
-
     let slotsRemaining = 17;
     const SLOT_DECREMENT_INTERVAL = 30 * 60 * 1000;
     function updatePlansFomo() {
@@ -1115,7 +1112,7 @@
     updatePlansFomo();
 
     function updateCountdown() {
-      const target = new Date(new Date().getFullYear(), 4, 31); // May 31st (month index 4)
+      const target = new Date(new Date().getFullYear(), 4, 31); // May 31
       const now = new Date();
       const diff = target - now;
       if (diff <= 0) { document.getElementById('countdownTimer').innerText = "0d 0h 0m"; return; }
@@ -1380,20 +1377,55 @@
       return row;
     }
 
+    // ========== IMPROVED LIGHTBOX WITH VIDEO FALLBACK ==========
     function showLightbox(src, type = 'image') {
       lightboxMediaContainer.innerHTML = '';
       if (type === 'image') {
-        const img = document.createElement('img'); img.src = src;
+        const img = document.createElement('img');
+        img.src = src;
+        img.onerror = () => alert('Image failed to load: ' + src);
         lightboxMediaContainer.appendChild(img);
       } else if (type === 'video') {
-        const video = document.createElement('video'); video.src = src; video.controls = true;
-        lightboxMediaContainer.appendChild(video);
+        const video = document.createElement('video');
+        video.src = src;
+        video.controls = true;
+        video.style.maxWidth = '100%';
+        video.style.maxHeight = '100%';
+        video.onerror = () => {
+          alert('Video failed to load. Check file at:\n' + src +
+                '\n\nMake sure "training-video.mp4" is inside the "assets" folder.');
+        };
+        video.oncanplay = () => {
+          lightboxMediaContainer.appendChild(video);
+          lightboxOverlay.classList.add('active');
+        };
+        if (video.readyState >= 2) {
+          lightboxMediaContainer.appendChild(video);
+          lightboxOverlay.classList.add('active');
+        } else {
+          video.addEventListener('canplay', () => {
+            lightboxOverlay.classList.add('active');
+          }, { once: true });
+          lightboxMediaContainer.appendChild(video);
+          lightboxOverlay.classList.add('active');
+        }
+        return;
       }
       lightboxOverlay.classList.add('active');
     }
+
     lightboxCloseBtn.onclick = () => lightboxOverlay.classList.remove('active');
     lightboxOverlay.addEventListener('click', (e) => { if (e.target === lightboxOverlay) lightboxOverlay.classList.remove('active'); });
 
+    // ========== VIDEO CARD HANDLER ==========
+    const proVideoCard = document.getElementById('proVideoCard');
+    if (proVideoCard) {
+      proVideoCard.addEventListener('click', () => {
+        showLightbox('./assets/training-video.mp4', 'video');
+      });
+    }
+
+    // ========== PROFILE MODAL (view full profile now triggers activation) ==========
     const profileModal = document.getElementById('profileModal');
     const profileModalContent = document.getElementById('profileModalContent');
     
@@ -1449,7 +1481,6 @@
         closeProfileModal();
         showActivationModal();
       };
-      // Changed: "View Full Profile" now opens activation modal
       document.getElementById('profileViewFullLink').onclick = () => {
         closeProfileModal();
         showActivationModal();
@@ -1551,15 +1582,6 @@
     replyPreviewCloseBtn.onclick = ()=>{ replyingToMessage = null; replyPreviewBar.style.display = 'none'; };
     emojiBtn.onclick = ()=>{ chatInput.value += '😊'; updateComposerMode(); };
 
-    // ========== VIDEO CARD HANDLER ==========
-    const proVideoCard = document.getElementById('proVideoCard');
-    if (proVideoCard) {
-      proVideoCard.addEventListener('click', () => {
-        // Placeholder video URL – replace with your actual asset path later
-        showLightbox('assets/training-video.mp4', 'video');
-      });
-    }
-
     window.chatAPI = {
       showTypingForPersona: (persona, typingType = 'text') => {
         document.getElementById('aiTypingIndicator')?.remove();
@@ -1636,9 +1658,8 @@
     lucide.createIcons();
   })();
 </script>
-<!-- ########## FIX: Load manifest BEFORE engine ########## -->
+<!-- Load manifest and engine -->
 <script src="media-manifest.js"></script>
 <script src="ai-persona-engine.js"></script>
-<!-- ##################################################### -->
 </body>
 </html>
