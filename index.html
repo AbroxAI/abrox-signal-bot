@@ -808,11 +808,12 @@
       <div class="lesson-card"><div class="lesson-icon"><i data-lucide="wallet" class="w-5 h-5"></i></div><div><div class="lesson-title">Money management</div><div class="lesson-text">Use the same stake rules so results stay consistent.</div></div></div>
     </div>
 
-    <!-- PRO VIDEO CARD -->
+    <!-- PRO VIDEO CARD (with local thumbnail) -->
     <div class="page-section-title">Pro Video Tutorial</div>
     <div class="video-card" id="proVideoCard">
       <div class="video-thumb">
-        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop" alt="Tutorial thumbnail" onerror="this.style.display='none';">
+        <img src="./assets/training-thumbnail.jpg" alt="Tutorial thumbnail" 
+             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop';">
         <div class="play-icon-overlay">
           <i data-lucide="play" class="w-8 h-8 fill-white"></i>
         </div>
@@ -1377,7 +1378,7 @@
       return row;
     }
 
-    // ========== IMPROVED LIGHTBOX WITH VIDEO FALLBACK ==========
+    // ---------- LIGHTBOX ----------
     function showLightbox(src, type = 'image') {
       lightboxMediaContainer.innerHTML = '';
       if (type === 'image') {
@@ -1417,15 +1418,7 @@
     lightboxCloseBtn.onclick = () => lightboxOverlay.classList.remove('active');
     lightboxOverlay.addEventListener('click', (e) => { if (e.target === lightboxOverlay) lightboxOverlay.classList.remove('active'); });
 
-    // ========== VIDEO CARD HANDLER ==========
-    const proVideoCard = document.getElementById('proVideoCard');
-    if (proVideoCard) {
-      proVideoCard.addEventListener('click', () => {
-        showLightbox('./assets/training-video.mp4', 'video');
-      });
-    }
-
-    // ========== PROFILE MODAL (view full profile now triggers activation) ==========
+    // ---------- PROFILE MODAL ----------
     const profileModal = document.getElementById('profileModal');
     const profileModalContent = document.getElementById('profileModalContent');
     
@@ -1582,6 +1575,14 @@
     replyPreviewCloseBtn.onclick = ()=>{ replyingToMessage = null; replyPreviewBar.style.display = 'none'; };
     emojiBtn.onclick = ()=>{ chatInput.value += '😊'; updateComposerMode(); };
 
+    // ========== VIDEO CARD HANDLER ==========
+    const proVideoCard = document.getElementById('proVideoCard');
+    if (proVideoCard) {
+      proVideoCard.addEventListener('click', () => {
+        showLightbox('./assets/training-video.mp4', 'video');
+      });
+    }
+
     window.chatAPI = {
       showTypingForPersona: (persona, typingType = 'text') => {
         document.getElementById('aiTypingIndicator')?.remove();
@@ -1658,7 +1659,6 @@
     lucide.createIcons();
   })();
 </script>
-<!-- Load manifest and engine -->
 <script src="media-manifest.js"></script>
 <script src="ai-persona-engine.js"></script>
 </body>
